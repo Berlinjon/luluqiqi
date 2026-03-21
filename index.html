@@ -730,11 +730,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateBankUI(k);
   }
 
-  function updateBankUI(k){
-    const se=document.getElementById(`${k}-monthScore`), me=document.getElementById(`${k}-monthMoney`);
-    if(se) se.textContent=S[k].score;
-    if(me) me.textContent=(S[k].score/10).toFixed(1);
-  }
 
   // ── Tab switching ──────────────────────────────────────────────────────────
   function switchTab(k) {
