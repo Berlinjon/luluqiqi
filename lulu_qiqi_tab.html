@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lulu & Qiqi 每日好习惯 ⭐</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #ffd600;
+    --card-bg: #ffffffcc;
+    --text-dark: #4a3f6b;
+    --text-mid: #7b6fa0;
+    --shadow: 0 8px 32px rgba(100,80,160,0.13);
+    --radius: 28px;
+    --lulu:       #f06292;
+    --lulu-dark:  #c2185b;
+    --lulu-light: #fce4ec;
+    --lulu-mid:   #f8bbd0;
+    --qiqi:       #26c6da;
+    --qiqi-dark:  #00838f;
+    --qiqi-light: #e0f7fa;
+    --qiqi-mid:   #b2ebf2;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 0 60px;
+    position: relative; overflow-x: hidden;
+    transition: background 0.5s ease;
+  }
+  body.tab-lulu { background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #ffd6e7 100%); }
+  body.tab-qiqi { background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 50%, #e3f2fd 100%); }
+
+  /* Clouds */
+  .cloud { position:fixed;border-radius:50px;background:#ffffffcc;opacity:0.7;pointer-events:none;z-index:0; }
+  .cloud::before,.cloud::after{content:'';position:absolute;background:inherit;border-radius:50%;}
+  .c1{width:120px;height:40px;top:5%;left:-2%;animation:drift 18s linear infinite;}
+  .c1::before{width:60px;height:60px;top:-30px;left:15px;} .c1::after{width:45px;height:45px;top:-20px;left:50px;}
+  .c2{width:90px;height:30px;top:20%;right:-5%;animation:drift 24s linear infinite reverse;}
+  .c2::before{width:45px;height:45px;top:-22px;left:10px;} .c2::after{width:35px;height:35px;top:-15px;left:40px;}
+  .c3{width:100px;height:35px;top:70%;left:5%;animation:drift 21s linear infinite 6s;}
+  .c3::before{width:50px;height:50px;top:-25px;left:12px;} .c3::after{width:40px;height:40px;top:-18px;left:45px;}
+  @keyframes drift{0%{transform:translateX(-120%);}100%{transform:translateX(120vw);}}
+  .bg-star{position:fixed;pointer-events:none;z-index:0;font-size:22px;opacity:0.18;animation:floatStar 6s ease-in-out infinite;}
+  @keyframes floatStar{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(20deg);}}
+
+  /* ── TAB BAR ── */
+  .tab-bar {
+    position: sticky; top: 0; z-index: 50;
+    width: 100%; display: flex;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+  .tab-btn {
+    flex: 1; padding: 16px 8px 14px;
+    font-size: 1.25rem; font-weight: 900;
+    font-family: inherit;
+    border: none; cursor: pointer;
+    transition: all 0.35s cubic-bezier(.36,1.2,.64,1);
+    letter-spacing: 1px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    outline: none;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .tab-btn .tab-score {
+    font-size: 0.72rem; font-weight: 800; opacity: 0.85;
+    background: rgba(255,255,255,0.3); border-radius: 20px; padding: 1px 10px;
+  }
+
+  /* Lulu tab */
+  .tab-btn.lulu { background: linear-gradient(135deg, var(--lulu), var(--lulu-dark)); color: #fff; }
+  .tab-btn.lulu.inactive { background: linear-gradient(135deg, #fce4ec, #f8bbd0); color: var(--lulu-dark); opacity: 0.75; }
+
+  /* Qiqi tab */
+  .tab-btn.qiqi { background: linear-gradient(135deg, var(--qiqi), var(--qiqi-dark)); color: #fff; }
+  .tab-btn.qiqi.inactive { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); color: var(--qiqi-dark); opacity: 0.75; }
+
+  .tab-btn.active { transform: scaleY(1.06); z-index: 2; opacity: 1 !important; }
+  .tab-indicator {
+    position: absolute; bottom: 0; height: 4px; border-radius: 4px 4px 0 0;
+    transition: all 0.35s cubic-bezier(.36,1.2,.64,1);
+  }
+  .tab-indicator.lulu { background: #fff; }
+  .tab-indicator.qiqi { background: #fff; }
+
+  /* ── KID PANELS ── */
+  .kid-panel {
+    display: none; flex-direction: column; align-items: center;
+    width: 100%; padding: 20px 16px 20px;
+    animation: slidein 0.35s cubic-bezier(.36,1.1,.64,1) both;
+  }
+  .kid-panel.active { display: flex; }
+  @keyframes slidein { from{opacity:0;transform:translateY(18px) scale(0.97);} to{opacity:1;transform:translateY(0) scale(1);} }
+
+  /* Kid title */
+  .kid-title {
+    font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1.2;
+    text-shadow: 3px 3px 0 #ffffffaa; margin-bottom: 4px;
+    cursor: pointer;
+  }
+  .kid-title.lulu { color: var(--lulu-dark); }
+  .kid-title.qiqi { color: var(--qiqi-dark); }
+  .kid-sub { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+  .kid-sub.lulu { color: var(--lulu); }
+  .kid-sub.qiqi { color: var(--qiqi); }
+
+  /* Counter */
+  .counter-card {
+    position:relative;z-index:1;
+    border-radius:50px;padding:14px 32px;margin-bottom:12px;
+    display:flex;align-items:center;gap:14px;
+    animation:bouncein 0.6s cubic-bezier(.36,1.56,.64,1) both;
+    width:100%;max-width:520px;justify-content:center;
+  }
+  .counter-card.lulu { background:linear-gradient(120deg,#fce4ec,#f8bbd0); border:3px solid var(--lulu); box-shadow:0 6px 24px rgba(240,98,146,0.25); }
+  .counter-card.qiqi { background:linear-gradient(120deg,#e0f7fa,#b2ebf2); border:3px solid var(--qiqi); box-shadow:0 6px 24px rgba(38,198,218,0.25); }
+  .counter-star-icon{font-size:2.2rem;animation:spin-star 3s linear infinite;display:inline-block;}
+  @keyframes spin-star{0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.18) rotate(15deg);}}
+  .counter-text{font-size:1.2rem;font-weight:900;}
+  .counter-text.lulu{color:#880e4f;}
+  .counter-text.qiqi{color:#006064;}
+  .counter-num{font-size:2rem;font-weight:900;display:inline-block;}
+  .counter-num.lulu{color:var(--lulu);text-shadow:0 2px 8px rgba(240,98,146,0.4);}
+  .counter-num.qiqi{color:var(--qiqi);text-shadow:0 2px 8px rgba(38,198,218,0.4);}
+  .counter-num.bump{animation:bump 0.4s cubic-bezier(.36,1.56,.64,1);}
+  @keyframes bump{0%{transform:scale(1);}50%{transform:scale(1.6);}100%{transform:scale(1);}}
+
+  /* Bank */
+  .bank-card {
+    position:relative;z-index:1;
+    border-radius:30px;padding:12px 24px;margin-bottom:12px;
+    text-align:center;width:100%;max-width:520px;
+    animation:bouncein 0.6s cubic-bezier(.36,1.56,.64,1) 0.1s both;
+  }
+  .bank-card.lulu{background:linear-gradient(120deg,#fce4ec,var(--lulu-mid));border:3px solid var(--lulu);box-shadow:0 4px 16px rgba(240,98,146,0.2);}
+  .bank-card.qiqi{background:linear-gradient(120deg,var(--qiqi-light),var(--qiqi-mid));border:3px solid var(--qiqi);box-shadow:0 4px 16px rgba(38,198,218,0.2);}
+  .bank-title{font-size:1.1rem;font-weight:900;margin-bottom:6px;letter-spacing:1px;cursor:pointer;}
+  .bank-title.lulu{color:#880e4f;}
+  .bank-title.qiqi{color:#006064;}
+  .bank-stats{font-size:1.05rem;font-weight:800;display:flex;justify-content:space-around;}
+  .bank-stats.lulu{color:#c2185b;} .bank-stats.qiqi{color:#00838f;}
+  .bank-stats b{font-size:1.5rem;color:#d32f2f;margin:0 4px;}
+
+  /* Date */
+  .date-badge{position:relative;z-index:1;font-size:0.92rem;color:var(--text-mid);font-weight:800;margin-bottom:8px;background:#ffffffaa;border-radius:20px;padding:4px 18px;}
+
+  /* Super card */
+  .super-card{
+    position:relative;z-index:1;border-radius:30px;padding:16px 20px;margin-bottom:12px;
+    border:3px solid #ff9800;background:linear-gradient(120deg,#fff8e1,#ffe0b2);
+    box-shadow:0 6px 20px rgba(255,152,0,0.22);width:100%;max-width:520px;
+    animation:bouncein 0.5s cubic-bezier(.36,1.56,.64,1) both;
+  }
+  .super-title{font-size:1.15rem;font-weight:900;color:#e65100;margin-bottom:12px;text-align:center;letter-spacing:1px;}
+  .super-list{display:flex;flex-direction:column;gap:10px;}
+  .super-item{display:flex;align-items:center;gap:12px;background:#ffffffcc;padding:10px 14px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);cursor:pointer;touch-action:manipulation;}
+  .super-checkbox{width:32px;height:32px;border-radius:8px;border:3px solid #ff9800;background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all 0.3s;}
+  .super-checkbox.checked{background:#ffb74d;border-color:#f57c00;color:#fff;animation:popin 0.3s ease;cursor:default;}
+  @keyframes popin{0%{transform:scale(0.4) rotate(-8deg);opacity:0;}70%{transform:scale(1.08) rotate(2deg);opacity:1;}100%{transform:scale(1) rotate(0deg);opacity:1;}}
+  .super-text{font-size:1.05rem;font-weight:800;color:#bf360c;line-height:1.3;flex:1;}
+  .super-points{font-size:0.85rem;font-weight:900;color:#fff;background:#ef5350;padding:2px 8px;border-radius:12px;flex-shrink:0;}
+
+  /* Col header */
+  .col-header{position:relative;z-index:1;display:flex;align-items:center;width:100%;max-width:520px;padding:0 16px 4px;}
+  .col-header-spacer{flex:1;}
+  .col-header-labels{display:flex;gap:10px;}
+  .col-label{width:56px;text-align:center;font-size:0.78rem;font-weight:900;color:var(--text-mid);letter-spacing:0.3px;}
+
+  /* Habit list */
+  .habits-list{position:relative;z-index:1;width:100%;max-width:520px;display:flex;flex-direction:column;gap:12px;}
+  .habit-card{
+    background:var(--card-bg);border-radius:var(--radius);
+    padding:13px 16px;display:flex;align-items:center;gap:11px;
+    box-shadow:var(--shadow);border:3px solid transparent;
+    transition:border-color 0.3s,background 0.4s;
+    animation:bouncein 0.5s cubic-bezier(.36,1.56,.64,1) both;
+  }
+  .habit-card.done  {background:linear-gradient(120deg,#fffde7ee,#e8f5e9ee);border-color:var(--gold) !important;}
+  .habit-card.missed{background:linear-gradient(120deg,#fff5f5ee,#ffe8e8ee);border-color:#ffaaaa !important;}
+
+  /* Lulu borders */
+  #lulu-panel .habit-card:nth-child(1){animation-delay:.05s;border-color:#f8bbd0;}
+  #lulu-panel .habit-card:nth-child(2){animation-delay:.10s;border-color:#e1bee7;}
+  #lulu-panel .habit-card:nth-child(3){animation-delay:.15s;border-color:#f8bbd0;}
+  #lulu-panel .habit-card:nth-child(4){animation-delay:.20s;border-color:#e1bee7;}
+  #lulu-panel .habit-card:nth-child(5){animation-delay:.25s;border-color:#f8bbd0;}
+  #lulu-panel .habit-card:nth-child(6){animation-delay:.30s;border-color:#ffd6e7;}
+  #lulu-panel .habit-card:nth-child(7){animation-delay:.35s;border-color:#e1bee7;}
+  #lulu-panel .habit-card:nth-child(8){animation-delay:.40s;border-color:#f8bbd0;}
+  #lulu-panel .habit-card:nth-child(9){animation-delay:.45s;border-color:#ffd6e7;}
+
+  /* Qiqi borders */
+  #qiqi-panel .habit-card:nth-child(1){animation-delay:.05s;border-color:#b2ebf2;}
+  #qiqi-panel .habit-card:nth-child(2){animation-delay:.10s;border-color:#c8f5c8;}
+  #qiqi-panel .habit-card:nth-child(3){animation-delay:.15s;border-color:#b2ebf2;}
+  #qiqi-panel .habit-card:nth-child(4){animation-delay:.20s;border-color:#b2dfdb;}
+  #qiqi-panel .habit-card:nth-child(5){animation-delay:.25s;border-color:#b3e5fc;}
+  #qiqi-panel .habit-card:nth-child(6){animation-delay:.30s;border-color:#c5e1a5;}
+  #qiqi-panel .habit-card:nth-child(7){animation-delay:.35s;border-color:#b2ebf2;}
+  #qiqi-panel .habit-card:nth-child(8){animation-delay:.40s;border-color:#c8f5c8;}
+  #qiqi-panel .habit-card:nth-child(9){animation-delay:.45s;border-color:#b2dfdb;}
+
+  @keyframes bouncein{0%{opacity:0;transform:scale(0.7) translateY(20px);}100%{opacity:1;transform:scale(1) translateY(0);}}
+
+  .habit-num{width:26px;height:26px;border-radius:50%;font-size:0.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+  .habit-num.lulu{background:linear-gradient(135deg,#f8bbd0,#e1bee7);color:#880e4f;}
+  .habit-num.qiqi{background:linear-gradient(135deg,#b2ebf2,#c8f5c8);color:#006064;}
+  .habit-emoji{font-size:1.9rem;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
+  .habit-label{flex:1;font-size:1.05rem;font-weight:800;color:var(--text-dark);line-height:1.3;}
+
+  /* Buttons */
+  .btn-group{display:flex;gap:10px;flex-shrink:0;align-items:center;}
+  .action-btn{
+    width:56px;height:56px;border-radius:50%;border:3px solid #ddd;background:#f5f5ff;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;
+    transition:all 0.3s cubic-bezier(.36,1.56,.64,1);box-shadow:0 3px 10px rgba(0,0,0,0.07);
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+    user-select:none;-webkit-user-select:none;outline:none;-webkit-appearance:none;
+  }
+  .action-btn:active{transform:scale(0.9);}
+  .check-btn:hover:not(.checked):not([disabled]){border-color:var(--gold);background:#fffde7;transform:scale(1.1);}
+  .check-btn.checked{
+    border-color:var(--gold);background:radial-gradient(circle,#fff9c4,#ffe082);
+    box-shadow:0 0 0 5px #ffd60033,0 4px 16px rgba(255,214,0,0.4);
+    animation:star-appear 0.5s cubic-bezier(.36,1.56,.64,1) both;cursor:default;
+  }
+  @keyframes star-appear{0%{transform:scale(0) rotate(-30deg);}60%{transform:scale(1.3) rotate(10deg);}100%{transform:scale(1) rotate(0deg);}}
+  .star-inner{font-size:1.7rem;animation:twinkle 1.4s ease-in-out infinite;display:inline-block;}
+  @keyframes twinkle{0%,100%{transform:scale(1) rotate(0deg);filter:brightness(1);}40%{transform:scale(1.25) rotate(15deg);filter:brightness(1.3) drop-shadow(0 0 8px #ffd600);}70%{transform:scale(0.92) rotate(-8deg);filter:brightness(1);}}
+  .cross-btn{border-color:#ffcccc;background:#fff5f5;}
+  .cross-btn:hover:not(.crossed):not([disabled]){border-color:#ff9999;background:#ffe8e8;transform:scale(1.1);}
+  .cross-btn.crossed{
+    border-color:#ff7070;background:radial-gradient(circle,#ffe0e0,#ffcccc);
+    box-shadow:0 0 0 5px #ff999933,0 4px 14px rgba(255,100,100,0.3);
+    animation:cross-appear 0.4s cubic-bezier(.36,1.56,.64,1) both;cursor:default;
+  }
+  @keyframes cross-appear{0%{transform:scale(0) rotate(30deg);}60%{transform:scale(1.25) rotate(-8deg);}100%{transform:scale(1) rotate(0deg);}}
+  .cross-inner{font-size:1.5rem;display:inline-block;}
+
+  /* All done */
+  .all-done-banner{
+    display:none;position:relative;z-index:1;margin-top:16px;
+    border:3px solid var(--gold);border-radius:24px;padding:16px 22px;
+    text-align:center;font-size:1.15rem;font-weight:900;color:#b8860b;
+    background:linear-gradient(120deg,#fffde7,#e8f5e9);
+    box-shadow:0 4px 20px rgba(255,214,0,0.2);width:100%;max-width:520px;
+    animation:bouncein 0.6s cubic-bezier(.36,1.56,.64,1) both;
+  }
+  .all-done-banner.visible{display:block;}
+
+  /* Reset */
+  .reset-btn{
+    position:relative;z-index:1;margin-top:28px;
+    background:#ffffffbb;color:#b0a0c8;border:2.5px dashed #c8b8e8;
+    border-radius:50px;padding:10px 28px;font-size:0.9rem;font-weight:800;
+    font-family:inherit;cursor:pointer;transition:all 0.2s;letter-spacing:1px;
+    touch-action:manipulation;-webkit-appearance:none;
+  }
+  .reset-btn:hover{background:#fff;color:#9b7fd4;border-color:#9b7fd4;}
+
+  /* Toast */
+  .toast-overlay{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;background:rgba(180,230,255,0.22);backdrop-filter:blur(3px);}
+  .toast-overlay.show{display:flex;animation:fadein 0.2s ease;}
+  @keyframes fadein{from{opacity:0;}to{opacity:1;}}
+  .toast-box{
+    border-radius:36px;border:5px solid var(--gold);padding:30px 40px 26px;text-align:center;
+    background:linear-gradient(135deg,#fffde7,#fff9c4,#e8f5e9);
+    box-shadow:0 20px 60px rgba(255,214,0,0.3),0 4px 20px rgba(0,0,0,0.1);
+    animation:popin 0.5s cubic-bezier(.36,1.56,.64,1) both;max-width:320px;width:90%;
+  }
+  .toast-box.red{background:linear-gradient(135deg,#fff5f5,#ffe0e0,#fff0f8);border-color:#ff9999;}
+  .toast-stars{font-size:2.2rem;margin-bottom:10px;display:block;animation:starRow 1s ease-in-out infinite;}
+  @keyframes starRow{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .toast-msg{font-size:1.8rem;font-weight:900;color:var(--text-dark);text-shadow:2px 2px 0 #ffffffaa;}
+  .toast-sub{margin-top:8px;font-size:0.98rem;color:var(--text-mid);font-weight:700;line-height:1.4;}
+  .toast-close{
+    margin-top:16px;border:none;border-radius:50px;padding:11px 32px;
+    font-size:1.05rem;font-weight:800;font-family:inherit;cursor:pointer;
+    background:linear-gradient(120deg,#6bcb77,#4caf50);color:#fff;
+    box-shadow:0 4px 14px rgba(76,175,80,0.35);transition:transform 0.2s;
+    touch-action:manipulation;
+  }
+  .toast-close:hover{transform:scale(1.07);}
+  .toast-close.red-btn{background:linear-gradient(120deg,#ff9999,#ff6b6b);box-shadow:0 4px 14px rgba(255,100,100,0.35);}
+
+  /* Confetti */
+  .confetti-piece{position:fixed;top:-10px;border-radius:50%;pointer-events:none;z-index:200;animation:confetti-fall linear both;}
+  @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1;}80%{opacity:1;}100%{transform:translateY(110vh) rotate(720deg) scale(0.5);opacity:0;}}
+
+  /* Edit modal */
+  .edit-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
+  .edit-input-emoji{width:42px;text-align:center;font-size:1.3rem;border-radius:8px;border:2px solid #ccc;background:#fff;outline:none;padding:4px;}
+  .edit-input-text{flex:1;padding:6px 10px;font-size:0.95rem;border-radius:8px;border:2px solid #ccc;font-family:inherit;font-weight:800;color:var(--text-dark);background:#fff;outline:none;}
+  .edit-input-emoji:focus,.edit-input-text:focus{border-color:var(--gold);}
+  .edit-section-title{font-size:1rem;font-weight:900;margin:14px 0 6px;text-align:left;}
+</style>
+</head>
+<body class="tab-lulu">
+
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+<div class="bg-star" style="top:8%;left:8%;animation-delay:0s">⭐</div>
+<div class="bg-star" style="top:15%;right:10%;animation-delay:1s">🌟</div>
+<div class="bg-star" style="top:55%;left:4%;animation-delay:2s">✨</div>
+<div class="bg-star" style="top:75%;right:6%;animation-delay:0.5s">⭐</div>
+<div class="bg-star" style="top:40%;right:3%;animation-delay:3s">🌟</div>
+
+<!-- ── TAB BAR ── -->
+<div class="tab-bar" style="position:relative;">
+  <button class="tab-btn lulu active" id="tab-lulu">
+    🌸 Lulu
+    <span class="tab-score" id="tab-lulu-score">⭐ 0 颗</span>
+  </button>
+  <button class="tab-btn qiqi inactive" id="tab-qiqi">
+    🐬 Qiqi
+    <span class="tab-score" id="tab-qiqi-score">⭐ 0 颗</span>
+  </button>
+</div>
+
+<!-- ══ LULU PANEL ══ -->
+<div class="kid-panel active" id="lulu-panel">
+  <div style="text-align:center;margin-bottom:6px;">
+    <div class="kid-title lulu" id="lulu-mainTitle">🌸 Lulu 的好习惯打卡 🌸</div>
+    <div class="kid-sub lulu">每天坚持，我是最棒的小朋友！</div>
+  </div>
+
+  <div class="counter-card lulu">
+    <span class="counter-star-icon">⭐</span>
+    <div class="counter-text lulu">今日星星：<span class="counter-num lulu" id="lulu-starCount">0</span> 颗</div>
+  </div>
+
+  <div class="bank-card lulu">
+    <div class="bank-title lulu" id="lulu-bankTitle">🏦 本月零花钱银行 🏦</div>
+    <div class="bank-stats lulu">
+      <span>累计积分:<b id="lulu-monthScore">0</b></span>
+      <span>预计兑换:<b id="lulu-monthMoney">0.0</b>元</span>
+    </div>
+  </div>
+
+  <div class="date-badge" id="lulu-dateBadge">📅 今天是：</div>
+
+  <div class="super-card">
+    <div class="super-title">🏆 超级挑战奖励 🏆</div>
+    <div class="super-list" id="lulu-superList"></div>
+  </div>
+
+  <div class="col-header">
+    <div class="col-header-spacer"></div>
+    <div class="col-header-labels">
+      <div class="col-label">✅ 完成</div>
+      <div class="col-label">❌ 未完成</div>
+    </div>
+  </div>
+
+  <div class="habits-list" id="lulu-habitsList"></div>
+
+  <div class="all-done-banner" id="lulu-allDone">
+    🎉 太厉害了！Lulu 今天全部完成啦！🏆<br>
+    <span style="font-size:1.6rem">🌟🌟🌟🌟🌟🌟🌟🌟🌟</span>
+  </div>
+  <button class="reset-btn" id="lulu-resetBtn">🔄 重置 Lulu 今日打卡</button>
+</div>
+
+<!-- ══ QIQI PANEL ══ -->
+<div class="kid-panel" id="qiqi-panel">
+  <div style="text-align:center;margin-bottom:6px;">
+    <div class="kid-title qiqi" id="qiqi-mainTitle">🐬 Qiqi 的好习惯打卡 🐬</div>
+    <div class="kid-sub qiqi">每天坚持，我是最棒的小朋友！</div>
+  </div>
+
+  <div class="counter-card qiqi">
+    <span class="counter-star-icon">⭐</span>
+    <div class="counter-text qiqi">今日星星：<span class="counter-num qiqi" id="qiqi-starCount">0</span> 颗</div>
+  </div>
+
+  <div class="bank-card qiqi">
+    <div class="bank-title qiqi" id="qiqi-bankTitle">🏦 本月零花钱银行 🏦</div>
+    <div class="bank-stats qiqi">
+      <span>累计积分:<b id="qiqi-monthScore">0</b></span>
+      <span>预计兑换:<b id="qiqi-monthMoney">0.0</b>元</span>
+    </div>
+  </div>
+
+  <div class="date-badge" id="qiqi-dateBadge">📅 今天是：</div>
+
+  <div class="super-card">
+    <div class="super-title">🏆 超级挑战奖励 🏆</div>
+    <div class="super-list" id="qiqi-superList"></div>
+  </div>
+
+  <div class="col-header">
+    <div class="col-header-spacer"></div>
+    <div class="col-header-labels">
+      <div class="col-label">✅ 完成</div>
+      <div class="col-label">❌ 未完成</div>
+    </div>
+  </div>
+
+  <div class="habits-list" id="qiqi-habitsList"></div>
+
+  <div class="all-done-banner" id="qiqi-allDone">
+    🎉 太厉害了！Qiqi 今天全部完成啦！🏆<br>
+    <span style="font-size:1.6rem">🌟🌟🌟🌟🌟🌟🌟🌟🌟</span>
+  </div>
+  <button class="reset-btn" id="qiqi-resetBtn">🔄 重置 Qiqi 今日打卡</button>
+</div>
+
+<!-- Toast Success -->
+<div class="toast-overlay" id="toastSuccess">
+  <div class="toast-box">
+    <span class="toast-stars">🌟✨⭐✨🌟</span>
+    <div class="toast-msg" id="toastSuccessName">真棒！</div>
+    <div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div>
+    <button class="toast-close" id="closeSuccess">开心！</button>
+  </div>
+</div>
+
+<!-- Toast Encourage -->
+<div class="toast-overlay" id="toastEncourage">
+  <div class="toast-box red">
+    <span class="toast-stars" style="animation:none">💪🌈💪</span>
+    <div class="toast-msg" id="toastEncourageName">继续努力！</div>
+    <div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div>
+    <button class="toast-close red-btn" id="closeEncourage">加油！</button>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="toast-overlay" id="editOverlay">
+  <div class="toast-box" style="padding:22px 18px;max-width:380px;">
+    <h3 style="color:var(--text-dark);margin-bottom:10px;font-size:1.3rem;">🛠️ 家长控制台</h3>
+    <div style="max-height:58vh;overflow-y:auto;padding-right:4px;text-align:left;">
+      <div class="edit-section-title" style="color:#c2185b;">🌸 Lulu 超级挑战</div>
+      <div id="editLuluSuperList"></div>
+      <div class="edit-section-title" style="color:#880e4f;">🌸 Lulu 日常习惯</div>
+      <div id="editLuluList"></div>
+      <div class="edit-section-title" style="color:#00838f;">🐬 Qiqi 超级挑战</div>
+      <div id="editQiqiSuperList"></div>
+      <div class="edit-section-title" style="color:#006064;">🐬 Qiqi 日常习惯</div>
+      <div id="editQiqiList"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;">
+      <button class="toast-close red-btn" id="cancelEditBtn" style="margin-top:0;padding:10px 22px;">取消</button>
+      <button class="toast-close" id="saveEditBtn" style="margin-top:0;padding:10px 22px;">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  const TOTAL_HABITS = 9;
+  const TOTAL_SUPERS = 3;
+  const KIDS = ['lulu', 'qiqi'];
+  const KID_NAMES = { lulu: 'Lulu', qiqi: 'Qiqi' };
+
+  const defaultHabits = {
+    lulu: [
+      {emoji:'🏫',text:'按时到校'},{emoji:'🦷',text:'刷牙大于1分钟'},{emoji:'🛏️',text:'自己叠被子'},
+      {emoji:'📝',text:'自主写作业'},{emoji:'🪑',text:'坐姿端正'},{emoji:'🍽️',text:'光盘行动'},
+      {emoji:'🧹',text:'做家务'},{emoji:'🗂️',text:'整理物品'},{emoji:'👧',text:'照顾妹妹'}
+    ],
+    qiqi: [
+      {emoji:'⏰',text:'按时起床'},{emoji:'🦷',text:'刷牙洗脸'},{emoji:'🛏️',text:'自己叠被子'},
+      {emoji:'📚',text:'认真读书'},{emoji:'🏃',text:'户外运动'},{emoji:'🍽️',text:'光盘行动'},
+      {emoji:'🧸',text:'整理玩具'},{emoji:'😊',text:'礼貌待人'},{emoji:'💤',text:'按时睡觉'}
+    ]
+  };
+
+  const defaultSupers = {
+    lulu: [{text:'周末户外徒步'},{text:'参加社区公益'},{text:'去球场打网球'}],
+    qiqi: [{text:'独立完成一道菜'},{text:'练习一首新歌'},{text:'帮家里大扫除'}]
+  };
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  const S = {};
+  KIDS.forEach(k => { S[k] = { habits:[], supers:[], score:0, currentHabits:[], currentSupers:[] }; });
+
+  const V = 'v1';
+  function sk(k, t) { return `tab_${k}_${t}_${V}`; }
+  function todayStr() { const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function monthStr()  { const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1); }
+
+  // ── Load ───────────────────────────────────────────────────────────────────
+  function loadAll() {
+    KIDS.forEach(k => {
+      try { const d=localStorage.getItem(sk(k,'hcfg')); S[k].currentHabits=d?JSON.parse(d):[...defaultHabits[k]]; } catch(e){ S[k].currentHabits=[...defaultHabits[k]]; }
+      try { const d=localStorage.getItem(sk(k,'scfg')); S[k].currentSupers=d?JSON.parse(d):[...defaultSupers[k]]; } catch(e){ S[k].currentSupers=[...defaultSupers[k]]; }
+
+      // 日常习惯 — 每天清零
+      try {
+        if (localStorage.getItem(sk(k,'date'))!==todayStr()) {
+          S[k].habits=Array(TOTAL_HABITS).fill(null);
+          // 注意：不在这里重置 supers，超级挑战按月清零
+          localStorage.setItem(sk(k,'date'),todayStr());
+          localStorage.setItem(sk(k,'hs'),JSON.stringify(S[k].habits));
+        } else {
+          const hs=localStorage.getItem(sk(k,'hs')); S[k].habits=hs?JSON.parse(hs):Array(TOTAL_HABITS).fill(null);
+        }
+      } catch(e){ S[k].habits=Array(TOTAL_HABITS).fill(null); }
+
+      // 超级挑战 & 积分 — 每月清零
+      try {
+        if (localStorage.getItem(sk(k,'month'))!==monthStr()) {
+          // 新的一个月：积分、超级挑战同步清零
+          localStorage.setItem(sk(k,'month'),monthStr());
+          localStorage.setItem(sk(k,'score'),'0');
+          localStorage.setItem(sk(k,'ss'),JSON.stringify(Array(TOTAL_SUPERS).fill(false)));
+          S[k].score=0;
+          S[k].supers=Array(TOTAL_SUPERS).fill(false);
+        } else {
+          S[k].score=parseInt(localStorage.getItem(sk(k,'score')))||0;
+          const ss=localStorage.getItem(sk(k,'ss')); S[k].supers=ss?JSON.parse(ss):Array(TOTAL_SUPERS).fill(false);
+        }
+      } catch(e){ S[k].score=0; S[k].supers=Array(TOTAL_SUPERS).fill(false); }
+    });
+  }
+
+  function saveKidState(k) {
+    try {
+      // 只保存日常习惯（超级挑战在 doSuperCheck 里单独保存，月底才清零）
+      localStorage.setItem(sk(k,'hs'),JSON.stringify(S[k].habits));
+      localStorage.setItem(sk(k,'date'),todayStr());
+    } catch(e){}
+  }
+  function saveKidSupers(k) {
+    try { localStorage.setItem(sk(k,'ss'),JSON.stringify(S[k].supers)); } catch(e){}
+  }
+  function saveKidScore(k) { try{ localStorage.setItem(sk(k,'score'),S[k].score.toString()); }catch(e){} }
+
+  // ── Render lists ───────────────────────────────────────────────────────────
+  function renderLists() {
+    KIDS.forEach(k => {
+      const hl=document.getElementById(`${k}-habitsList`);
+      hl.innerHTML='';
+      for(let i=0;i<TOTAL_HABITS;i++){
+        hl.innerHTML+=`<div class="habit-card" data-kid="${k}" data-id="${i}">
+          <span class="habit-num ${k}">${i+1}</span>
+          <span class="habit-emoji">${S[k].currentHabits[i].emoji}</span>
+          <span class="habit-label">${S[k].currentHabits[i].text}</span>
+          <div class="btn-group">
+            <button class="action-btn check-btn" id="${k}-check-${i}" aria-label="完成"></button>
+            <button class="action-btn cross-btn" id="${k}-cross-${i}" aria-label="未完成"></button>
+          </div>
+        </div>`;
+      }
+      const sl=document.getElementById(`${k}-superList`);
+      sl.innerHTML='';
+      for(let j=0;j<TOTAL_SUPERS;j++){
+        sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}">
+          <div class="super-checkbox" id="${k}-superCheck-${j}"></div>
+          <span class="super-text">${S[k].currentSupers[j].text}</span>
+          <span class="super-points">+50分</span>
+        </div>`;
+      }
+    });
+    bindEvents();
+  }
+
+  // ── Render state ───────────────────────────────────────────────────────────
+  function renderKid(k) {
+    let count=0;
+    for(let i=0;i<TOTAL_HABITS;i++){
+      const chk=document.getElementById(`${k}-check-${i}`);
+      const crs=document.getElementById(`${k}-cross-${i}`);
+      const card=document.querySelector(`.habit-card[data-kid="${k}"][data-id="${i}"]`);
+      if(!chk||!card) continue;
+      chk.classList.remove('checked'); chk.innerHTML=''; chk.disabled=false; chk.style.opacity='';
+      crs.classList.remove('crossed'); crs.innerHTML=''; crs.disabled=false; crs.style.opacity='';
+      card.classList.remove('done','missed');
+      if(S[k].habits[i]===true){
+        chk.classList.add('checked'); chk.innerHTML='<span class="star-inner">⭐</span>';
+        chk.disabled=true; crs.disabled=true; crs.style.opacity='0.3'; card.classList.add('done'); count++;
+      } else if(S[k].habits[i]===false){
+        crs.classList.add('crossed'); crs.innerHTML='<span class="cross-inner">❌</span>';
+        crs.disabled=true; chk.disabled=true; chk.style.opacity='0.3'; card.classList.add('missed');
+      }
+    }
+    const sc=document.getElementById(`${k}-starCount`);
+    if(sc){ sc.classList.remove('bump'); void sc.offsetWidth; sc.classList.add('bump'); sc.textContent=count; }
+
+    // Tab score badge
+    const tsEl=document.getElementById(`tab-${k}-score`);
+    if(tsEl) tsEl.textContent=`⭐ ${count} 颗`;
+
+    for(let j=0;j<TOTAL_SUPERS;j++){
+      const sb=document.getElementById(`${k}-superCheck-${j}`);
+      if(!sb) continue;
+      if(S[k].supers[j]){ sb.classList.add('checked'); sb.innerHTML='✔'; }
+      else{ sb.classList.remove('checked'); sb.innerHTML=''; }
+    }
+    const allDone=document.getElementById(`${k}-allDone`);
+    if(allDone) allDone.classList.toggle('visible', count===TOTAL_HABITS);
+    updateBankUI(k);
+  }
+
+  function updateBankUI(k){
+    const se=document.getElementById(`${k}-monthScore`), me=document.getElementById(`${k}-monthMoney`);
+    if(se) se.textContent=S[k].score;
+    if(me) me.textContent=(S[k].score/10).toFixed(1);
+  }
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+  function switchTab(k) {
+    KIDS.forEach(kid => {
+      document.getElementById(`tab-${kid}`).classList.toggle('active', kid===k);
+      document.getElementById(`tab-${kid}`).classList.toggle('inactive', kid!==k);
+      document.getElementById(`${kid}-panel`).classList.toggle('active', kid===k);
+    });
+    document.body.className = `tab-${k}`;
+  }
+
+  document.getElementById('tab-lulu').addEventListener('click', ()=>switchTab('lulu'));
+  document.getElementById('tab-qiqi').addEventListener('click', ()=>switchTab('qiqi'));
+
+  // ── Audio ──────────────────────────────────────────────────────────────────
+  let AC=null;
+  function getAC(){
+    if(!AC){ try{ window.AudioContext=window.AudioContext||window.webkitAudioContext; if(window.AudioContext) AC=new AudioContext(); }catch(e){return null;} }
+    if(AC&&AC.state==='suspended'){ try{AC.resume();}catch(e){} }
+    return AC;
+  }
+  function playSuccess(isBig){
+    const ctx=getAC(); if(!ctx) return;
+    try{
+      const now=ctx.currentTime, dur=isBig?2.5:1.4;
+      const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+      const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      const noise=ctx.createBufferSource(); noise.buffer=buf;
+      const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(900,now); bp.frequency.linearRampToValueAtTime(isBig?2400:1600,now+dur*0.6); bp.Q.value=0.8;
+      const ng=ctx.createGain(); ng.gain.setValueAtTime(0,now); ng.gain.linearRampToValueAtTime(0.5,now+0.08); ng.gain.setValueAtTime(0.5,now+dur*0.55); ng.gain.exponentialRampToValueAtTime(0.001,now+dur);
+      noise.connect(bp); bp.connect(ng); ng.connect(ctx.destination); noise.start(now); noise.stop(now+dur);
+      [800,1100,1400].forEach((f,i)=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.type='sine';
+        const t=now+i*0.13; o.frequency.setValueAtTime(f*0.85,t); o.frequency.linearRampToValueAtTime(f*1.15,t+0.25);
+        g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.18,t+0.04); g.gain.exponentialRampToValueAtTime(0.001,t+0.45); o.start(t); o.stop(t+0.5); });
+    }catch(e){}
+  }
+  function playCross(){
+    const ctx=getAC(); if(!ctx) return;
+    try{
+      const now=ctx.currentTime, dur=1.0;
+      const buf=ctx.createBuffer(1,ctx.sampleRate*dur,ctx.sampleRate);
+      const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+      const noise=ctx.createBufferSource(); noise.buffer=buf;
+      const bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(600,now); bp.frequency.exponentialRampToValueAtTime(220,now+dur); bp.Q.value=1.2;
+      const ng=ctx.createGain(); ng.gain.setValueAtTime(0,now); ng.gain.linearRampToValueAtTime(0.4,now+0.12); ng.gain.exponentialRampToValueAtTime(0.001,now+dur);
+      noise.connect(bp); bp.connect(ng); ng.connect(ctx.destination); noise.start(now); noise.stop(now+dur);
+      const osc=ctx.createOscillator(),og=ctx.createGain(); osc.connect(og); og.connect(ctx.destination); osc.type='sine';
+      osc.frequency.setValueAtTime(380,now+0.05); osc.frequency.exponentialRampToValueAtTime(160,now+0.9);
+      og.gain.setValueAtTime(0,now); og.gain.linearRampToValueAtTime(0.18,now+0.1); og.gain.exponentialRampToValueAtTime(0.001,now+0.95);
+      osc.start(now); osc.stop(now+1.0);
+    }catch(e){}
+  }
+
+  // ── Math problem ───────────────────────────────────────────────────────────
+  function mathProblem(){
+    if(Math.random()>0.5){ const a=Math.floor(Math.random()*90)+1, b=Math.floor(Math.random()*(100-a))+1; return{q:`${a} + ${b} = ?`,ans:(a+b).toString()}; }
+    else{ const a=Math.floor(Math.random()*90)+10, b=Math.floor(Math.random()*a); return{q:`${a} - ${b} = ?`,ans:(a-b).toString()}; }
+  }
+
+  // ── Actions ────────────────────────────────────────────────────────────────
+  function doCheck(k,id){
+    if(S[k].habits[id]!==null) return;
+    S[k].habits[id]=true; S[k].score+=1; saveKidState(k); saveKidScore(k); renderKid(k);
+    const count=S[k].habits.filter(v=>v===true).length;
+    try{launchConfetti();}catch(e){}
+    try{playSuccess(count===TOTAL_HABITS);}catch(e){}
+    document.getElementById('toastSuccessName').textContent=`${KID_NAMES[k]} 真棒！`;
+    document.getElementById('toastSuccessSub').textContent=count===TOTAL_HABITS?`🎊 ${KID_NAMES[k]} 今天全部完成啦！超级棒！`:`已完成 ${count} / ${TOTAL_HABITS} 个好习惯 ✨`;
+    document.getElementById('toastSuccess').classList.add('show');
+  }
+
+  function doCross(k,id){
+    if(S[k].habits[id]!==null) return;
+    S[k].habits[id]=false; saveKidState(k); renderKid(k);
+    try{playCross();}catch(e){}
+    const missed=S[k].habits.filter(v=>v===false).length;
+    document.getElementById('toastEncourageName').textContent=`${KID_NAMES[k]} 继续努力！`;
+    document.getElementById('toastEncourageSub').textContent=missed===TOTAL_HABITS?'没关系，明天一起加油！💕':'还有机会完成其他好习惯，继续加油 💪';
+    document.getElementById('toastEncourage').classList.add('show');
+  }
+
+  function doSuperCheck(k,j){
+    if(S[k].supers[j]) return;
+    const p=mathProblem();
+    const input=prompt(`【防误触】${KID_NAMES[k]} 答对才能完成超级挑战：\n\n${p.q}`);
+    if(input===null) return;
+    if(input.trim()===p.ans){
+      S[k].supers[j]=true; S[k].score+=50; saveKidState(k); saveKidSupers(k); saveKidScore(k); renderKid(k);
+      try{launchConfetti();launchConfetti();}catch(e){}
+      try{playSuccess(true);}catch(e){}
+      document.getElementById('toastSuccessName').textContent=`${KID_NAMES[k]} 超厉害！`;
+      document.getElementById('toastSuccessSub').innerHTML=`算术全对！超级挑战 <b style="color:#ef5350;">+50分</b> 🎉`;
+      document.getElementById('toastSuccess').classList.add('show');
+    } else { alert('❌ 算错啦！再仔细算算~'); }
+  }
+
+  function doReset(k){
+    if(!confirm(`确定要重置 ${KID_NAMES[k]} 今天的打卡吗？\n⚠️ 今日日常积分会被扣除，但超级挑战本月内不重置。`)) return;
+    const earned=S[k].habits.filter(v=>v===true).length;
+    S[k].score=Math.max(0,S[k].score-earned);
+    S[k].habits=Array(TOTAL_HABITS).fill(null);
+    // 注意：不重置 S[k].supers，超级挑战月底才清零
+    saveKidState(k); saveKidScore(k); renderKid(k);
+  }
+
+  function launchConfetti(){
+    const colors=['#ffd600','#ff5252','#64ffda','#e040fb','#69f0ae','#ff6d00','#40c4ff'];
+    for(let i=0;i<30;i++){
+      const el=document.createElement('div'); el.className='confetti-piece'; const s=8+Math.random()*13;
+      el.style.cssText=`left:${10+Math.random()*80}%;width:${s}px;height:${s}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.2+Math.random()*1.4}s;animation-delay:${Math.random()*0.4}s;border-radius:${Math.random()>.5?'50%':'3px'};`;
+      document.body.appendChild(el); el.addEventListener('animationend',()=>el.remove());
+    }
+  }
+
+  function closeToast(id){ document.getElementById(id).classList.remove('show'); }
+
+  // ── Bind events ────────────────────────────────────────────────────────────
+  function bindEvents(){
+    KIDS.forEach(k=>{
+      for(let i=0;i<TOTAL_HABITS;i++){
+        const chk=document.getElementById(`${k}-check-${i}`);
+        const crs=document.getElementById(`${k}-cross-${i}`);
+        if(chk) chk.onclick=(e)=>{e.preventDefault();doCheck(k,i);};
+        if(crs) crs.onclick=(e)=>{e.preventDefault();doCross(k,i);};
+      }
+      for(let j=0;j<TOTAL_SUPERS;j++){
+        const sb=document.getElementById(`${k}-superBox-${j}`);
+        if(sb) sb.onclick=(e)=>{e.preventDefault();doSuperCheck(k,j);};
+      }
+      const rb=document.getElementById(`${k}-resetBtn`);
+      if(rb) rb.onclick=(e)=>{e.preventDefault();doReset(k);};
+    });
+  }
+
+  // Toast
+  document.getElementById('closeSuccess').onclick=(e)=>{e.preventDefault();closeToast('toastSuccess');};
+  document.getElementById('closeEncourage').onclick=(e)=>{e.preventDefault();closeToast('toastEncourage');};
+  document.getElementById('toastSuccess').onclick=()=>closeToast('toastSuccess');
+  document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
+  document.querySelector('#toastSuccess .toast-box').onclick=(e)=>e.stopPropagation();
+  document.querySelector('#toastEncourage .toast-box').onclick=(e)=>e.stopPropagation();
+
+  // ── Parent privileges ──────────────────────────────────────────────────────
+  KIDS.forEach(k=>{
+    let cnt=0,tmr=null;
+    const el=document.getElementById(`${k}-bankTitle`);
+    if(el) el.onclick=(e)=>{
+      e.stopPropagation(); cnt++; clearTimeout(tmr); tmr=setTimeout(()=>cnt=0,800);
+      if(cnt>=5){ cnt=0;
+        const input=prompt(`【家长特权】${KID_NAMES[k]} 补充积分（扣除输负数）：`,'0');
+        if(input!==null){ const pts=parseInt(input); if(!isNaN(pts)){ S[k].score=Math.max(0,S[k].score+pts); saveKidScore(k); updateBankUI(k); alert('✅ 积分修改成功！'); } else alert('❌ 请输入纯数字'); }
+      }
+    };
+  });
+
+  // Title 5-click → password → edit console
+  KIDS.forEach(k=>{
+    let cnt=0,tmr=null;
+    const el=document.getElementById(`${k}-mainTitle`);
+    if(el) el.onclick=(e)=>{
+      e.stopPropagation(); cnt++; clearTimeout(tmr); tmr=setTimeout(()=>cnt=0,800);
+      if(cnt>=5){ cnt=0;
+        const pwd=prompt('🔒 请输入家长密码：');
+        if(pwd==='7777') openEditModal(); else if(pwd!==null) alert('❌ 密码错误！');
+      }
+    };
+  });
+
+  function openEditModal(){
+    KIDS.forEach(k=>{
+      const cap=k.charAt(0).toUpperCase()+k.slice(1);
+      const hl=document.getElementById(`edit${cap}List`);
+      hl.innerHTML='';
+      S[k].currentHabits.forEach((h,i)=>{
+        hl.innerHTML+=`<div class="edit-row">
+          <span style="font-weight:900;color:#7b6fa0;width:16px;font-size:0.8rem;">${i+1}</span>
+          <input class="edit-input-emoji" id="edit-${k}-emoji-${i}" value="${h.emoji}">
+          <input class="edit-input-text" id="edit-${k}-text-${i}" value="${h.text}">
+        </div>`;
+      });
+      const sl=document.getElementById(`edit${cap}SuperList`);
+      sl.innerHTML='';
+      S[k].currentSupers.forEach((s,j)=>{
+        sl.innerHTML+=`<div class="edit-row">
+          <span style="font-weight:900;color:#e65100;width:16px;font-size:0.8rem;">S${j+1}</span>
+          <input class="edit-input-text" id="edit-${k}-super-${j}" value="${s.text}">
+        </div>`;
+      });
+    });
+    document.getElementById('editOverlay').classList.add('show');
+  }
+
+  document.getElementById('saveEditBtn').onclick=(e)=>{
+    e.preventDefault();
+    KIDS.forEach(k=>{
+      const nh=[],ns=[];
+      for(let i=0;i<TOTAL_HABITS;i++) nh.push({emoji:document.getElementById(`edit-${k}-emoji-${i}`).value||'✨',text:document.getElementById(`edit-${k}-text-${i}`).value||'未命名'});
+      for(let j=0;j<TOTAL_SUPERS;j++) ns.push({text:document.getElementById(`edit-${k}-super-${j}`).value||'未命名挑战'});
+      S[k].currentHabits=nh; S[k].currentSupers=ns;
+      try{ localStorage.setItem(sk(k,'hcfg'),JSON.stringify(nh)); localStorage.setItem(sk(k,'scfg'),JSON.stringify(ns)); }catch(e){}
+    });
+    renderLists(); KIDS.forEach(k=>renderKid(k));
+    document.getElementById('editOverlay').classList.remove('show');
+    alert('✅ 所有修改已保存！');
+  };
+  document.getElementById('cancelEditBtn').onclick=(e)=>{e.preventDefault();document.getElementById('editOverlay').classList.remove('show');};
+  document.getElementById('editOverlay').onclick=()=>document.getElementById('editOverlay').classList.remove('show');
+  document.querySelector('#editOverlay .toast-box').onclick=(e)=>e.stopPropagation();
+
+  // ── Date & auto-reset ──────────────────────────────────────────────────────
+  function renderDate(){
+    const d=new Date(), days=['日','一','二','三','四','五','六'];
+    const s=`📅 今天是：${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${days[d.getDay()]}`;
+    KIDS.forEach(k=>{ const el=document.getElementById(`${k}-dateBadge`); if(el) el.textContent=s; });
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  loadAll();
+  renderLists();
+  KIDS.forEach(k=>renderKid(k));
+  renderDate();
+
+  setInterval(()=>{
+    try{
+      KIDS.forEach(k=>{
+        // 日期变了 → 只重置日常习惯，超级挑战不动
+        if(localStorage.getItem(sk(k,'date'))!==todayStr()){
+          S[k].habits=Array(TOTAL_HABITS).fill(null);
+          saveKidState(k); renderKid(k);
+        }
+        // 月份变了 → 重置超级挑战 + 积分
+        if(localStorage.getItem(sk(k,'month'))!==monthStr()){
+          localStorage.setItem(sk(k,'month'),monthStr());
+          S[k].score=0; S[k].supers=Array(TOTAL_SUPERS).fill(false);
+          saveKidScore(k); saveKidSupers(k); renderKid(k);
+        }
+      });
+      renderDate();
+    }catch(e){}
+  },60000);
+
+});
+</script>
+</body>
+</html>
