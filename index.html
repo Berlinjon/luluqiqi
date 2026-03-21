@@ -134,18 +134,49 @@
   /* Bank */
   .bank-card {
     position:relative;z-index:1;
-    border-radius:30px;padding:12px 24px;margin-bottom:12px;
+    border-radius:30px;padding:14px 20px 12px;margin-bottom:12px;
     text-align:center;width:100%;max-width:520px;
     animation:bouncein 0.6s cubic-bezier(.36,1.56,.64,1) 0.1s both;
   }
   .bank-card.lulu{background:linear-gradient(120deg,#fce4ec,var(--lulu-mid));border:3px solid var(--lulu);box-shadow:0 4px 16px rgba(240,98,146,0.2);}
   .bank-card.qiqi{background:linear-gradient(120deg,var(--qiqi-light),var(--qiqi-mid));border:3px solid var(--qiqi);box-shadow:0 4px 16px rgba(38,198,218,0.2);}
-  .bank-title{font-size:1.1rem;font-weight:900;margin-bottom:6px;letter-spacing:1px;cursor:pointer;}
+  .bank-title{font-size:1.1rem;font-weight:900;margin-bottom:8px;letter-spacing:1px;cursor:pointer;}
   .bank-title.lulu{color:#880e4f;}
   .bank-title.qiqi{color:#006064;}
-  .bank-stats{font-size:1.05rem;font-weight:800;display:flex;justify-content:space-around;}
+  .bank-stats{font-size:1.05rem;font-weight:800;display:flex;justify-content:space-around;margin-bottom:10px;}
   .bank-stats.lulu{color:#c2185b;} .bank-stats.qiqi{color:#00838f;}
   .bank-stats b{font-size:1.5rem;color:#d32f2f;margin:0 4px;}
+
+  /* Wallet row inside bank card */
+  .wallet-row {
+    display:flex;align-items:center;justify-content:space-between;
+    background:#ffffffcc;border-radius:16px;padding:10px 16px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);gap:10px;
+  }
+  .wallet-left { display:flex;align-items:center;gap:10px;flex:1; }
+  .wallet-icon { font-size:1.8rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+  .wallet-info { text-align:left; }
+  .wallet-label { font-size:0.75rem;font-weight:800;color:var(--text-mid); }
+  .wallet-amount { font-size:1.5rem;font-weight:900;color:#2e7d32; }
+  .wallet-spend-btn {
+    background:linear-gradient(120deg,#ff9800,#f57c00);
+    color:#fff;border:none;border-radius:20px;
+    padding:7px 16px;font-size:0.82rem;font-weight:900;
+    font-family:inherit;cursor:pointer;
+    box-shadow:0 3px 10px rgba(255,152,0,0.35);
+    touch-action:manipulation;-webkit-appearance:none;
+    transition:transform 0.2s;flex-shrink:0;
+  }
+  .wallet-spend-btn:active{transform:scale(0.94);}
+  .wallet-deposit-btn {
+    flex-shrink:0; padding:8px 14px; border-radius:20px; border:none;
+    background:linear-gradient(120deg,#66bb6a,#43a047); color:#fff;
+    font-size:0.88rem; font-weight:900; font-family:inherit; cursor:pointer;
+    box-shadow:0 3px 10px rgba(67,160,71,0.35); transition:all 0.2s;
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+    -webkit-appearance:none; outline:none;
+  }
+  .wallet-deposit-btn:active{transform:scale(0.94);}
 
   /* Date */
   .date-badge{position:relative;z-index:1;font-size:0.92rem;color:var(--text-mid);font-weight:800;margin-bottom:8px;background:#ffffffaa;border-radius:20px;padding:4px 18px;}
@@ -315,11 +346,66 @@
 <!-- ── TAB BAR ── -->
 <div class="tab-bar" style="position:relative;">
   <button class="tab-btn lulu active" id="tab-lulu">
-    🌸 Lulu
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 马尾（左侧短翘） -->
+      <path d="M8 13 Q3 10 4 16 Q5 20 9 18" stroke="#ffccdd" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- 头发顶部 -->
+      <ellipse cx="18" cy="11" rx="9" ry="7" fill="#ff6b9d"/>
+      <!-- 刘海 -->
+      <path d="M10 13 Q12 9 18 10 Q24 9 26 13" fill="#ff6b9d"/>
+      <!-- 脸 -->
+      <ellipse cx="18" cy="17" rx="7.5" ry="7" fill="#ffe0cc"/>
+      <!-- 眼睛（大眼娃娃风） -->
+      <ellipse cx="15" cy="16" rx="1.6" ry="1.8" fill="#4a3f6b"/>
+      <ellipse cx="21" cy="16" rx="1.6" ry="1.8" fill="#4a3f6b"/>
+      <circle cx="15.6" cy="15.4" r="0.55" fill="white"/>
+      <circle cx="21.6" cy="15.4" r="0.55" fill="white"/>
+      <!-- 腮红 -->
+      <ellipse cx="12.5" cy="18.5" rx="2" ry="1.2" fill="#ffb3c6" opacity="0.7"/>
+      <ellipse cx="23.5" cy="18.5" rx="2" ry="1.2" fill="#ffb3c6" opacity="0.7"/>
+      <!-- 嘴巴 -->
+      <path d="M16 20 Q18 22 20 20" stroke="#ff6b9d" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <!-- 发绳蝴蝶结 -->
+      <path d="M8 13 Q6 11 8 10 Q10 9 9 12" fill="#ff4081"/>
+      <circle cx="8.5" cy="11.5" r="1" fill="#ff80ab"/>
+      <!-- 身体 -->
+      <path d="M11 24 Q10 30 14 31 L22 31 Q26 30 25 24 Q22 22 18 22 Q14 22 11 24Z" fill="#ff6b9d"/>
+      <!-- 领口装饰 -->
+      <path d="M15 24 L18 27 L21 24" stroke="white" stroke-width="1" fill="none" stroke-linecap="round"/>
+    </svg>
+    Lulu
     <span class="tab-score" id="tab-lulu-score">⭐ 0 颗</span>
   </button>
   <button class="tab-btn qiqi inactive" id="tab-qiqi">
-    🐬 Qiqi
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 马尾（右侧高扎长） -->
+      <path d="M27 10 Q33 8 32 15 Q31 20 27 19" stroke="#b2ebf2" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- 发绳 -->
+      <circle cx="27" cy="10" r="2" fill="#00bcd4"/>
+      <!-- 头发顶部 -->
+      <ellipse cx="18" cy="11" rx="9" ry="7" fill="#26c6da"/>
+      <!-- 刘海（齐刘海风） -->
+      <rect x="10" y="10" width="16" height="5" rx="2.5" fill="#00acc1"/>
+      <!-- 脸 -->
+      <ellipse cx="18" cy="17" rx="7.5" ry="7" fill="#ffe0cc"/>
+      <!-- 眼睛（细长有神） -->
+      <path d="M13.5 16 Q15 14.5 16.5 16" stroke="#4a3f6b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <path d="M19.5 16 Q21 14.5 22.5 16" stroke="#4a3f6b" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <!-- 睫毛 -->
+      <line x1="13.5" y1="15.5" x2="13" y2="14.5" stroke="#4a3f6b" stroke-width="1"/>
+      <line x1="22.5" y1="15.5" x2="23" y2="14.5" stroke="#4a3f6b" stroke-width="1"/>
+      <!-- 腮红 -->
+      <ellipse cx="12.5" cy="18.5" rx="2" ry="1.2" fill="#b2ebf2" opacity="0.8"/>
+      <ellipse cx="23.5" cy="18.5" rx="2" ry="1.2" fill="#b2ebf2" opacity="0.8"/>
+      <!-- 嘴巴（小O嘴） -->
+      <ellipse cx="18" cy="20.5" rx="1.2" ry="1" fill="#ff8a80"/>
+      <!-- 身体 -->
+      <path d="M11 24 Q10 30 14 31 L22 31 Q26 30 25 24 Q22 22 18 22 Q14 22 11 24Z" fill="#26c6da"/>
+      <!-- 衣领条纹装饰 -->
+      <line x1="14" y1="25" x2="22" y2="25" stroke="white" stroke-width="1" opacity="0.7"/>
+      <line x1="14" y1="27" x2="22" y2="27" stroke="white" stroke-width="1" opacity="0.5"/>
+    </svg>
+    Qiqi
     <span class="tab-score" id="tab-qiqi-score">⭐ 0 颗</span>
   </button>
 </div>
@@ -327,8 +413,14 @@
 <!-- ══ LULU PANEL ══ -->
 <div class="kid-panel active" id="lulu-panel">
   <div style="text-align:center;margin-bottom:6px;">
-    <div class="kid-title lulu" id="lulu-mainTitle">🌸 Lulu 的好习惯打卡 🌸</div>
+    <div class="kid-title lulu" id="lulu-mainTitle">👧 Lulu 的好习惯打卡 👧</div>
     <div class="kid-sub lulu">每天坚持，我是最棒的小朋友！</div>
+  </div>
+
+  <!-- 超级挑战移到顶部 -->
+  <div class="super-card">
+    <div class="super-title">🏆 超级挑战奖励 🏆</div>
+    <div class="super-list" id="lulu-superList"></div>
   </div>
 
   <div class="counter-card lulu">
@@ -336,20 +428,27 @@
     <div class="counter-text lulu">今日星星：<span class="counter-num lulu" id="lulu-starCount">0</span> 颗</div>
   </div>
 
+  <!-- 银行卡：本月积分 + 零钱包 -->
   <div class="bank-card lulu">
-    <div class="bank-title lulu" id="lulu-bankTitle">🏦 本月零花钱银行 🏦</div>
+    <div class="bank-title lulu" id="lulu-bankTitle">🏦 本月积分银行 🏦</div>
     <div class="bank-stats lulu">
       <span>累计积分:<b id="lulu-monthScore">0</b></span>
-      <span>预计兑换:<b id="lulu-monthMoney">0.0</b>元</span>
+      <span>本月兑换:<b id="lulu-monthMoney">0.0</b>元</span>
+    </div>
+    <div class="wallet-row">
+      <div class="wallet-left">
+        <span class="wallet-icon">👛</span>
+        <div class="wallet-info">
+          <div class="wallet-label">零钱包（累计结余）</div>
+          <div class="wallet-amount">¥<span id="lulu-wallet">0.00</span></div>
+        </div>
+      </div>
+      <button class="wallet-spend-btn" id="lulu-spendBtn">💸 消费扣除</button>
+      <button class="wallet-deposit-btn" id="lulu-depositBtn">💰 存入</button>
     </div>
   </div>
 
   <div class="date-badge" id="lulu-dateBadge">📅 今天是：</div>
-
-  <div class="super-card">
-    <div class="super-title">🏆 超级挑战奖励 🏆</div>
-    <div class="super-list" id="lulu-superList"></div>
-  </div>
 
   <div class="col-header">
     <div class="col-header-spacer"></div>
@@ -371,8 +470,14 @@
 <!-- ══ QIQI PANEL ══ -->
 <div class="kid-panel" id="qiqi-panel">
   <div style="text-align:center;margin-bottom:6px;">
-    <div class="kid-title qiqi" id="qiqi-mainTitle">🐬 Qiqi 的好习惯打卡 🐬</div>
+    <div class="kid-title qiqi" id="qiqi-mainTitle">👧 Qiqi 的好习惯打卡 👧</div>
     <div class="kid-sub qiqi">每天坚持，我是最棒的小朋友！</div>
+  </div>
+
+  <!-- 超级挑战移到顶部 -->
+  <div class="super-card">
+    <div class="super-title">🏆 超级挑战奖励 🏆</div>
+    <div class="super-list" id="qiqi-superList"></div>
   </div>
 
   <div class="counter-card qiqi">
@@ -380,20 +485,27 @@
     <div class="counter-text qiqi">今日星星：<span class="counter-num qiqi" id="qiqi-starCount">0</span> 颗</div>
   </div>
 
+  <!-- 银行卡：本月积分 + 零钱包 -->
   <div class="bank-card qiqi">
-    <div class="bank-title qiqi" id="qiqi-bankTitle">🏦 本月零花钱银行 🏦</div>
+    <div class="bank-title qiqi" id="qiqi-bankTitle">🏦 本月积分银行 🏦</div>
     <div class="bank-stats qiqi">
       <span>累计积分:<b id="qiqi-monthScore">0</b></span>
-      <span>预计兑换:<b id="qiqi-monthMoney">0.0</b>元</span>
+      <span>本月兑换:<b id="qiqi-monthMoney">0.0</b>元</span>
+    </div>
+    <div class="wallet-row">
+      <div class="wallet-left">
+        <span class="wallet-icon">👛</span>
+        <div class="wallet-info">
+          <div class="wallet-label">零钱包（累计结余）</div>
+          <div class="wallet-amount">¥<span id="qiqi-wallet">0.00</span></div>
+        </div>
+      </div>
+      <button class="wallet-spend-btn" id="qiqi-spendBtn">💸 消费扣除</button>
+      <button class="wallet-deposit-btn" id="qiqi-depositBtn">💰 存入</button>
     </div>
   </div>
 
   <div class="date-badge" id="qiqi-dateBadge">📅 今天是：</div>
-
-  <div class="super-card">
-    <div class="super-title">🏆 超级挑战奖励 🏆</div>
-    <div class="super-list" id="qiqi-superList"></div>
-  </div>
 
   <div class="col-header">
     <div class="col-header-spacer"></div>
@@ -437,13 +549,13 @@
   <div class="toast-box" style="padding:22px 18px;max-width:380px;">
     <h3 style="color:var(--text-dark);margin-bottom:10px;font-size:1.3rem;">🛠️ 家长控制台</h3>
     <div style="max-height:58vh;overflow-y:auto;padding-right:4px;text-align:left;">
-      <div class="edit-section-title" style="color:#c2185b;">🌸 Lulu 超级挑战</div>
+      <div class="edit-section-title" style="color:#c2185b;">👧 Lulu 超级挑战</div>
       <div id="editLuluSuperList"></div>
-      <div class="edit-section-title" style="color:#880e4f;">🌸 Lulu 日常习惯</div>
+      <div class="edit-section-title" style="color:#880e4f;">👧 Lulu 日常习惯</div>
       <div id="editLuluList"></div>
-      <div class="edit-section-title" style="color:#00838f;">🐬 Qiqi 超级挑战</div>
+      <div class="edit-section-title" style="color:#00838f;">👧 Qiqi 超级挑战</div>
       <div id="editQiqiSuperList"></div>
-      <div class="edit-section-title" style="color:#006064;">🐬 Qiqi 日常习惯</div>
+      <div class="edit-section-title" style="color:#006064;">👧 Qiqi 日常习惯</div>
       <div id="editQiqiList"></div>
     </div>
     <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;">
@@ -481,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── State ──────────────────────────────────────────────────────────────────
   const S = {};
-  KIDS.forEach(k => { S[k] = { habits:[], supers:[], score:0, currentHabits:[], currentSupers:[] }; });
+  KIDS.forEach(k => { S[k] = { habits:[], supers:[], score:0, wallet:0, currentHabits:[], currentSupers:[] }; });
 
   const V = 'v1';
   function sk(k, t) { return `tab_${k}_${t}_${V}`; }
@@ -494,11 +606,13 @@ document.addEventListener('DOMContentLoaded', function() {
       try { const d=localStorage.getItem(sk(k,'hcfg')); S[k].currentHabits=d?JSON.parse(d):[...defaultHabits[k]]; } catch(e){ S[k].currentHabits=[...defaultHabits[k]]; }
       try { const d=localStorage.getItem(sk(k,'scfg')); S[k].currentSupers=d?JSON.parse(d):[...defaultSupers[k]]; } catch(e){ S[k].currentSupers=[...defaultSupers[k]]; }
 
+      // 零钱包：永久累计，不随月份清零
+      try { S[k].wallet = parseFloat(localStorage.getItem(sk(k,'wallet'))) || 0; } catch(e){ S[k].wallet=0; }
+
       // 日常习惯 — 每天清零
       try {
         if (localStorage.getItem(sk(k,'date'))!==todayStr()) {
           S[k].habits=Array(TOTAL_HABITS).fill(null);
-          // 注意：不在这里重置 supers，超级挑战按月清零
           localStorage.setItem(sk(k,'date'),todayStr());
           localStorage.setItem(sk(k,'hs'),JSON.stringify(S[k].habits));
         } else {
@@ -506,10 +620,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       } catch(e){ S[k].habits=Array(TOTAL_HABITS).fill(null); }
 
-      // 超级挑战 & 积分 — 每月清零
+      // 超级挑战 & 积分 — 每月清零，月底自动结转到零钱包
       try {
         if (localStorage.getItem(sk(k,'month'))!==monthStr()) {
-          // 新的一个月：积分、超级挑战同步清零
+          // 把上月积分兑换成零钱存入钱包
+          const lastScore = parseInt(localStorage.getItem(sk(k,'score'))) || 0;
+          const earned = parseFloat((lastScore / 10).toFixed(2));
+          S[k].wallet = parseFloat((S[k].wallet + earned).toFixed(2));
+          localStorage.setItem(sk(k,'wallet'), S[k].wallet.toString());
+          // 新月份清零
           localStorage.setItem(sk(k,'month'),monthStr());
           localStorage.setItem(sk(k,'score'),'0');
           localStorage.setItem(sk(k,'ss'),JSON.stringify(Array(TOTAL_SUPERS).fill(false)));
@@ -534,6 +653,16 @@ document.addEventListener('DOMContentLoaded', function() {
     try { localStorage.setItem(sk(k,'ss'),JSON.stringify(S[k].supers)); } catch(e){}
   }
   function saveKidScore(k) { try{ localStorage.setItem(sk(k,'score'),S[k].score.toString()); }catch(e){} }
+  function saveKidWallet(k){ try{ localStorage.setItem(sk(k,'wallet'),S[k].wallet.toFixed(2)); }catch(e){} }
+
+  function updateBankUI(k){
+    const se=document.getElementById(`${k}-monthScore`);
+    const me=document.getElementById(`${k}-monthMoney`);
+    const we=document.getElementById(`${k}-wallet`);
+    if(se) se.textContent=S[k].score;
+    if(me) me.textContent=(S[k].score/10).toFixed(1);
+    if(we) we.textContent=S[k].wallet.toFixed(2);
+  }
 
   // ── Render lists ───────────────────────────────────────────────────────────
   function renderLists() {
@@ -749,6 +878,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#toastEncourage .toast-box').onclick=(e)=>e.stopPropagation();
 
   // ── Parent privileges ──────────────────────────────────────────────────────
+
+  // 银行标题连点5次 → 家长补充/扣除积分
   KIDS.forEach(k=>{
     let cnt=0,tmr=null;
     const el=document.getElementById(`${k}-bankTitle`);
@@ -758,6 +889,45 @@ document.addEventListener('DOMContentLoaded', function() {
         const input=prompt(`【家长特权】${KID_NAMES[k]} 补充积分（扣除输负数）：`,'0');
         if(input!==null){ const pts=parseInt(input); if(!isNaN(pts)){ S[k].score=Math.max(0,S[k].score+pts); saveKidScore(k); updateBankUI(k); alert('✅ 积分修改成功！'); } else alert('❌ 请输入纯数字'); }
       }
+    };
+  });
+
+  // 💸 零钱包消费扣除（家长特权，需密码）
+  KIDS.forEach(k=>{
+    const btn=document.getElementById(`${k}-spendBtn`);
+    if(btn) btn.onclick=(e)=>{
+      e.preventDefault();
+      const pwd=prompt('🔒 消费扣除需要家长验证，请输入密码：');
+      if(pwd===null) return;
+      if(pwd!=='7777'){ alert('❌ 密码错误！'); return; }
+      const cur=S[k].wallet.toFixed(2);
+      const input=prompt(`【${KID_NAMES[k]} 零钱包】当前余额 ¥${cur}\n请输入本次消费金额（元）：`,'');
+      if(input===null) return;
+      const amount=parseFloat(input);
+      if(isNaN(amount)||amount<=0){ alert('❌ 请输入有效的消费金额！'); return; }
+      if(amount>S[k].wallet){ alert(`❌ 余额不足！当前余额 ¥${cur}`); return; }
+      S[k].wallet=parseFloat((S[k].wallet-amount).toFixed(2));
+      saveKidWallet(k); updateBankUI(k);
+      alert(`✅ 扣除成功！\n消费：¥${amount.toFixed(2)}\n${KID_NAMES[k]} 剩余零钱：¥${S[k].wallet.toFixed(2)}`);
+    };
+  });
+
+  // 💰 零钱包存入（家长特权，需密码）
+  KIDS.forEach(k=>{
+    const btn=document.getElementById(`${k}-depositBtn`);
+    if(btn) btn.onclick=(e)=>{
+      e.preventDefault();
+      const pwd=prompt('🔒 存入零钱包需要家长验证，请输入密码：');
+      if(pwd===null) return;
+      if(pwd!=='7777'){ alert('❌ 密码错误！'); return; }
+      const cur=S[k].wallet.toFixed(2);
+      const input=prompt(`【${KID_NAMES[k]} 零钱包】当前余额 ¥${cur}\n请输入本次存入金额（元）：`,'');
+      if(input===null) return;
+      const amount=parseFloat(input);
+      if(isNaN(amount)||amount<=0){ alert('❌ 请输入有效的存入金额！'); return; }
+      S[k].wallet=parseFloat((S[k].wallet+amount).toFixed(2));
+      saveKidWallet(k); updateBankUI(k);
+      alert(`✅ 存入成功！\n存入：¥${amount.toFixed(2)}\n${KID_NAMES[k]} 零钱包余额：¥${S[k].wallet.toFixed(2)}`);
     };
   });
 
@@ -836,8 +1006,12 @@ document.addEventListener('DOMContentLoaded', function() {
           S[k].habits=Array(TOTAL_HABITS).fill(null);
           saveKidState(k); renderKid(k);
         }
-        // 月份变了 → 重置超级挑战 + 积分
+        // 月份变了 → 积分结转到零钱包，再清零积分和超级挑战
         if(localStorage.getItem(sk(k,'month'))!==monthStr()){
+          const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;
+          const earned=parseFloat((lastScore/10).toFixed(2));
+          S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));
+          saveKidWallet(k);
           localStorage.setItem(sk(k,'month'),monthStr());
           S[k].score=0; S[k].supers=Array(TOTAL_SUPERS).fill(false);
           saveKidScore(k); saveKidSupers(k); renderKid(k);
