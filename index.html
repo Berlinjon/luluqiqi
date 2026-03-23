@@ -101,10 +101,39 @@
   .word-phonetic { font-size:1.1rem;font-weight:700;color:var(--text-mid);margin-bottom:6px;font-family:sans-serif; background: #ffffff88; padding: 2px 12px; border-radius: 20px; }
   .word-meaning { font-size:1.2rem;font-weight:900;color:var(--text-dark); }
 
-  /* Qiqi 古诗样式 */
-  .poem-pinyin { font-size:1.1rem;font-weight:700;color:var(--text-mid);margin-bottom:-4px;font-family:sans-serif; }
-  .poem-main { font-size:2.2rem;font-weight:900;letter-spacing:2px;line-height:1.3; color:var(--qiqi-dark); text-shadow:2px 2px 0 #fff; margin-bottom: 8px;}
-  .poem-meaning { font-size:1.1rem;font-weight:900;color:var(--text-dark); background: #ffffff88; padding: 6px 14px; border-radius: 16px;}
+  /* Qiqi 古诗 ruby 注音样式 */
+  .poem-ruby-row {
+    display: flex; align-items: flex-end; justify-content: center;
+    gap: 6px; flex-wrap: wrap; margin-top: 6px;
+  }
+  .poem-line {
+    display: flex; align-items: flex-end; gap: 2px;
+  }
+  .poem-char {
+    display: flex; flex-direction: column; align-items: center;
+    transition: color 0.15s, transform 0.15s;
+  }
+  .poem-char .py {
+    font-size: 0.72rem; font-weight: 700; color: var(--text-mid);
+    font-family: sans-serif; line-height: 1.4; letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .poem-char .hz {
+    font-size: 1.9rem; font-weight: 900; color: var(--qiqi-dark);
+    text-shadow: 2px 2px 0 #fff; line-height: 1.1;
+  }
+  /* 朗读高亮：粉色 */
+  .poem-char.highlight .py { color: #ff4081; }
+  .poem-char.highlight .hz {
+    color: #ff4081;
+    text-shadow: 0 0 12px rgba(255,64,129,0.5);
+    transform: scale(1.18);
+  }
+  .poem-comma {
+    font-size: 1.9rem; font-weight: 900; color: var(--text-mid);
+    line-height: 1.1; padding-bottom: 0; margin: 0 2px;
+    align-self: flex-end;
+  }
 
   /* ── 电视能量跑道与小金库 ── */
   .tv-bar-container { background: #ffffffcc; border: 3px solid #c5cae9; border-radius: 20px; padding: 16px; margin-bottom: 12px; width: 100%; max-width: 520px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.06); animation: bouncein 0.6s cubic-bezier(.36,1.56,.64,1) both; position: relative; z-index: 1; }
@@ -256,7 +285,6 @@
 </head>
 <body class="tab-lulu">
 
-<audio id="bgm" src="bgm.mp3" loop></audio>
 <button id="music-toggle" class="music-btn paused" title="播放/暂停音乐">🎵</button>
 
 <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
@@ -352,6 +380,10 @@
       <button class="wallet-spend-btn" id="lulu-spendBtn">💸 扣除</button>
       <button class="wallet-deposit-btn" id="lulu-depositBtn">💰 存入</button>
     </div>
+    <div style="display:none;margin-top:10px;background:#ffffffaa;border-radius:12px;padding:8px 12px;">
+      <div style="font-size:0.78rem;font-weight:900;color:var(--text-mid);margin-bottom:4px;">📊 近期记录</div>
+      <div id="lulu-history"></div>
+    </div>
   </div>
 
   <div class="date-badge" id="lulu-dateBadge">📅 今天是：</div>
@@ -376,10 +408,10 @@
   </div>
 
   <div class="study-card qiqi" id="qiqi-studyBtn">
-    <div class="study-header qiqi">📜 每日一句古诗 <span class="speaker-icon">🔊</span></div>
-    <div class="poem-pinyin" id="qiqi-daily-pinyin">bái máo fú lǜ shuǐ</div>
-    <div class="poem-main" id="qiqi-daily-poem">白毛浮绿水</div>
-    <div class="poem-meaning" id="qiqi-daily-meaning">🦢 白色的羽毛漂浮在水上</div>
+    <div class="study-header qiqi">📜 每日古诗 · <span id="qiqi-poem-title">咏鹅</span> <span class="speaker-icon">🔊</span></div>
+    <div class="poem-ruby-row" id="qiqi-poem-display">
+      <!-- 由 JS 动态渲染 ruby 注音 -->
+    </div>
   </div>
 
   <div class="tv-bar-container">
@@ -406,6 +438,10 @@
       <div class="wallet-left"><span class="wallet-icon">👛</span><div class="wallet-info"><div class="wallet-label">零钱包结余</div><div class="wallet-amount">¥<span id="qiqi-wallet">0.00</span></div></div></div>
       <button class="wallet-spend-btn" id="qiqi-spendBtn">💸 扣除</button>
       <button class="wallet-deposit-btn" id="qiqi-depositBtn">💰 存入</button>
+    </div>
+    <div style="display:none;margin-top:10px;background:#ffffffaa;border-radius:12px;padding:8px 12px;">
+      <div style="font-size:0.78rem;font-weight:900;color:var(--text-mid);margin-bottom:4px;">📊 近期记录</div>
+      <div id="qiqi-history"></div>
     </div>
   </div>
 
@@ -440,6 +476,7 @@
 <div class="easter-egg-overlay" id="easterEgg">
   <div class="easter-egg-content">
     <img src="" class="easter-egg-img" id="easterEggImg" alt="神秘彩蛋">
+    <div id="easterEggFallback" style="display:none;font-size:5rem;margin-bottom:20px;animation:starRow 1s ease-in-out infinite;">🎁🌟🎉</div>
     <div class="easter-egg-text">🎉 连续 7 天达成！专属奖励！🎉</div>
     <button class="toast-close" id="closeEasterEgg" style="margin-top:20px; font-size: 1.2rem; padding: 14px 40px;">太棒啦！收下奖励</button>
   </div>
@@ -468,92 +505,246 @@ document.addEventListener('DOMContentLoaded', function() {
   const KIDS = ['lulu', 'qiqi'];
   const KID_NAMES = { lulu: 'Lulu', qiqi: 'Qiqi' };
 
-  // ── 背景音乐逻辑 ──
-  const bgm = document.getElementById('bgm');
+  // ── 背景音乐（Web Audio 合成，无需外部文件）──
   const musicBtn = document.getElementById('music-toggle');
-  let musicStarted = false;
+  let bgmCtx = null, bgmPlaying = false, bgmNodes = [];
 
-  // 第一次点击屏幕任意地方时，自动播放音乐（绕过浏览器静音限制）
-  function initAudio() {
-    if (!musicStarted) {
-      bgm.play().then(() => {
-        musicStarted = true;
-        musicBtn.classList.remove('paused');
-        musicBtn.classList.add('playing');
-      }).catch(e => console.log("等待用户交互以播放音乐"));
+  // 简单五声音阶儿歌旋律 C D E G A，循环
+  const MELODY = [523,587,659,784,880,784,659,587,523,659,784,880,784,659,523,587];
+  const NOTE_DUR = 0.55; // 每个音符时长(秒)
+
+  function startBgm() {
+    if (bgmPlaying) return;
+    if (!bgmCtx) {
+      try { window.AudioContext = window.AudioContext || window.webkitAudioContext; bgmCtx = new AudioContext(); } catch(e){ return; }
     }
-    document.body.removeEventListener('touchstart', initAudio);
-    document.body.removeEventListener('click', initAudio);
+    if (bgmCtx.state === 'suspended') bgmCtx.resume();
+    bgmPlaying = true;
+    let step = 0;
+    function scheduleNote() {
+      if (!bgmPlaying) return;
+      const osc = bgmCtx.createOscillator();
+      const gain = bgmCtx.createGain();
+      osc.connect(gain); gain.connect(bgmCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = MELODY[step % MELODY.length];
+      const t = bgmCtx.currentTime;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.08, t + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + NOTE_DUR * 0.9);
+      osc.start(t); osc.stop(t + NOTE_DUR);
+      step++;
+      bgmNodes.push(setTimeout(scheduleNote, NOTE_DUR * 1000));
+    }
+    scheduleNote();
+    musicBtn.classList.remove('paused'); musicBtn.classList.add('playing');
   }
-  document.body.addEventListener('touchstart', initAudio, { once: true });
-  document.body.addEventListener('click', initAudio, { once: true });
 
-  // 手动开关音乐按钮
+  function stopBgm() {
+    bgmPlaying = false;
+    bgmNodes.forEach(t => clearTimeout(t)); bgmNodes = [];
+    musicBtn.classList.add('paused'); musicBtn.classList.remove('playing');
+  }
+
   musicBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // 防止触发全局点击
-    if (bgm.paused) {
-      bgm.play();
-      musicBtn.classList.remove('paused');
-      musicBtn.classList.add('playing');
-      musicStarted = true;
-    } else {
-      bgm.pause();
-      musicBtn.classList.add('paused');
-      musicBtn.classList.remove('playing');
-    }
+    e.stopPropagation();
+    bgmPlaying ? stopBgm() : startBgm();
   });
 
+  // 第一次与页面交互时自动播放
+  function initBgm() {
+    startBgm();
+    document.body.removeEventListener('touchstart', initBgm);
+    document.body.removeEventListener('click', initBgm);
+  }
+  document.body.addEventListener('touchstart', initBgm, { once: true });
+  document.body.addEventListener('click', initBgm, { once: true });
 
-  // ── 知识库：Lulu 的英语单词 (30个) ──
+
+  // ── 知识库：Lulu 的英语单词 (90个，约3个月不重复) ──
   const dailyWords = [
-    { word: 'animal', phonetic: '[ˈænɪml]', meaning: '🦁 动物' },
-    { word: 'beautiful', phonetic: '[ˈbjuːtɪfl]', meaning: '🌸 美丽的' },
-    { word: 'clever', phonetic: '[ˈklevər]', meaning: '💡 聪明的' },
-    { word: 'doctor', phonetic: '[ˈdɒktər]', meaning: '🩺 医生' },
-    { word: 'elephant', phonetic: '[ˈelɪfənt]', meaning: '🐘 大象' },
-    { word: 'family', phonetic: '[ˈfæməli]', meaning: '👨‍👩‍👧‍👦 家庭' },
-    { word: 'garden', phonetic: '[ˈɡɑːrdn]', meaning: '🏡 花园' },
-    { word: 'happy', phonetic: '[ˈhæpi]', meaning: '😊 快乐的' },
-    { word: 'island', phonetic: '[ˈaɪlənd]', meaning: '🏝️ 岛屿' },
-    { word: 'jacket', phonetic: '[ˈdʒækɪt]', meaning: '🧥 夹克' },
-    { word: 'library', phonetic: '[ˈlaɪbrəri]', meaning: '📖 图书馆' },
-    { word: 'monkey', phonetic: '[ˈmʌŋki]', meaning: '🐒 猴子' },
-    { word: 'nature', phonetic: '[ˈneɪtʃər]', meaning: '🌳 自然' },
-    { word: 'orange', phonetic: '[ˈɒrɪndʒ]', meaning: '🍊 橙子' },
-    { word: 'picture', phonetic: '[ˈpɪktʃər]', meaning: '🖼️ 图片' },
-    { word: 'quiet', phonetic: '[ˈkwaɪət]', meaning: '🤫 安静的' },
-    { word: 'rabbit', phonetic: '[ˈræbɪt]', meaning: '🐰 兔子' },
-    { word: 'season', phonetic: '[ˈsiːzn]', meaning: '🍂 季节' },
-    { word: 'teacher', phonetic: '[ˈtiːtʃər]', meaning: '👩‍🏫 老师' },
-    { word: 'umbrella', phonetic: '[ʌmˈbrelə]', meaning: '☂️ 雨伞' },
-    { word: 'weather', phonetic: '[ˈweðər]', meaning: '⛅ 天气' },
-    { word: 'yellow', phonetic: '[ˈjeloʊ]', meaning: '💛 黄色的' },
-    { word: 'zebra', phonetic: '[ˈziːbrə]', meaning: '🦓 斑马' },
-    { word: 'friend', phonetic: '[frend]', meaning: '👫 朋友' },
-    { word: 'school', phonetic: '[skuːl]', meaning: '🏫 学校' },
-    { word: 'morning', phonetic: '[ˈmɔːrnɪŋ]', meaning: '🌅 早晨' },
-    { word: 'summer', phonetic: '[ˈsʌmər]', meaning: '🍉 夏天' },
-    { word: 'winter', phonetic: '[ˈwɪntər]', meaning: '⛄ 冬天' },
-    { word: 'spring', phonetic: '[sprɪŋ]', meaning: '🌱 春天' },
-    { word: 'autumn', phonetic: '[ˈɔːtəm]', meaning: '🍁 秋天' }
+    {word:'animal',phonetic:'[ˈænɪml]',meaning:'🦁 动物'},
+    {word:'beautiful',phonetic:'[ˈbjuːtɪfl]',meaning:'🌸 美丽的'},
+    {word:'clever',phonetic:'[ˈklevər]',meaning:'💡 聪明的'},
+    {word:'doctor',phonetic:'[ˈdɒktər]',meaning:'🩺 医生'},
+    {word:'elephant',phonetic:'[ˈelɪfənt]',meaning:'🐘 大象'},
+    {word:'family',phonetic:'[ˈfæməli]',meaning:'👨‍👩‍👧‍👦 家庭'},
+    {word:'garden',phonetic:'[ˈɡɑːrdn]',meaning:'🏡 花园'},
+    {word:'happy',phonetic:'[ˈhæpi]',meaning:'😊 快乐的'},
+    {word:'island',phonetic:'[ˈaɪlənd]',meaning:'🏝️ 岛屿'},
+    {word:'jacket',phonetic:'[ˈdʒækɪt]',meaning:'🧥 夹克'},
+    {word:'library',phonetic:'[ˈlaɪbrəri]',meaning:'📖 图书馆'},
+    {word:'monkey',phonetic:'[ˈmʌŋki]',meaning:'🐒 猴子'},
+    {word:'nature',phonetic:'[ˈneɪtʃər]',meaning:'🌳 自然'},
+    {word:'orange',phonetic:'[ˈɒrɪndʒ]',meaning:'🍊 橙子'},
+    {word:'picture',phonetic:'[ˈpɪktʃər]',meaning:'🖼️ 图片'},
+    {word:'quiet',phonetic:'[ˈkwaɪət]',meaning:'🤫 安静的'},
+    {word:'rabbit',phonetic:'[ˈræbɪt]',meaning:'🐰 兔子'},
+    {word:'season',phonetic:'[ˈsiːzn]',meaning:'🍂 季节'},
+    {word:'teacher',phonetic:'[ˈtiːtʃər]',meaning:'👩‍🏫 老师'},
+    {word:'umbrella',phonetic:'[ʌmˈbrelə]',meaning:'☂️ 雨伞'},
+    {word:'weather',phonetic:'[ˈweðər]',meaning:'⛅ 天气'},
+    {word:'yellow',phonetic:'[ˈjeloʊ]',meaning:'💛 黄色的'},
+    {word:'zebra',phonetic:'[ˈziːbrə]',meaning:'🦓 斑马'},
+    {word:'friend',phonetic:'[frend]',meaning:'👫 朋友'},
+    {word:'school',phonetic:'[skuːl]',meaning:'🏫 学校'},
+    {word:'morning',phonetic:'[ˈmɔːrnɪŋ]',meaning:'🌅 早晨'},
+    {word:'summer',phonetic:'[ˈsʌmər]',meaning:'🍉 夏天'},
+    {word:'winter',phonetic:'[ˈwɪntər]',meaning:'⛄ 冬天'},
+    {word:'spring',phonetic:'[sprɪŋ]',meaning:'🌱 春天'},
+    {word:'autumn',phonetic:'[ˈɔːtəm]',meaning:'🍁 秋天'},
+    {word:'butterfly',phonetic:'[ˈbʌtəflaɪ]',meaning:'🦋 蝴蝶'},
+    {word:'chocolate',phonetic:'[ˈtʃɒklət]',meaning:'🍫 巧克力'},
+    {word:'dinosaur',phonetic:'[ˈdaɪnəsɔːr]',meaning:'🦕 恐龙'},
+    {word:'exercise',phonetic:'[ˈeksəsaɪz]',meaning:'🏃 运动'},
+    {word:'flower',phonetic:'[ˈflaʊər]',meaning:'🌹 花'},
+    {word:'giraffe',phonetic:'[dʒɪˈrɑːf]',meaning:'🦒 长颈鹿'},
+    {word:'helpful',phonetic:'[ˈhelpfl]',meaning:'🤝 乐于助人的'},
+    {word:'imagine',phonetic:'[ɪˈmædʒɪn]',meaning:'💭 想象'},
+    {word:'journey',phonetic:'[ˈdʒɜːrni]',meaning:'🗺️ 旅程'},
+    {word:'kindness',phonetic:'[ˈkaɪndnəs]',meaning:'💖 善良'},
+    {word:'lemon',phonetic:'[ˈlemən]',meaning:'🍋 柠檬'},
+    {word:'mountain',phonetic:'[ˈmaʊntən]',meaning:'⛰️ 山'},
+    {word:'noodle',phonetic:'[ˈnuːdl]',meaning:'🍜 面条'},
+    {word:'ocean',phonetic:'[ˈoʊʃn]',meaning:'🌊 海洋'},
+    {word:'panda',phonetic:'[ˈpændə]',meaning:'🐼 熊猫'},
+    {word:'question',phonetic:'[ˈkwestʃən]',meaning:'❓ 问题'},
+    {word:'rainbow',phonetic:'[ˈreɪnboʊ]',meaning:'🌈 彩虹'},
+    {word:'sunshine',phonetic:'[ˈsʌnʃaɪn]',meaning:'☀️ 阳光'},
+    {word:'tiger',phonetic:'[ˈtaɪɡər]',meaning:'🐯 老虎'},
+    {word:'universe',phonetic:'[ˈjuːnɪvɜːrs]',meaning:'🌌 宇宙'},
+    {word:'village',phonetic:'[ˈvɪlɪdʒ]',meaning:'🏘️ 村庄'},
+    {word:'waterfall',phonetic:'[ˈwɔːtərfɔːl]',meaning:'💧 瀑布'},
+    {word:'exciting',phonetic:'[ɪkˈsaɪtɪŋ]',meaning:'🎉 令人兴奋的'},
+    {word:'yogurt',phonetic:'[ˈjoʊɡərt]',meaning:'🥛 酸奶'},
+    {word:'airplane',phonetic:'[ˈerpleɪn]',meaning:'✈️ 飞机'},
+    {word:'birthday',phonetic:'[ˈbɜːrθdeɪ]',meaning:'🎂 生日'},
+    {word:'camera',phonetic:'[ˈkæmərə]',meaning:'📷 相机'},
+    {word:'delicious',phonetic:'[dɪˈlɪʃəs]',meaning:'😋 美味的'},
+    {word:'energy',phonetic:'[ˈenərdʒi]',meaning:'⚡ 能量'},
+    {word:'fantastic',phonetic:'[fænˈtæstɪk]',meaning:'🌟 极好的'},
+    {word:'gentle',phonetic:'[ˈdʒentl]',meaning:'🕊️ 温柔的'},
+    {word:'holiday',phonetic:'[ˈhɒlɪdeɪ]',meaning:'🎊 假期'},
+    {word:'innocent',phonetic:'[ˈɪnəsənt]',meaning:'👼 天真的'},
+    {word:'jungle',phonetic:'[ˈdʒʌŋɡl]',meaning:'🌿 丛林'},
+    {word:'kitten',phonetic:'[ˈkɪtn]',meaning:'🐱 小猫'},
+    {word:'lantern',phonetic:'[ˈlæntərn]',meaning:'🏮 灯笼'},
+    {word:'mango',phonetic:'[ˈmæŋɡoʊ]',meaning:'🥭 芒果'},
+    {word:'neighbor',phonetic:'[ˈneɪbər]',meaning:'🏠 邻居'},
+    {word:'original',phonetic:'[əˈrɪdʒɪnl]',meaning:'✨ 独特的'},
+    {word:'parrot',phonetic:'[ˈpærət]',meaning:'🦜 鹦鹉'},
+    {word:'quickly',phonetic:'[ˈkwɪkli]',meaning:'💨 快速地'},
+    {word:'reward',phonetic:'[rɪˈwɔːrd]',meaning:'🎁 奖励'},
+    {word:'strawberry',phonetic:'[ˈstrɔːberi]',meaning:'🍓 草莓'},
+    {word:'treasure',phonetic:'[ˈtreʒər]',meaning:'💎 宝藏'},
+    {word:'useful',phonetic:'[ˈjuːsfl]',meaning:'🔧 有用的'},
+    {word:'vacation',phonetic:'[veɪˈkeɪʃn]',meaning:'🏖️ 假期旅行'},
+    {word:'wonderful',phonetic:'[ˈwʌndərfl]',meaning:'🌠 精彩的'},
+    {word:'explore',phonetic:'[ɪkˈsplɔːr]',meaning:'🔍 探索'},
+    {word:'youth',phonetic:'[juːθ]',meaning:'👦 青春'},
+    {word:'brave',phonetic:'[breɪv]',meaning:'🦁 勇敢的'},
+    {word:'candle',phonetic:'[ˈkændl]',meaning:'🕯️ 蜡烛'},
+    {word:'dream',phonetic:'[driːm]',meaning:'💫 梦想'},
+    {word:'forest',phonetic:'[ˈfɒrɪst]',meaning:'🌲 森林'},
+    {word:'grateful',phonetic:'[ˈɡreɪtfl]',meaning:'🙏 感恩的'},
+    {word:'horizon',phonetic:'[həˈraɪzn]',meaning:'🌅 地平线'},
+    {word:'inspire',phonetic:'[ɪnˈspaɪər]',meaning:'💡 激励'},
+    {word:'joyful',phonetic:'[ˈdʒɔɪfl]',meaning:'😄 快乐的'},
+    {word:'knowledge',phonetic:'[ˈnɒlɪdʒ]',meaning:'📚 知识'}
   ];
 
-  // ── 知识库：Qiqi 的一年级古诗 (14个) ──
+  // ── 知识库：Qiqi 的古诗（30组两句配对，约一个月不重复）──
   const dailyPoems = [
-    { pinyin: 'bái máo fú lǜ shuǐ', poem: '白毛浮绿水', speak: '白毛浮绿水', meaning: '🦢 白色的羽毛漂浮在水上' },
-    { pinyin: 'hóng zhǎng bō qīng bō', poem: '红掌拨清波', speak: '红掌拨清波', meaning: '🦆 红色的脚掌划动着清澈的水波' },
-    { pinyin: 'chuáng qián míng yuè guāng', poem: '床前明月光', speak: '床前明月光', meaning: '🌙 明亮的月光照在床前' },
-    { pinyin: 'yí shì dì shàng shuāng', poem: '疑是地上霜', speak: '疑是地上霜', meaning: '❄️ 好像是地上结了一层白霜' },
-    { pinyin: 'jǔ tóu wàng míng yuè', poem: '举头望明月', speak: '举头望明月', meaning: '抬头望着天上明亮的月亮' },
-    { pinyin: 'dī tóu sī gù xiāng', poem: '低头思故乡', speak: '低头思故乡', meaning: '🏡 低下头不禁想起了美丽的故乡' },
-    { pinyin: 'chūn mián bù jué xiǎo', poem: '春眠不觉晓', speak: '春眠不觉晓', meaning: '🌸 春天的夜晚睡得真香，不知不觉就天亮了' },
-    { pinyin: 'chù chù wén tí niǎo', poem: '处处闻啼鸟', speak: '处处闻啼鸟', meaning: '🐦 醒来时听到到处都是鸟儿的叫声' },
-    { pinyin: 'yè lái fēng yǔ shēng', poem: '夜来风雨声', speak: '夜来风雨声', meaning: '🌧️ 想起昨夜里刮风下雨的声音' },
-    { pinyin: 'huā luò zhī duō shǎo', poem: '花落知多少', speak: '花落知多少', meaning: '🌺 不知道有多少美丽的花朵被风雨打落了' },
-    { pinyin: 'hóng dòu shēng nán guó', poem: '红豆生南国', speak: '红豆生南国', meaning: '🌱 红豆生长在阳光明媚的南方' },
-    { pinyin: 'chūn lái fā jǐ zhī', poem: '春来发几枝', speak: '春来发几枝', meaning: '春天到了，不知道又长出了多少新枝' },
-    { pinyin: 'yuàn jūn duō cǎi xié', poem: '愿君多采撷', speak: '愿君多采撷', meaning: '🤲 希望你能多多采摘这些红豆' },
-    { pinyin: 'cǐ wù zuì xiāng sī', poem: '此物最相思', speak: '此物最相思', meaning: '❤️ 因为它最能代表深深的思念' }
+    { title:'咏鹅',
+      chars1:['白','毛','浮','绿','水'], pins1:['bái','máo','fú','lǜ','shuǐ'],
+      chars2:['红','掌','拨','清','波'], pins2:['hóng','zhǎng','bō','qīng','bō'] },
+    { title:'静夜思',
+      chars1:['床','前','明','月','光'], pins1:['chuáng','qián','míng','yuè','guāng'],
+      chars2:['疑','是','地','上','霜'], pins2:['yí','shì','dì','shàng','shuāng'] },
+    { title:'静夜思',
+      chars1:['举','头','望','明','月'], pins1:['jǔ','tóu','wàng','míng','yuè'],
+      chars2:['低','头','思','故','乡'], pins2:['dī','tóu','sī','gù','xiāng'] },
+    { title:'春晓',
+      chars1:['春','眠','不','觉','晓'], pins1:['chūn','mián','bù','jué','xiǎo'],
+      chars2:['处','处','闻','啼','鸟'], pins2:['chù','chù','wén','tí','niǎo'] },
+    { title:'春晓',
+      chars1:['夜','来','风','雨','声'], pins1:['yè','lái','fēng','yǔ','shēng'],
+      chars2:['花','落','知','多','少'], pins2:['huā','luò','zhī','duō','shǎo'] },
+    { title:'相思',
+      chars1:['红','豆','生','南','国'], pins1:['hóng','dòu','shēng','nán','guó'],
+      chars2:['春','来','发','几','枝'], pins2:['chūn','lái','fā','jǐ','zhī'] },
+    { title:'相思',
+      chars1:['愿','君','多','采','撷'], pins1:['yuàn','jūn','duō','cǎi','xié'],
+      chars2:['此','物','最','相','思'], pins2:['cǐ','wù','zuì','xiāng','sī'] },
+    { title:'草',
+      chars1:['离','离','原','上','草'], pins1:['lí','lí','yuán','shàng','cǎo'],
+      chars2:['一','岁','一','枯','荣'], pins2:['yī','suì','yī','kū','róng'] },
+    { title:'草',
+      chars1:['野','火','烧','不','尽'], pins1:['yě','huǒ','shāo','bù','jìn'],
+      chars2:['春','风','吹','又','生'], pins2:['chūn','fēng','chuī','yòu','shēng'] },
+    { title:'清明',
+      chars1:['清','明','时','节','雨','纷','纷'], pins1:['qīng','míng','shí','jié','yǔ','fēn','fēn'],
+      chars2:['路','上','行','人','欲','断','魂'], pins2:['lù','shàng','xíng','rén','yù','duàn','hún'] },
+    { title:'清明',
+      chars1:['借','问','酒','家','何','处','有'], pins1:['jiè','wèn','jiǔ','jiā','hé','chù','yǒu'],
+      chars2:['牧','童','遥','指','杏','花','村'], pins2:['mù','tóng','yáo','zhǐ','xìng','huā','cūn'] },
+    { title:'春日',
+      chars1:['春','色','满','园','关','不','住'], pins1:['chūn','sè','mǎn','yuán','guān','bù','zhù'],
+      chars2:['一','枝','红','杏','出','墙','来'], pins2:['yī','zhī','hóng','xìng','chū','qiáng','lái'] },
+    { title:'登鹳雀楼',
+      chars1:['欲','穷','千','里','目'], pins1:['yù','qióng','qiān','lǐ','mù'],
+      chars2:['更','上','一','层','楼'], pins2:['gèng','shàng','yī','céng','lóu'] },
+    { title:'望庐山瀑布',
+      chars1:['日','照','香','炉','生','紫','烟'], pins1:['rì','zhào','xiāng','lú','shēng','zǐ','yān'],
+      chars2:['遥','看','瀑','布','挂','前','川'], pins2:['yáo','kàn','pù','bù','guà','qián','chuān'] },
+    { title:'望庐山瀑布',
+      chars1:['飞','流','直','下','三','千','尺'], pins1:['fēi','liú','zhí','xià','sān','qiān','chǐ'],
+      chars2:['疑','是','银','河','落','九','天'], pins2:['yí','shì','yín','hé','luò','jiǔ','tiān'] },
+    { title:'枫桥夜泊',
+      chars1:['姑','苏','城','外','寒','山','寺'], pins1:['gū','sū','chéng','wài','hán','shān','sì'],
+      chars2:['夜','半','钟','声','到','客','船'], pins2:['yè','bàn','zhōng','shēng','dào','kè','chuán'] },
+    { title:'悯农',
+      chars1:['谁','知','盘','中','餐'], pins1:['shuí','zhī','pán','zhōng','cān'],
+      chars2:['粒','粒','皆','辛','苦'], pins2:['lì','lì','jiē','xīn','kǔ'] },
+    { title:'登高',
+      chars1:['风','急','天','高','猿','啸','哀'], pins1:['fēng','jí','tiān','gāo','yuán','xiào','āi'],
+      chars2:['渚','清','沙','白','鸟','飞','回'], pins2:['zhǔ','qīng','shā','bái','niǎo','fēi','huí'] },
+    { title:'送杜少府之任蜀州',
+      chars1:['海','内','存','知','己'], pins1:['hǎi','nèi','cún','zhī','jǐ'],
+      chars2:['天','涯','若','比','邻'], pins2:['tiān','yá','ruò','bǐ','lín'] },
+    { title:'望岳',
+      chars1:['会','当','凌','绝','顶'], pins1:['huì','dāng','líng','jué','dǐng'],
+      chars2:['一','览','众','山','小'], pins2:['yī','lǎn','zhòng','shān','xiǎo'] },
+    { title:'鹿柴',
+      chars1:['空','山','不','见','人'], pins1:['kōng','shān','bù','jiàn','rén'],
+      chars2:['但','闻','人','语','响'], pins2:['dàn','wén','rén','yǔ','xiǎng'] },
+    { title:'九月九日忆山东兄弟',
+      chars1:['遥','知','兄','弟','登','高','处'], pins1:['yáo','zhī','xiōng','dì','dēng','gāo','chù'],
+      chars2:['遍','插','茱','萸','少','一','人'], pins2:['biàn','chā','zhū','yú','shǎo','yī','rén'] },
+    { title:'江雪',
+      chars1:['千','山','鸟','飞','绝'], pins1:['qiān','shān','niǎo','fēi','jué'],
+      chars2:['万','径','人','踪','灭'], pins2:['wàn','jìng','rén','zōng','miè'] },
+    { title:'绝句',
+      chars1:['两','个','黄','鹂','鸣','翠','柳'], pins1:['liǎng','gè','huáng','lí','míng','cuì','liǔ'],
+      chars2:['一','行','白','鹭','上','青','天'], pins2:['yī','háng','bái','lù','shàng','qīng','tiān'] },
+    { title:'绝句',
+      chars1:['窗','含','西','岭','千','秋','雪'], pins1:['chuāng','hán','xī','lǐng','qiān','qiū','xuě'],
+      chars2:['门','泊','东','吴','万','里','船'], pins2:['mén','bó','dōng','wú','wàn','lǐ','chuán'] },
+    { title:'题西林壁',
+      chars1:['横','看','成','岭','侧','成','峰'], pins1:['héng','kàn','chéng','lǐng','cè','chéng','fēng'],
+      chars2:['远','近','高','低','各','不','同'], pins2:['yuǎn','jìn','gāo','dī','gè','bù','tóng'] },
+    { title:'春夜喜雨',
+      chars1:['随','风','潜','入','夜'], pins1:['suí','fēng','qián','rù','yè'],
+      chars2:['润','物','细','无','声'], pins2:['rùn','wù','xì','wú','shēng'] },
+    { title:'黄鹤楼送孟浩然之广陵',
+      chars1:['孤','帆','远','影','碧','空','尽'], pins1:['gū','fān','yuǎn','yǐng','bì','kōng','jìn'],
+      chars2:['唯','见','长','江','天','际','流'], pins2:['wéi','jiàn','cháng','jiāng','tiān','jì','liú'] },
+    { title:'早发白帝城',
+      chars1:['两','岸','猿','声','啼','不','住'], pins1:['liǎng','àn','yuán','shēng','tí','bù','zhù'],
+      chars2:['轻','舟','已','过','万','重','山'], pins2:['qīng','zhōu','yǐ','guò','wàn','chóng','shān'] },
+    { title:'别董大',
+      chars1:['莫','愁','前','路','无','知','己'], pins1:['mò','chóu','qián','lù','wú','zhī','jǐ'],
+      chars2:['天','下','谁','人','不','识','君'], pins2:['tiān','xià','shuí','rén','bù','shí','jūn'] }
   ];
 
   const defaultHabits = {
@@ -567,7 +758,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const S = {};
   KIDS.forEach(k => { 
-    S[k] = { habits:[], supers:[], score:0, wallet:0, currentHabits:[], currentSupers:[], streaks:Array(TOTAL_HABITS).fill(0), tvTime: 0, tvRewardGiven: false }; 
+    S[k] = { habits:[], supers:[], score:0, wallet:0, currentHabits:[], currentSupers:[], streaks:Array(TOTAL_HABITS).fill(0), streakDates:Array(TOTAL_HABITS).fill(''), tvTime: 0, tvRewardGiven: false, monthHistory:[] };
   });
 
   const V = 'v4';
@@ -590,6 +781,7 @@ document.addEventListener('DOMContentLoaded', function() {
       try { const d=localStorage.getItem(sk(k,'scfg')); S[k].currentSupers=d?JSON.parse(d):[...defaultSupers[k]]; } catch(e){ S[k].currentSupers=[...defaultSupers[k]]; }
       try { S[k].wallet = parseFloat(localStorage.getItem(sk(k,'wallet'))) || 0; } catch(e){ S[k].wallet=0; }
       try { const st=localStorage.getItem(sk(k,'streaks')); S[k].streaks=st?JSON.parse(st):Array(TOTAL_HABITS).fill(0); } catch(e){ S[k].streaks=Array(TOTAL_HABITS).fill(0); }
+      try { const sd=localStorage.getItem(sk(k,'streakDates')); S[k].streakDates=sd?JSON.parse(sd):Array(TOTAL_HABITS).fill(''); } catch(e){ S[k].streakDates=Array(TOTAL_HABITS).fill(''); }
       
       // 读取电视时间
       try { S[k].tvTime = parseFloat(localStorage.getItem(sk(k,'tvTime'))) || 0; } catch(e){ S[k].tvTime = 0; }
@@ -620,10 +812,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       } catch(e){ S[k].habits=Array(TOTAL_HABITS).fill(null); }
 
+      // 读取历史记录（最近3个月）
+      try { const h=localStorage.getItem(sk(k,'history')); S[k].monthHistory=h?JSON.parse(h):[]; } catch(e){ S[k].monthHistory=[]; }
+
       try {
         if (localStorage.getItem(sk(k,'month'))!==monthStr()) {
           const lastScore = parseInt(localStorage.getItem(sk(k,'score'))) || 0;
+          const lastMonth = localStorage.getItem(sk(k,'month')) || '';
           const earned = parseFloat((lastScore / 10).toFixed(2));
+
+          // 月底结转前，把本月数据存入历史（最多保留3条）
+          if (lastMonth && lastScore > 0) {
+            S[k].monthHistory.unshift({ month: lastMonth, score: lastScore, money: earned });
+            if (S[k].monthHistory.length > 3) S[k].monthHistory = S[k].monthHistory.slice(0, 3);
+            saveKidHistory(k);
+          }
+
           S[k].wallet = parseFloat((S[k].wallet + earned).toFixed(2));
           localStorage.setItem(sk(k,'wallet'), S[k].wallet.toString());
           localStorage.setItem(sk(k,'month'),monthStr());
@@ -642,7 +846,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function saveKidSupers(k) { try { localStorage.setItem(sk(k,'ss'),JSON.stringify(S[k].supers)); } catch(e){} }
   function saveKidScore(k) { try{ localStorage.setItem(sk(k,'score'),S[k].score.toString()); }catch(e){} }
   function saveKidWallet(k){ try{ localStorage.setItem(sk(k,'wallet'),S[k].wallet.toFixed(2)); }catch(e){} }
+  function saveKidHistory(k){ try{ localStorage.setItem(sk(k,'history'),JSON.stringify(S[k].monthHistory)); }catch(e){} }
   function saveKidStreaks(k){ try{ localStorage.setItem(sk(k,'streaks'),JSON.stringify(S[k].streaks)); }catch(e){} }
+  function saveKidStreakDates(k){ try{ localStorage.setItem(sk(k,'streakDates'),JSON.stringify(S[k].streakDates)); }catch(e){} }
   function saveTvState(k) { 
     try{ 
       localStorage.setItem(sk(k,'tvTime'), S[k].tvTime.toString()); 
@@ -653,6 +859,19 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateBankUI(k){
     const se=document.getElementById(`${k}-monthScore`); const me=document.getElementById(`${k}-monthMoney`); const we=document.getElementById(`${k}-wallet`);
     if(se) se.textContent=S[k].score; if(me) me.textContent=(S[k].score/10).toFixed(1); if(we) we.textContent=S[k].wallet.toFixed(2);
+    // 历史记录
+    const hist=document.getElementById(`${k}-history`);
+    if(hist && S[k].monthHistory.length>0){
+      hist.innerHTML = S[k].monthHistory.map(r=>`
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--text-mid);padding:3px 0;border-bottom:1px dashed #eee;">
+          <span>📅 ${r.month}</span>
+          <span>⭐ ${r.score}分</span>
+          <span style="color:#2e7d32;">¥${r.money.toFixed(2)}</span>
+        </div>`).join('');
+      hist.parentElement.style.display='block';
+    } else if(hist){
+      hist.parentElement.style.display='none';
+    }
   }
 
   function renderLists() {
@@ -691,25 +910,16 @@ document.addEventListener('DOMContentLoaded', function() {
       else if(S[k].habits[i]===false){ crs.classList.add('crossed'); crs.innerHTML='<span class="cross-inner">❌</span>'; crs.disabled=true; chk.disabled=true; chk.style.opacity='0.3'; card.classList.add('missed'); }
     }
     
-    // ── 电视能量与防沉迷系统更新 ──
-    if (count === TOTAL_HABITS && !S[k].tvRewardGiven) {
-       S[k].tvTime += 1;
-       S[k].tvRewardGiven = true;
-       saveTvState(k);
-    } 
-    else if (count < TOTAL_HABITS && S[k].tvRewardGiven) {
-       S[k].tvTime = Math.max(0, S[k].tvTime - 1);
-       S[k].tvRewardGiven = false;
-       saveTvState(k);
-    }
-
+    // ── 电视能量条 UI 更新 ──
     const tvCount = document.getElementById(`${k}-tv-count`);
     const tvFill = document.getElementById(`${k}-tv-fill`);
     const tvBank = document.getElementById(`${k}-tvTime`);
-    
     if(tvCount) tvCount.textContent = count;
     if(tvFill) tvFill.style.width = ((count / TOTAL_HABITS) * 100) + '%';
-    if(tvBank) tvBank.textContent = S[k].tvTime; 
+    if(tvBank) tvBank.textContent = S[k].tvTime;
+
+    // tab 星星数
+    const tsEl=document.getElementById(`tab-${k}-score`); if(tsEl) tsEl.textContent=`⭐ ${count} 颗`;
 
     for(let j=0;j<TOTAL_SUPERS;j++){
       const sb=document.getElementById(`${k}-superCheck-${j}`); if(!sb) continue;
@@ -737,10 +947,109 @@ document.addEventListener('DOMContentLoaded', function() {
     const word = document.getElementById('lulu-daily-word').textContent;
     speak(word, 'en-US', 0.8); 
   };
+  // ── 渲染古诗 ruby 注音（两句并排，逗号分隔）──
+  function renderPoem(poemObj) {
+    const titleEl = document.getElementById('qiqi-poem-title');
+    if (titleEl) titleEl.textContent = poemObj.title;
+    const display = document.getElementById('qiqi-poem-display');
+    if (!display) return;
+
+    // 构建 HTML：第一句 + 逗号 + 第二句，每字一个 .poem-char
+    function buildLine(chars, pins, lineIdx) {
+      return chars.map((c, i) => `
+        <div class="poem-char" data-idx="${lineIdx}-${i}">
+          <span class="py">${pins[i]}</span>
+          <span class="hz">${c}</span>
+        </div>`).join('');
+    }
+
+    display.innerHTML = `
+      <div class="poem-line">${buildLine(poemObj.chars1, poemObj.pins1, 0)}</div>
+      <div class="poem-comma">，</div>
+      <div class="poem-line">${buildLine(poemObj.chars2, poemObj.pins2, 1)}</div>`;
+  }
+
+  // ── 朗读古诗：逐字粉色高亮 ──
+  let poemSpeaking = false;
+  function speakPoem(poemObj) {
+    if (!window.speechSynthesis) { alert('当前浏览器不支持发音功能哦'); return; }
+    window.speechSynthesis.cancel();
+    poemSpeaking = false;
+
+    // 合并两句字符用于定位
+    const allChars = [...poemObj.chars1, ...poemObj.chars2];
+    const fullText = poemObj.chars1.join('') + '，' + poemObj.chars2.join('');
+
+    const u = new SpeechSynthesisUtterance(fullText);
+    u.lang = 'zh-CN';
+    u.rate = 0.6; // 慢速
+    u.pitch = 1.1;
+
+    let charIndex = 0; // 当前高亮字符位置（跳过标点）
+
+    function clearHighlight() {
+      document.querySelectorAll('#qiqi-poem-display .poem-char').forEach(el => el.classList.remove('highlight'));
+    }
+
+    u.onboundary = (e) => {
+      if (e.name !== 'word' && e.name !== 'sentence') return;
+      // charIndex 对应 allChars 的索引，跳过逗号
+      const charPos = e.charIndex;
+      // 映射：前半句直接对应 chars1，后半句要减掉逗号偏移
+      let idx;
+      if (charPos < poemObj.chars1.length) {
+        idx = charPos; // line1
+        clearHighlight();
+        const el = document.querySelector(`#qiqi-poem-display .poem-char[data-idx="0-${idx}"]`);
+        if (el) el.classList.add('highlight');
+      } else {
+        idx = charPos - poemObj.chars1.length - 1; // -1 for 逗号
+        if (idx >= 0 && idx < poemObj.chars2.length) {
+          clearHighlight();
+          const el = document.querySelector(`#qiqi-poem-display .poem-char[data-idx="1-${idx}"]`);
+          if (el) el.classList.add('highlight');
+        }
+      }
+    };
+
+    // 兜底：按字符数均分时间高亮（Safari 不支持 boundary 事件时）
+    u.onstart = () => {
+      poemSpeaking = true;
+      const totalChars = allChars.length;
+      // 估算每字时长（慢速约0.6秒/字）
+      const msPerChar = (fullText.length / u.rate) * 200 / totalChars;
+      let i = 0;
+      function nextChar() {
+        if (!poemSpeaking || i >= allChars.length) return;
+        clearHighlight();
+        const line = i < poemObj.chars1.length ? 0 : 1;
+        const pos = i < poemObj.chars1.length ? i : i - poemObj.chars1.length;
+        const el = document.querySelector(`#qiqi-poem-display .poem-char[data-idx="${line}-${pos}"]`);
+        if (el) el.classList.add('highlight');
+        i++;
+        setTimeout(nextChar, msPerChar);
+      }
+      // 仅在不支持 boundary 的环境（Safari）下启用轮播
+      if (typeof window.safari !== 'undefined' || /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        nextChar();
+      }
+    };
+
+    u.onend = () => {
+      poemSpeaking = false;
+      clearHighlight();
+    };
+    u.onerror = () => {
+      poemSpeaking = false;
+      clearHighlight();
+    };
+
+    window.speechSynthesis.speak(u);
+  }
+
   document.getElementById('qiqi-studyBtn').onclick = () => {
-    const poem = document.getElementById('qiqi-daily-poem').textContent;
-    const meaning = document.getElementById('qiqi-daily-meaning').textContent.replace(/[^\u4e00-\u9fa5]/g, ''); 
-    speak(`${poem}。意思是：${meaning}`, 'zh-CN', 0.9);
+    const idx = Math.floor((Math.floor((new Date().getTime() + 8*3600*1000) / 86400000)) % dailyPoems.length);
+    speakPoem(dailyPoems[idx]);
   };
 
   // ── 音效引擎 ──
@@ -797,7 +1106,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function showEasterEgg(k) {
     const imgEl = document.getElementById('easterEggImg');
-    imgEl.src = k === 'lulu' ? 'lulu-caidan.jpg' : 'qiqi-caidan.jpg';
+    const src = k === 'lulu' ? 'lulu-caidan.jpg' : 'qiqi-caidan.jpg';
+    imgEl.onerror = () => {
+      // 图片不存在时用emoji彩蛋代替
+      imgEl.style.display = 'none';
+      document.getElementById('easterEggFallback').style.display = 'block';
+    };
+    imgEl.onload = () => {
+      imgEl.style.display = 'block';
+      document.getElementById('easterEggFallback').style.display = 'none';
+    };
+    imgEl.src = src;
     document.getElementById('easterEgg').classList.add('show');
     try{launchConfetti();launchConfetti();launchConfetti();}catch(e){}
     try{playSuccess(true);}catch(e){}
@@ -805,15 +1124,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function doCheck(k,id){
     if(S[k].habits[id]!==null) return;
-    S[k].habits[id]=true; S[k].score+=1; 
-    S[k].streaks[id] += 1; 
-    saveKidState(k); saveKidScore(k); saveKidStreaks(k); 
+    S[k].habits[id]=true; S[k].score+=1;
+
+    // ── 连击：只在新的一天第一次打勾时才累加，防重复 ──
+    const lastDate = S[k].streakDates[id] || '';
+    const yesterday = (()=>{ const d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); })();
+    if (lastDate === yesterday || lastDate === '') {
+      // 昨天打过勾（或首次），连击+1
+      S[k].streaks[id] = (lastDate === '') ? 1 : S[k].streaks[id] + 1;
+    } else if (lastDate !== todayStr()) {
+      // 超过一天没打，重置为1
+      S[k].streaks[id] = 1;
+    }
+    // 同一天再次进入此函数会被顶部 !== null 拦截，不会重复累加
+    S[k].streakDates[id] = todayStr();
+
+    saveKidState(k); saveKidScore(k); saveKidStreaks(k); saveKidStreakDates(k);
     renderLists(); renderKid(k);
     const count=S[k].habits.filter(v=>v===true).length;
-    
-    if(S[k].streaks[id] === 7) {
+
+    // ── 电视奖励：只在完成全部那一刻触发一次 ──
+    if (count === TOTAL_HABITS && !S[k].tvRewardGiven) {
+      S[k].tvTime += 1;
+      S[k].tvRewardGiven = true;
+      saveTvState(k);
+      renderKid(k);
+    }
+
+    // ── 连击7天彩蛋 ──
+    if(S[k].streaks[id] >= 7) {
       S[k].streaks[id] = 0;
-      saveKidStreaks(k);
+      S[k].streakDates[id] = '';
+      saveKidStreaks(k); saveKidStreakDates(k);
       setTimeout(() => { showEasterEgg(k); }, 700);
     } else {
       try{launchConfetti();}catch(e){}
@@ -877,6 +1219,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function doReset(k){
+    const pwd = prompt(`🔒 重置打卡需要家长验证，请输入密码：`);
+    if (pwd === null) return;
+    if (pwd !== '7777') { alert('❌ 密码错误！'); return; }
     if(!confirm(`确定要重置 ${KID_NAMES[k]} 今天的打卡吗？\n⚠️ 今日日常积分会被扣除，但超级挑战本月内不重置。`)) return;
     const earned=S[k].habits.filter(v=>v===true).length;
     S[k].score=Math.max(0,S[k].score-earned);
@@ -991,7 +1336,8 @@ document.addEventListener('DOMContentLoaded', function() {
   function renderDateAndStudy(){
     const d=new Date(), days=['日','一','二','三','四','五','六'];
     const s=`📅 今天是：${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${days[d.getDay()]}`;
-    const daysSinceEpoch = Math.floor(d.getTime() / 86400000);
+    // 北京时间 UTC+8，加8小时偏移后再按天数取整
+    const daysSinceEpoch = Math.floor((d.getTime() + 8 * 3600 * 1000) / 86400000);
     
     const wordObj = dailyWords[daysSinceEpoch % dailyWords.length];
     const poemObj = dailyPoems[daysSinceEpoch % dailyPoems.length];
@@ -1006,10 +1352,8 @@ document.addEventListener('DOMContentLoaded', function() {
        document.getElementById('lulu-daily-meaning').textContent = wordObj.meaning;
     }
     
-    if(document.getElementById('qiqi-daily-poem')) {
-       document.getElementById('qiqi-daily-pinyin').textContent = poemObj.pinyin;
-       document.getElementById('qiqi-daily-poem').textContent = poemObj.poem;
-       document.getElementById('qiqi-daily-meaning').textContent = poemObj.meaning;
+    if(document.getElementById('qiqi-poem-display')) {
+      renderPoem(poemObj);
     }
   }
 
@@ -1035,7 +1379,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if(localStorage.getItem(sk(k,'month'))!==monthStr()){
           const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;
+          const lastMonth=localStorage.getItem(sk(k,'month'))||'';
           const earned=parseFloat((lastScore/10).toFixed(2));
+          if(lastMonth && lastScore>0){
+            S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});
+            if(S[k].monthHistory.length>3) S[k].monthHistory=S[k].monthHistory.slice(0,3);
+            saveKidHistory(k);
+          }
           S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));
           saveKidWallet(k);
           localStorage.setItem(sk(k,'month'),monthStr());
