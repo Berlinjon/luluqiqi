@@ -495,8 +495,22 @@
       <button class="toast-close red-btn" id="cancelEditBtn" style="margin-top:0;padding:10px 22px;">取消</button>
       <button class="toast-close" id="saveEditBtn" style="margin-top:0;padding:10px 22px;">保存</button>
     </div>
-  </div>
-</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;">
+      <button class="toast-close" id="exportDataBtn" style="margin-top:0;padding:8px 16px;background:linear-gradient(120deg,#9c27b0,#7b1fa2);font-size:0.9rem;">📤 导出备份</button>
+      <button class="toast-close" id="importDataBtn" style="margin-top:0;padding:8px 16px;background:linear-gradient(120deg,#ff9800,#f57c00);font-size:0.9rem;">📥 导入恢复</button>
+    </div>
+    <!-- 备份码展示区（导出用，平时隐藏）-->
+    <div id="backupDisplay" style="display:none;margin-top:12px;text-align:left;">
+      <div style="font-size:0.78rem;font-weight:900;color:#7b1fa2;margin-bottom:6px;">📋 请长按全选下方备份码，复制保存到备忘录：</div>
+      <textarea id="backupTextarea" readonly
+        style="width:100%;height:80px;font-size:0.7rem;border-radius:10px;border:2px solid #ce93d8;
+               padding:8px;font-family:monospace;background:#fce4ec;color:#4a3f6b;resize:none;
+               word-break:break-all;-webkit-user-select:text;user-select:text;"></textarea>
+      <div style="font-size:0.72rem;color:#9c27b0;margin-top:4px;font-weight:800;">
+        ⚠️ 版本：v4 — 请保留此信息，版本升级后旧备份可能失效
+      </div>
+      <button class="toast-close" id="closeBackupBtn" style="margin-top:8px;padding:8px 24px;font-size:0.9rem;">关闭</button>
+    </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -1331,6 +1345,78 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('cancelEditBtn').onclick=(e)=>{e.preventDefault();document.getElementById('editOverlay').classList.remove('show');};
   document.getElementById('editOverlay').onclick=()=>document.getElementById('editOverlay').classList.remove('show');
   document.querySelector('#editOverlay .toast-box').onclick=(e)=>e.stopPropagation();
+
+  // ── 数据备份与恢复 ────────────────────────────────────────────────────────
+
+  // 【修复2】导出：用 textarea 展示备份码，支持长按全选，避免 iOS prompt 无法复制
+  document.getElementById('exportDataBtn').onclick = (e) => {
+    e.preventDefault();
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith('tab_lulu') || key.startsWith('tab_qiqi')) {
+        data[key] = localStorage.getItem(key);
+      }
+    }
+    // 在备份码中记录版本号，方便导入时做校验
+    data['__backup_version__'] = V;
+    const backupStr = btoa(encodeURIComponent(JSON.stringify(data)));
+    const textarea = document.getElementById('backupTextarea');
+    textarea.value = backupStr;
+    document.getElementById('backupDisplay').style.display = 'block';
+    // 自动全选，方便用户复制
+    setTimeout(() => { textarea.focus(); textarea.select(); }, 100);
+  };
+
+  document.getElementById('closeBackupBtn').onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('backupDisplay').style.display = 'none';
+  };
+
+  // 【修复2+3】导入：先验证家长密码，再展示版本警告，再执行恢复
+  document.getElementById('importDataBtn').onclick = (e) => {
+    e.preventDefault();
+
+    // 修复3：先验证家长密码
+    const pwd = prompt('🔒 导入数据需要家长验证，请输入密码：');
+    if (pwd === null) return;
+    if (pwd !== '7777') { alert('❌ 密码错误！'); return; }
+
+    const input = prompt('⚠️ 警告：导入将覆盖当前手机的所有数据！\n\n请输入你之前保存的【备份代码】：');
+    if (!input) return;
+
+    try {
+      const data = JSON.parse(decodeURIComponent(atob(input.trim())));
+
+      // 修复1：检查备份版本号，不匹配时给出明确提示
+      const backupVer = data['__backup_version__'] || '未知';
+      if (backupVer !== V) {
+        const go = confirm(
+          `⚠️ 版本不匹配！\n` +
+          `备份版本：${backupVer}，当前版本：${V}\n\n` +
+          `导入后数据可能无法正常显示。\n` +
+          `是否仍要继续导入？`
+        );
+        if (!go) return;
+      }
+
+      let count = 0;
+      for (const key in data) {
+        if (key.startsWith('tab_lulu') || key.startsWith('tab_qiqi')) {
+          localStorage.setItem(key, data[key]);
+          count++;
+        }
+      }
+      if (count > 0) {
+        alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);
+        location.reload();
+      } else {
+        alert('❌ 无效的备份代码，未找到可恢复的数据！');
+      }
+    } catch (err) {
+      alert('❌ 代码格式错误，恢复失败！\n请确保完整复制了备份码，没有遗漏任何字符。');
+    }
+  };
 
   // ── 渲染日期与知识库内容 ──
   function renderDateAndStudy(){
