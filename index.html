@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fff8ed">
 <title>Lulu & Qiqi 每日好习惯 ⭐</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap" rel="stylesheet">
 <style>
   :root {
     --gold: #ffd600;
@@ -25,8 +29,15 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* 🍎 苹果 iOS 专属高度修复 */
+  html {
+    scroll-behavior: smooth;
+    height: -webkit-fill-available;
+  }
+
   body {
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
     display: flex; flex-direction: column; align-items: center;
     padding: 0 0 60px;
@@ -476,13 +487,11 @@
 
   <div class="date-badge" id="lulu-dateBadge">📅 今天是：</div>
 
-  <!-- 月底测量提醒 Lulu -->
   <div class="growth-remind" id="lulu-growthRemind">
     <div class="growth-remind-title">📏 月底提醒！</div>
     <div class="growth-remind-sub">本月还没给 Lulu 量身高体重哦，快去测一下吧～</div>
   </div>
 
-  <!-- 成长档案卡 Lulu -->
   <div class="growth-card lulu" id="lulu-growthCard">
     <div class="growth-header" id="lulu-growthHeader">
       <div class="growth-header-left">
@@ -534,8 +543,7 @@
   <div class="study-card qiqi" id="qiqi-studyBtn">
     <div class="study-header qiqi">📜 每日古诗 · <span id="qiqi-poem-title">咏鹅</span> <span class="speaker-icon">🔊</span></div>
     <div class="poem-ruby-row" id="qiqi-poem-display">
-      <!-- 由 JS 动态渲染 ruby 注音 -->
-    </div>
+      </div>
   </div>
 
   <div class="tv-bar-container">
@@ -571,13 +579,11 @@
 
   <div class="date-badge" id="qiqi-dateBadge">📅 今天是：</div>
 
-  <!-- 月底测量提醒 Qiqi -->
   <div class="growth-remind" id="qiqi-growthRemind">
     <div class="growth-remind-title">📏 月底提醒！</div>
     <div class="growth-remind-sub">本月还没给 Qiqi 量身高体重哦，快去测一下吧～</div>
   </div>
 
-  <!-- 成长档案卡 Qiqi -->
   <div class="growth-card qiqi" id="qiqi-growthCard">
     <div class="growth-header" id="qiqi-growthHeader">
       <div class="growth-header-left">
@@ -659,7 +665,6 @@
       <button class="toast-close" id="exportDataBtn" style="margin-top:0;padding:8px 16px;background:linear-gradient(120deg,#9c27b0,#7b1fa2);font-size:0.9rem;">📤 导出备份</button>
       <button class="toast-close" id="importDataBtn" style="margin-top:0;padding:8px 16px;background:linear-gradient(120deg,#ff9800,#f57c00);font-size:0.9rem;">📥 导入恢复</button>
     </div>
-    <!-- 备份码展示区（导出用，平时隐藏）-->
     <div id="backupDisplay" style="display:none;margin-top:12px;text-align:left;">
       <div style="font-size:0.78rem;font-weight:900;color:#7b1fa2;margin-bottom:6px;">📋 请长按全选下方备份码，复制保存到备忘录：</div>
       <textarea id="backupTextarea" readonly
@@ -674,6 +679,18 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // 专门修复苹果手机通过桌面图标打开时的缓存白屏问题
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      window.location.reload();
+    } else {
+      // 强制触发一次页面重绘
+      document.body.style.display = 'none';
+      document.body.offsetHeight; 
+      document.body.style.display = '';
+    }
+  });
+
   const TOTAL_HABITS = 9;
   const TOTAL_SUPERS = 3;
   const KIDS = ['lulu', 'qiqi'];
