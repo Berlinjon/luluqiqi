@@ -745,6 +745,45 @@ nav{
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 
+<!-- 通用密码验证弹层 -->
+<div class="toast-overlay" id="pwdOverlay">
+  <div class="toast-box" style="padding:28px 28px 24px;">
+    <div class="toast-msg" id="pwdOverlayTitle" style="font-size:1.3rem;margin-bottom:6px;">🔒 家长验证</div>
+    <div class="toast-sub" id="pwdOverlayDesc" style="margin-bottom:16px;">请输入家长密码</div>
+    <input id="pwdInput" type="password" inputmode="numeric" maxlength="20"
+      style="width:100%;padding:12px 16px;border-radius:16px;border:2px solid #ddd;
+             font-size:1.2rem;text-align:center;font-family:inherit;font-weight:900;
+             letter-spacing:4px;outline:none;background:#fffde7;color:#4a3f6b;
+             -webkit-appearance:none;"
+      placeholder="请输入密码">
+    <div id="pwdError" style="color:#e53935;font-size:0.82rem;font-weight:800;margin-top:6px;min-height:18px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+      <button class="toast-close red" id="pwdCancelBtn" style="margin-top:0;padding:10px 24px;">取消</button>
+      <button class="toast-close" id="pwdConfirmBtn" style="margin-top:0;padding:10px 24px;">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 商店确认弹层 -->
+<div class="toast-overlay" id="storeConfirmOverlay">
+  <div class="toast-box" style="padding:28px 28px 24px;max-width:340px;">
+    <div class="store-confirm-icon" id="storeConfirmIcon" style="font-size:3rem;margin-bottom:8px;">🎁</div>
+    <div class="toast-msg" id="storeConfirmName" style="font-size:1.3rem;">兑换确认</div>
+    <div class="toast-sub" id="storeConfirmDesc" style="margin:8px 0 16px;">确认兑换此奖励？</div>
+    <input id="storeConfirmPwd" type="password" inputmode="numeric" maxlength="20"
+      style="width:100%;padding:12px 16px;border-radius:16px;border:2px solid #ddd;
+             font-size:1.2rem;text-align:center;font-family:inherit;font-weight:900;
+             letter-spacing:4px;outline:none;background:#fffde7;color:#4a3f6b;
+             -webkit-appearance:none;"
+      placeholder="请输入家长密码">
+    <div id="storeConfirmError" style="color:#e53935;font-size:0.82rem;font-weight:800;margin-top:6px;min-height:18px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+      <button class="toast-close red" id="storeConfirmCancelBtn" style="margin-top:0;padding:10px 20px;">取消</button>
+      <button class="toast-close" id="storeConfirmOkBtn" style="margin-top:0;padding:10px 20px;">✅ 确认兑换</button>
+    </div>
+  </div>
+</div>
+
 <div class="edit-overlay" id="editOverlay">
   <div class="edit-box">
     <div class="edit-title">🛠️ 家长控制台</div>
@@ -754,6 +793,16 @@ nav{
       <input class="edit-text" id="edit-name-lulu" placeholder="大宝名字 (默认Lulu)">
       <input class="edit-text" id="edit-name-qiqi" placeholder="二宝名字 (默认Qiqi)">
     </div>
+
+    <div class="edit-section" style="color:#7b1fa2;">🔐 家长密码管理</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
+      <input class="edit-text" id="edit-pwd-new" type="password" inputmode="numeric" maxlength="20"
+        placeholder="新密码" style="flex:1;min-width:100px;letter-spacing:3px;">
+      <input class="edit-text" id="edit-pwd-confirm" type="password" inputmode="numeric" maxlength="20"
+        placeholder="再输一次" style="flex:1;min-width:100px;letter-spacing:3px;">
+      <button class="edit-btn purple" id="changePwdBtn" style="white-space:nowrap;">修改密码</button>
+    </div>
+    <div id="pwdChangeMsg" style="font-size:0.78rem;font-weight:800;min-height:16px;margin-bottom:6px;"></div>
 
     <div class="edit-section" style="color:var(--lulu);">👧 <span class="dyn-name" data-kid="lulu">Lulu</span> 超级挑战</div><div id="editLuluSuperList"></div>
     <div class="edit-section" style="color:#880e4f;">👧 <span class="dyn-name" data-kid="lulu">Lulu</span> 日常习惯</div><div id="editLuluList"></div>
@@ -770,7 +819,16 @@ nav{
 document.addEventListener('DOMContentLoaded', function() {
   const TOTAL_HABITS = 9, TOTAL_SUPERS = 3;
   const KIDS = ['lulu','qiqi'];
-  const V = 'v6'; 
+  const V = 'v6';
+  const PWD_KEY = 'app_pwd_v6';
+
+  // 获取当前密码（默认 7777）
+  function getPassword() {
+    return localStorage.getItem(PWD_KEY) || '7777';
+  }
+  function checkPassword(input) {
+    return input === getPassword();
+  }
 
   let KID_NAMES = { lulu: 'Lulu', qiqi: 'Qiqi' };
   try { const storedNames = JSON.parse(localStorage.getItem('kidNames_v6')); if(storedNames) KID_NAMES = storedNames; } catch(e){}
@@ -893,20 +951,100 @@ document.addEventListener('DOMContentLoaded', function() {
     view.innerHTML = html + `<div class="gap"></div>`;
   }
 
+  // ── 通用密码弹层 ─────────────────────────────────────────────────────────
+  function showPwdOverlay(title, desc) {
+    return new Promise(resolve => {
+      const overlay   = document.getElementById('pwdOverlay');
+      const inputEl   = document.getElementById('pwdInput');
+      const errorEl   = document.getElementById('pwdError');
+      document.getElementById('pwdOverlayTitle').textContent = title || '🔒 家长验证';
+      document.getElementById('pwdOverlayDesc').textContent  = desc  || '请输入家长密码继续操作';
+      inputEl.value = ''; errorEl.textContent = '';
+      overlay.classList.add('show');
+      setTimeout(() => inputEl.focus(), 100);
+      function cleanup(result) {
+        overlay.classList.remove('show');
+        const nb = document.getElementById('pwdConfirmBtn').cloneNode(true);
+        document.getElementById('pwdConfirmBtn').replaceWith(nb);
+        const cb = document.getElementById('pwdCancelBtn').cloneNode(true);
+        document.getElementById('pwdCancelBtn').replaceWith(cb);
+        document.getElementById('pwdCancelBtn').onclick = () => cleanup(false);
+        resolve(result);
+      }
+      document.getElementById('pwdConfirmBtn').onclick = () => {
+        if (checkPassword(inputEl.value)) { cleanup(true); }
+        else { errorEl.textContent='❌ 密码错误，请重试'; inputEl.value=''; inputEl.focus(); }
+      };
+      document.getElementById('pwdCancelBtn').onclick = () => cleanup(false);
+      inputEl.onkeydown = e => { if(e.key==='Enter') document.getElementById('pwdConfirmBtn').click(); };
+    });
+  }
+
+  // ── 密码修改 ──────────────────────────────────────────────────────────────
+  document.getElementById('changePwdBtn').onclick = async (e) => {
+    e.preventDefault();
+    const msgEl  = document.getElementById('pwdChangeMsg');
+    const newPwd = document.getElementById('edit-pwd-new').value.trim();
+    const cfmPwd = document.getElementById('edit-pwd-confirm').value.trim();
+    if (!newPwd) { msgEl.style.color='#e53935'; msgEl.textContent='❌ 新密码不能为空'; return; }
+    if (newPwd !== cfmPwd) { msgEl.style.color='#e53935'; msgEl.textContent='❌ 两次输入不一致'; return; }
+    const ok = await showPwdOverlay('🔒 修改密码', '请先输入当前旧密码验证身份');
+    if (!ok) return;
+    localStorage.setItem(PWD_KEY, newPwd);
+    document.getElementById('edit-pwd-new').value = '';
+    document.getElementById('edit-pwd-confirm').value = '';
+    msgEl.style.color = '#2e7d32';
+    msgEl.textContent = `✅ 密码已修改，请牢记新密码！`;
+  };
+
+  // ── 商店确认弹层 ──────────────────────────────────────────────────────────
+  function showStoreConfirm(item, onOk) {
+    const overlay   = document.getElementById('storeConfirmOverlay');
+    const inputEl   = document.getElementById('storeConfirmPwd');
+    const errorEl   = document.getElementById('storeConfirmError');
+    const priceText = item.type==='money' ? `¥${item.price} 元` : `⭐ ${item.price} 颗星星`;
+    document.getElementById('storeConfirmIcon').textContent = item.icon;
+    document.getElementById('storeConfirmName').textContent = `兑换【${item.name}】`;
+    document.getElementById('storeConfirmDesc').innerHTML =
+      `将扣除 <b style="color:#e65100;">${priceText}</b>，请家长输入密码确认`;
+    inputEl.value = ''; errorEl.textContent = '';
+    overlay.classList.add('show');
+    setTimeout(() => inputEl.focus(), 100);
+    function cleanup() {
+      overlay.classList.remove('show');
+      const nb = document.getElementById('storeConfirmOkBtn').cloneNode(true);
+      document.getElementById('storeConfirmOkBtn').replaceWith(nb);
+      const cb = document.getElementById('storeConfirmCancelBtn').cloneNode(true);
+      document.getElementById('storeConfirmCancelBtn').replaceWith(cb);
+      document.getElementById('storeConfirmCancelBtn').onclick = cleanup;
+    }
+    document.getElementById('storeConfirmOkBtn').onclick = () => {
+      if (checkPassword(inputEl.value)) { cleanup(); onOk(); }
+      else { errorEl.textContent='❌ 密码错误，请重试'; inputEl.value=''; inputEl.focus(); }
+    };
+    document.getElementById('storeConfirmCancelBtn').onclick = cleanup;
+    inputEl.onkeydown = e => { if(e.key==='Enter') document.getElementById('storeConfirmOkBtn').click(); };
+  }
+
   window.buyStoreItem = function(id) {
-    const k = currentKid; const item = STORE_ITEMS.find(i => i.id === id); if(!item) return;
-    const isMoney = item.type === 'money'; const bal = isMoney ? S[k].wallet : S[k].score; const unit = isMoney ? '元' : '颗星星';
-    if(bal < item.price) { alert(`❌ 余额不足哦！\n需要 ${item.price} ${unit}，继续攒够吧！💪`); return; }
-    if(!confirm(`🎁 确认兑换【${item.name}】吗？\n将扣除 ${item.price} ${unit}。`)) return;
-    const pwd = prompt(`🔒 请输入家长密码确认：`);
-    if(pwd !== '7777') { if(pwd !== null) alert('❌ 密码错误！'); return; }
-    if(isMoney) { S[k].wallet = parseFloat((S[k].wallet - item.price).toFixed(2)); saveKidWallet(k); } 
-    else { S[k].score -= item.price; saveKidScore(k); }
-    updateBankUI(k); renderRewards(); 
-    try{launchConfetti();launchConfetti();playSuccess(true);}catch(e){}
-    document.getElementById('toastSuccessName').textContent = `兑换成功！`;
-    document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${item.icon} ${item.name}</b>！<br>快去找爸爸妈妈兑现吧！`;
-    document.getElementById('toastSuccess').classList.add('show');
+    const k = currentKid;
+    const item = STORE_ITEMS.find(i => i.id === id);
+    if (!item) return;
+    const isMoney = item.type === 'money';
+    const bal = isMoney ? S[k].wallet : S[k].score;
+    if (bal < item.price) {
+      alert(`❌ 余额不足哦！\n需要 ${item.price} ${isMoney?'元':'颗星星'}，继续攒够吧！💪`);
+      return;
+    }
+    showStoreConfirm(item, () => {
+      if (isMoney) { S[k].wallet = parseFloat((S[k].wallet - item.price).toFixed(2)); saveKidWallet(k); }
+      else { S[k].score -= item.price; saveKidScore(k); }
+      updateBankUI(k); renderRewards();
+      try{launchConfetti();launchConfetti();playSuccess(true);}catch(e){}
+      document.getElementById('toastSuccessName').textContent = `兑换成功！`;
+      document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${item.icon} ${item.name}</b>！<br>快去找爸爸妈妈兑现吧！`;
+      document.getElementById('toastSuccess').classList.add('show');
+    });
   };
 
   // ── Growth Chart Storage Helpers ──
@@ -1051,7 +1189,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('navProgress').onclick = () => switchNav('progress');
   document.getElementById('navSettings').onclick = () => {
     const pwd = prompt('🔒 请输入家长密码：');
-    if (pwd === '7777') openEditModal();
+    if (checkPassword(pwd)) openEditModal();
     else if (pwd !== null) alert('❌ 密码错误！');
   };
   document.getElementById('tab-lulu').onclick=()=>switchTab('lulu');
@@ -1182,7 +1320,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function doSuperCheck(k,j){if(S[k].supers[j])return;const p=mathProblem();const input=prompt(`【防误触】答对才能完成挑战：\n\n${p.q}`);if(input===null)return;if(input.trim()===p.ans){S[k].supers[j]=true;S[k].score+=50;saveKidState(k);saveKidSupers(k);saveKidScore(k);renderKid(k);try{launchConfetti();launchConfetti();}catch(e){}try{playSuccess(true);}catch(e){}document.getElementById('toastSuccessName').textContent=`超厉害！`;document.getElementById('toastSuccessSub').innerHTML=`算术全对！超级挑战 +50分 🎉`;document.getElementById('toastSuccess').classList.add('show');}else{alert('❌ 算错啦！再仔细算算~');}}
   function doSpendTv(k){if(S[k].tvTime<=0){alert('❌ 小金库空空如也，快完成每天的好习惯赚取时间吧！');return;}const p=generateMath3();const ans=prompt(`【算术锁】算对看电视：\n\n${p.q}`);if(ans===null)return;if(ans.trim()!==p.ans){alert('❌ 算错啦！再仔细检查一下吧~');return;}const hrs=prompt(`✅ 解锁成功！\n当前小金库：${S[k].tvTime} 小时\n请输入本次想扣除多少小时？(支持 0.5)`);if(hrs===null)return;const h=parseFloat(hrs);if(isNaN(h)||h<=0){alert('❌ 输入无效哦');return;}if(h>S[k].tvTime){alert(`❌ 余额不足！只有 ${S[k].tvTime} 小时`);return;}S[k].tvTime=parseFloat((S[k].tvTime-h).toFixed(2));saveTvState(k);renderKid(k);alert(`📺 兑换成功！尽情享受 ${h} 小时的快乐时光！`);}
-  function doReset(k){const pwd=prompt('🔒 重置需要验证，请输入密码：');if(pwd===null)return;if(pwd!=='7777'){alert('❌ 密码错误！');return;}if(!confirm(`确定重置今天的打卡吗？\n⚠️ 今日积分会被扣除。`))return;const earned=S[k].habits.filter(v=>v===true).length;S[k].score=Math.max(0,S[k].score-earned);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false; if(S[k].calendar) S[k].calendar[todayStr()] = false; saveKidCalendar(k); saveTvState(k);saveKidState(k);saveKidScore(k);renderKid(k);}
+  function doReset(k){const pwd=prompt('🔒 重置需要验证，请输入密码：');if(pwd===null)return;if(!checkPassword(pwd)){alert('❌ 密码错误！');return;}if(!confirm(`确定重置今天的打卡吗？\n⚠️ 今日积分会被扣除。`))return;const earned=S[k].habits.filter(v=>v===true).length;S[k].score=Math.max(0,S[k].score-earned);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false; if(S[k].calendar) S[k].calendar[todayStr()] = false; saveKidCalendar(k); saveTvState(k);saveKidState(k);saveKidScore(k);renderKid(k);}
 
   function bindEvents(){
     KIDS.forEach(k=>{
@@ -1209,9 +1347,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let cnt=0,tmr=null;const el=document.getElementById(`${k}-bankTitle`);
     if(el)el.onclick=e=>{e.stopPropagation();cnt++;clearTimeout(tmr);tmr=setTimeout(()=>cnt=0,800);if(cnt>=5){cnt=0;const input=prompt(`【家长特权】补充积分（负数为扣除）：`,'0');if(input!==null){const pts=parseInt(input);if(!isNaN(pts)){S[k].score=Math.max(0,S[k].score+pts);saveKidScore(k);updateBankUI(k);alert('✅ 积分修改成功！');}else alert('❌ 请输入纯数字');}}}; 
     const spendBtn=document.getElementById(`${k}-spendBtn`);
-    if(spendBtn)spendBtn.onclick=e=>{e.preventDefault();const pwd=prompt('🔒 消费扣除需要家长验证：');if(!pwd||pwd!=='7777'){if(pwd!==null)alert('❌ 密码错误！');return;}const cur=S[k].wallet.toFixed(2);const inp=prompt(`零钱包余额 ¥${cur}\n本次消费金额（元）：`,'');if(!inp)return;const amount=parseFloat(inp);if(isNaN(amount)||amount<=0){alert('❌ 请输入有效金额！');return;}if(amount>S[k].wallet){alert(`❌ 余额不足！当前余额 ¥${cur}`);return;}S[k].wallet=parseFloat((S[k].wallet-amount).toFixed(2));saveKidWallet(k);updateBankUI(k);alert(`✅ 扣除 ¥${amount.toFixed(2)}，剩余 ¥${S[k].wallet.toFixed(2)}`);};
+    if(spendBtn)spendBtn.onclick=e=>{e.preventDefault();const pwd=prompt('🔒 消费扣除需要家长验证：');if(!pwd||!checkPassword(pwd)){if(pwd!==null)alert('❌ 密码错误！');return;}const cur=S[k].wallet.toFixed(2);const inp=prompt(`零钱包余额 ¥${cur}\n本次消费金额（元）：`,'');if(!inp)return;const amount=parseFloat(inp);if(isNaN(amount)||amount<=0){alert('❌ 请输入有效金额！');return;}if(amount>S[k].wallet){alert(`❌ 余额不足！当前余额 ¥${cur}`);return;}S[k].wallet=parseFloat((S[k].wallet-amount).toFixed(2));saveKidWallet(k);updateBankUI(k);alert(`✅ 扣除 ¥${amount.toFixed(2)}，剩余 ¥${S[k].wallet.toFixed(2)}`);};
     const depositBtn=document.getElementById(`${k}-depositBtn`);
-    if(depositBtn)depositBtn.onclick=e=>{e.preventDefault();const pwd=prompt('🔒 存入零钱包需要家长验证：');if(!pwd||pwd!=='7777'){if(pwd!==null)alert('❌ 密码错误！');return;}const cur=S[k].wallet.toFixed(2);const inp=prompt(`零钱包余额 ¥${cur}\n本次存入金额（元）：`,'');if(!inp)return;const amount=parseFloat(inp);if(isNaN(amount)||amount<=0){alert('❌ 请输入有效金额！');return;}S[k].wallet=parseFloat((S[k].wallet+amount).toFixed(2));saveKidWallet(k);updateBankUI(k);alert(`✅ 存入 ¥${amount.toFixed(2)}，余额 ¥${S[k].wallet.toFixed(2)}`);};
+    if(depositBtn)depositBtn.onclick=e=>{e.preventDefault();const pwd=prompt('🔒 存入零钱包需要家长验证：');if(!pwd||!checkPassword(pwd)){if(pwd!==null)alert('❌ 密码错误！');return;}const cur=S[k].wallet.toFixed(2);const inp=prompt(`零钱包余额 ¥${cur}\n本次存入金额（元）：`,'');if(!inp)return;const amount=parseFloat(inp);if(isNaN(amount)||amount<=0){alert('❌ 请输入有效金额！');return;}S[k].wallet=parseFloat((S[k].wallet+amount).toFixed(2));saveKidWallet(k);updateBankUI(k);alert(`✅ 存入 ¥${amount.toFixed(2)}，余额 ¥${S[k].wallet.toFixed(2)}`);};
   });
 
   function openEditModal(){
@@ -1252,7 +1390,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('exportDataBtn').onclick=e=>{e.preventDefault();const data={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')))data[key]=localStorage.getItem(key);}data['kidNames_v6']=JSON.stringify(KID_NAMES);data['__backup_version__']=V;const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));const textarea=document.getElementById('backupTextarea');textarea.value=backupStr;document.getElementById('backupDisplay').style.display='block';setTimeout(()=>{textarea.focus();textarea.select();},100);};
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=e=>{e.preventDefault();const pwd=prompt('🔒 导入数据需要家长验证，请输入密码：');if(!pwd||pwd!=='7777'){if(pwd!==null)alert('❌ 密码错误！');return;}const input=prompt('⚠️ 警告：导入将覆盖当前所有数据！\n\n请输入备份代码：');if(!input)return;try{const data=JSON.parse(decodeURIComponent(atob(input.trim())));const backupVer=data['__backup_version__']||'未知';if(backupVer!==V){if(!confirm(`⚠️ 版本不匹配（备份:${backupVer}, 当前:${V}）\n是否仍要继续导入？`))return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key==='kidNames_v6'){localStorage.setItem(key,data[key]);count++;}}if(count>0){alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);location.reload();}else alert('❌ 无效的备份代码！');}catch(err){alert('❌ 代码格式错误，恢复失败！');}};
+  document.getElementById('importDataBtn').onclick=e=>{e.preventDefault();const pwd=prompt('🔒 导入数据需要家长验证，请输入密码：');if(!pwd||!checkPassword(pwd)){if(pwd!==null)alert('❌ 密码错误！');return;}const input=prompt('⚠️ 警告：导入将覆盖当前所有数据！\n\n请输入备份代码：');if(!input)return;try{const data=JSON.parse(decodeURIComponent(atob(input.trim())));const backupVer=data['__backup_version__']||'未知';if(backupVer!==V){if(!confirm(`⚠️ 版本不匹配（备份:${backupVer}, 当前:${V}）\n是否仍要继续导入？`))return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key==='kidNames_v6'){localStorage.setItem(key,data[key]);count++;}}if(count>0){alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);location.reload();}else alert('❌ 无效的备份代码！');}catch(err){alert('❌ 代码格式错误，恢复失败！');}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
@@ -1264,7 +1402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(records.length===0){tbody.innerHTML=`<tr><td colspan="6" style="color:#bbb;padding:12px 0;">还没有记录，快来量一量吧 📏</td></tr>`;return;}
     const dHtml=val=>{if(val===null)return`<span class="growth-same">—</span>`;const n=parseFloat(val);if(n>0)return`<span class="growth-up">+${val}</span>`;if(n<0)return`<span style="color:#42a5f5;">${val}</span>`;return`<span class="growth-same">0</span>`;};
     tbody.innerHTML=records.map((r,i)=>{const prev=records[i+1];const dH=prev?(r.height-prev.height).toFixed(1):null;const dW=prev?(r.weight-prev.weight).toFixed(1):null;return`<tr><td>${r.month}</td><td>${r.height}</td><td>${r.weight}</td><td>${dHtml(dH)}</td><td>${dHtml(dW)}</td><td><button class="growth-del-btn" data-kid="${k}" data-idx="${i}">🗑️</button></td></tr>`;}).join('');
-    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx);const pwd=prompt('🔒 删除记录需要家长验证：');if(pwd!=='7777'){if(pwd!==null)alert('❌ 密码错误！');return;}const recs=loadGrowth(kid);recs.splice(idx,1);saveGrowth(kid,recs);renderGrowthTable(kid);if(currentNav==='progress')renderMap();};});
+    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx);const pwd=prompt('🔒 删除记录需要家长验证：');if(!checkPassword(pwd)){if(pwd!==null)alert('❌ 密码错误！');return;}const recs=loadGrowth(kid);recs.splice(idx,1);saveGrowth(kid,recs);renderGrowthTable(kid);if(currentNav==='progress')renderMap();};});
   }
   
   KIDS.forEach(k=>{
@@ -1273,7 +1411,7 @@ document.addEventListener('DOMContentLoaded', function() {
     saveBtn.addEventListener('click',e=>{
       e.preventDefault();const hInput=document.getElementById(`${k}-heightInput`);const wInput=document.getElementById(`${k}-weightInput`);const h=parseFloat(hInput.value),w=parseFloat(wInput.value);
       if(isNaN(h)||h<50||h>200){alert('❌ 请输入有效的身高（50~200cm）');return;}if(isNaN(w)||w<10||w>100){alert('❌ 请输入有效的体重（10~100kg）');return;}
-      const pwd=prompt(`🔒 记录成长数据需要验证：`);if(pwd!==null&&pwd!=='7777'){alert('❌ 密码错误！');return;}if(pwd===null)return;
+      const pwd=prompt(`🔒 记录成长数据需要验证：`);if(pwd!==null&&!checkPassword(pwd)){alert('❌ 密码错误！');return;}if(pwd===null)return;
       const records=loadGrowth(k);const month=currentMonthLabel();const existIdx=records.findIndex(r=>r.month===month);const entry={month,height:h,weight:w};
       if(existIdx>=0){if(!confirm(`本月已有记录，是否覆盖？`))return;records[existIdx]=entry;}else{records.unshift(entry);if(records.length>24)records.pop();}
       saveGrowth(k,records);renderGrowthTable(k);checkGrowthReminder();hInput.value='';wInput.value='';alert(`✅ 成长记录已保存！`);
