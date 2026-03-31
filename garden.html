@@ -251,7 +251,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 }
 @keyframes stripeMove{0%{background-position:0 0;}100%{background-position:24px 0;}};
 
-/* 今日页进度条兔子：头朝右，并沿进度条做跳跃前进动画 */
+/* 今日页进度条兔子：镜像后头朝右，并沿进度条做跳跃前进动画 */
 .tv-rabbit{
   position:absolute;right:-14px;top:-26px;font-size:2rem;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
@@ -261,8 +261,8 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   z-index:10;
 }
 @keyframes tvRabbitAdvance{
-  0%,100%{transform:translateX(0) translateY(0) scaleX(1) scaleY(1);}
-  50%{transform:translateX(6px) translateY(-14px) scaleX(1) scaleY(1.05);}
+  0%,100%{transform:translateX(0) translateY(0) scaleX(-1) scaleY(1);}
+  50%{transform:translateX(6px) translateY(-14px) scaleX(-1) scaleY(1.05);}
 };
 .tv-bank-row{
   display:flex;align-items:center;justify-content:space-between;
