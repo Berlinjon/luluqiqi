@@ -251,18 +251,18 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 }
 @keyframes stripeMove{0%{background-position:0 0;}100%{background-position:24px 0;}};
 
-/* 强制锁死缩放，保持兔子头朝右 */
+/* 今日页进度条兔子：镜像后头朝右，并沿进度条做跳跃前进动画 */
 .tv-rabbit{
   position:absolute;right:-14px;top:-26px;font-size:2rem;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
   transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  animation:rabbitJump 0.8s ease-in-out infinite;
+  animation:tvRabbitAdvance 0.8s ease-in-out infinite;
   transform-origin:center bottom;
   z-index:10;
 }
-@keyframes rabbitJump{
-  0%,100%{transform:scaleX(-1) translateY(0) scaleY(1);}
-  50%{transform:scaleX(-1) translateY(-14px) scaleY(1.05);}
+@keyframes tvRabbitAdvance{
+  0%,100%{transform:translateX(0) translateY(0) scaleX(-1) scaleY(1);}
+  50%{transform:translateX(6px) translateY(-14px) scaleX(-1) scaleY(1.05);}
 };
 .tv-bank-row{
   display:flex;align-items:center;justify-content:space-between;
@@ -501,6 +501,10 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .map-node-day { position: absolute; bottom: -20px; font-size: 0.75rem; font-weight: 900; color: var(--text-mid); }
 /* 注意这里也加了 scaleX(-1) 让它面向前进方向，并且基于右下角跳跃 */
 .map-rabbit { position: absolute; top: -26px; font-size: 2rem; animation: rabbitJump 0.8s infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); z-index: 10; transform-origin: center bottom; }
+@keyframes rabbitJump{
+  0%,100%{transform:scaleX(-1) translateY(0) scaleY(1);}
+  50%{transform:scaleX(-1) translateY(-14px) scaleY(1.05);}
+}
 
 /* ── 魔法豌豆树 UI ── */
 .beanstalk-wrapper { margin-top:30px; padding:24px 16px; background:linear-gradient(to bottom, #f1f8e9, #e8f5e9); border-radius:var(--radius-lg); border:2px dashed #aed581; text-align:center; }
