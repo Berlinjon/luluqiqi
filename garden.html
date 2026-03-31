@@ -1001,9 +1001,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     try {
       window.speechSynthesis.cancel();
+      const ua = navigator.userAgent || '';
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
       const voices = window.speechSynthesis.getVoices() || [];
-      const enVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
-      const base = { lang:'en-US', rate:0.72, pitch:1.0, volume:1.0, voice:enVoice || null };
+      const enVoices = voices.filter(v => /^en(-|_)/i.test(v.lang));
+      const preferred = enVoices.find(v => /Samantha|Google US English|Microsoft/i.test(v.name)) || enVoices[0] || null;
+      const base = { lang:'en-US', rate:isMobile ? 0.58 : 0.72, pitch:isMobile ? 0.95 : 1.0, volume:1.0, voice:preferred };
       const wordUtter = new SpeechSynthesisUtterance(item.word);
       const phraseUtter = new SpeechSynthesisUtterance(item.phrase);
       [wordUtter, phraseUtter].forEach(utter => {
@@ -1013,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
         utter.volume = base.volume;
         if (base.voice) utter.voice = base.voice;
       });
-      wordUtter.onend = () => setTimeout(() => window.speechSynthesis.speak(phraseUtter), 500);
+      wordUtter.onend = () => setTimeout(() => window.speechSynthesis.speak(phraseUtter), isMobile ? 700 : 500);
       window.speechSynthesis.speak(wordUtter);
     } catch (e) {}
   }
