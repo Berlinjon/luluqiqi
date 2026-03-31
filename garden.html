@@ -109,15 +109,17 @@ header{
 /* ── Kid Switcher ── */
 .kid-switcher{
   position:sticky;top:72px;z-index:40;
-  display:flex;gap:10px;padding:12px 20px;
+  display:flex;flex-direction:row;flex-wrap:nowrap;gap:10px;padding:12px 20px;
+  overflow-x:auto;
   background:rgba(255,248,237,0.9);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
 }
 .kid-tab{
-  flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:12px 16px;border-radius:var(--radius-md);border:2px solid transparent;
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1rem;
+  flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  white-space:nowrap;
+  padding:12px 10px;border-radius:var(--radius-md);border:2px solid transparent;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.95rem;
   cursor:pointer;transition:all 0.3s cubic-bezier(.36,1.2,.64,1);
   background:var(--card-bg);color:var(--text-mid);
   box-shadow:var(--shadow-sm);-webkit-tap-highlight-color:transparent;
@@ -999,15 +1001,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     try {
       window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(`${item.word}. ${item.phrase}.`);
-      utter.lang = 'en-US';
-      utter.rate = 0.82; // 小学阶段语速：偏慢、更清晰
-      utter.pitch = 1.0;
-      utter.volume = 1.0;
       const voices = window.speechSynthesis.getVoices() || [];
       const enVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
-      if (enVoice) utter.voice = enVoice;
-      window.speechSynthesis.speak(utter);
+      const base = { lang:'en-US', rate:0.72, pitch:1.0, volume:1.0, voice:enVoice || null };
+      const wordUtter = new SpeechSynthesisUtterance(item.word);
+      const phraseUtter = new SpeechSynthesisUtterance(item.phrase);
+      [wordUtter, phraseUtter].forEach(utter => {
+        utter.lang = base.lang;
+        utter.rate = base.rate;
+        utter.pitch = base.pitch;
+        utter.volume = base.volume;
+        if (base.voice) utter.voice = base.voice;
+      });
+      wordUtter.onend = () => setTimeout(() => window.speechSynthesis.speak(phraseUtter), 500);
+      window.speechSynthesis.speak(wordUtter);
     } catch (e) {}
   }
 
