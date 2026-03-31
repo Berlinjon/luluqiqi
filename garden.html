@@ -635,6 +635,14 @@ nav{
       </div>
     </div>
 
+    <div class="section-title">📘 今日学习</div>
+    <div class="study-card" id="lulu-studyBtn" style="border-color:var(--lulu-mid);">
+      <div class="study-header"><span class="study-label" style="color:var(--lulu);">📘 英文学习 · <span id="lulu-study-level">L1</span></span><div class="study-speak" id="lulu-study-speak" style="background:var(--lulu);" title="朗读单词">🔊</div></div>
+      <div class="study-word" id="lulu-study-word">cat</div>
+      <div class="study-phonetic" id="lulu-study-phrase">a cute cat</div>
+      <div class="study-meaning" id="lulu-study-meaning">猫｜一只可爱的小猫</div>
+    </div>
+
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title">🏆 完成赢得 +50分</div><div class="super-list" id="lulu-superList"></div></div>
 
@@ -690,8 +698,10 @@ nav{
     </div>
     <div class="section-title">📜 今日学习</div>
     <div class="study-card" id="qiqi-studyBtn" style="border-color:var(--qiqi-mid);">
-      <div class="study-header"><span class="study-label" style="color:var(--qiqi);">📜 每日古诗 · <span id="qiqi-poem-title">咏鹅</span></span><div class="study-speak" style="background:var(--qiqi);">🔊</div></div>
-      <div class="poem-ruby-row" id="qiqi-poem-display"></div>
+      <div class="study-header"><span class="study-label" style="color:var(--qiqi);">📘 英文学习 · <span id="qiqi-study-level">L1</span></span><div class="study-speak" id="qiqi-study-speak" style="background:var(--qiqi);" title="朗读单词">🔊</div></div>
+      <div class="study-word" id="qiqi-study-word">book</div>
+      <div class="study-phonetic" id="qiqi-study-phrase">read a book</div>
+      <div class="study-meaning" id="qiqi-study-meaning">书｜读一本书</div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title">🏆 完成赢得 +50分</div><div class="super-list" id="qiqi-superList"></div></div>
@@ -747,9 +757,11 @@ nav{
       <div class="hero-info"><div class="hero-name"><span class="dyn-name" data-kid="mimi">Mimi</span> 👧</div><div class="hero-sub" id="mimi-heroSub">今天还没开始哦，加油！</div><div class="hero-progress-bar"><div class="hero-progress-fill" id="mimi-progressFill" style="width:0%;background:linear-gradient(90deg,var(--mimi),var(--mimi-mid));"></div></div></div>
     </div>
     <div class="section-title">📜 今日学习</div>
-    <div class="study-card" style="border-color:var(--mimi-mid);">
-      <div class="study-header"><span class="study-label" style="color:var(--mimi);">📖 每日一句 · 今天也很棒</span><div class="study-speak" style="background:var(--mimi);">🌟</div></div>
-      <div class="study-meaning">保持专注，慢慢变强！</div>
+    <div class="study-card" id="mimi-studyBtn" style="border-color:var(--mimi-mid);">
+      <div class="study-header"><span class="study-label" style="color:var(--mimi);">📘 英文学习 · <span id="mimi-study-level">L1</span></span><div class="study-speak" id="mimi-study-speak" style="background:var(--mimi);" title="朗读单词">🔊</div></div>
+      <div class="study-word" id="mimi-study-word">happy</div>
+      <div class="study-phonetic" id="mimi-study-phrase">feel happy</div>
+      <div class="study-meaning" id="mimi-study-meaning">开心｜感到开心</div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title">🏆 完成赢得 +50分</div><div class="super-list" id="mimi-superList"></div></div>
@@ -884,6 +896,20 @@ nav{
     </div>
     <div id="pwdChangeMsg" style="font-size:0.78rem;font-weight:800;min-height:16px;margin-bottom:6px;"></div>
 
+    <div class="edit-section" style="color:#2e7d32;">📘 学习难度分层 (L1/L2/L3)</div>
+    <div class="edit-row">
+      <label style="font-size:0.78rem;font-weight:800;min-width:58px;">Lulu</label>
+      <select class="edit-text" id="edit-level-lulu"><option value="L1">L1</option><option value="L2">L2</option><option value="L3">L3</option></select>
+    </div>
+    <div class="edit-row">
+      <label style="font-size:0.78rem;font-weight:800;min-width:58px;">Qiqi</label>
+      <select class="edit-text" id="edit-level-qiqi"><option value="L1">L1</option><option value="L2">L2</option><option value="L3">L3</option></select>
+    </div>
+    <div class="edit-row">
+      <label style="font-size:0.78rem;font-weight:800;min-width:58px;">Mimi</label>
+      <select class="edit-text" id="edit-level-mimi"><option value="L1">L1</option><option value="L2">L2</option><option value="L3">L3</option></select>
+    </div>
+
     <div class="edit-section" style="color:var(--lulu);">👧 <span class="dyn-name" data-kid="lulu">Lulu</span> 超级挑战</div><div id="editLuluSuperList"></div>
     <div class="edit-section" style="color:#880e4f;">👧 <span class="dyn-name" data-kid="lulu">Lulu</span> 日常习惯</div><div id="editLuluList"></div>
     <div class="edit-section" style="color:var(--qiqi);">👧 <span class="dyn-name" data-kid="qiqi">Qiqi</span> 超级挑战</div><div id="editQiqiSuperList"></div>
@@ -917,6 +943,73 @@ document.addEventListener('DOMContentLoaded', function() {
     const storedNames = JSON.parse(localStorage.getItem('kidNames_v6'));
     if(storedNames) KID_NAMES = { ...KID_NAMES, ...storedNames };
   } catch(e){}
+
+  let LEARNING_LEVEL = { lulu: 'L1', qiqi: 'L1', mimi: 'L1' };
+  try {
+    const storedLevel = JSON.parse(localStorage.getItem('studyLevels_v1'));
+    if (storedLevel) LEARNING_LEVEL = { ...LEARNING_LEVEL, ...storedLevel };
+  } catch(e){}
+
+  const STUDY_BANK = {
+    lulu: {
+      L1: [{word:'cat',phrase:'a cute cat',meaning:'猫｜一只可爱的小猫'},{word:'sun',phrase:'warm sun',meaning:'太阳｜温暖的阳光'},{word:'book',phrase:'read a book',meaning:'书｜读一本书'}],
+      L2: [{word:'family',phrase:'my family',meaning:'家庭｜我的家人'},{word:'school',phrase:'go to school',meaning:'学校｜去上学'},{word:'healthy',phrase:'keep healthy',meaning:'健康的｜保持健康'}],
+      L3: [{word:'discover',phrase:'discover nature',meaning:'发现｜探索大自然'},{word:'practice',phrase:'practice every day',meaning:'练习｜每天坚持练习'},{word:'responsible',phrase:'be responsible',meaning:'有责任心的｜做个有责任心的人'}]
+    },
+    qiqi: {
+      L1: [{word:'apple',phrase:'an red apple',meaning:'苹果｜一个红苹果'},{word:'happy',phrase:'feel happy',meaning:'开心｜感到开心'},{word:'jump',phrase:'jump high',meaning:'跳跃｜跳得高高'}],
+      L2: [{word:'weather',phrase:'sunny weather',meaning:'天气｜晴朗的天气'},{word:'friend',phrase:'help a friend',meaning:'朋友｜帮助朋友'},{word:'finish',phrase:'finish homework',meaning:'完成｜完成作业'}],
+      L3: [{word:'challenge',phrase:'accept a challenge',meaning:'挑战｜接受一个挑战'},{word:'creative',phrase:'creative ideas',meaning:'有创造力的｜有创意的想法'},{word:'confident',phrase:'speak confidently',meaning:'自信的｜自信地表达'}]
+    },
+    mimi: {
+      L1: [{word:'smile',phrase:'big smile',meaning:'微笑｜大大的微笑'},{word:'water',phrase:'drink water',meaning:'水｜喝水'},{word:'play',phrase:'play together',meaning:'玩耍｜一起玩'}],
+      L2: [{word:'garden',phrase:'in the garden',meaning:'花园｜在花园里'},{word:'morning',phrase:'good morning',meaning:'早晨｜早上好'},{word:'gentle',phrase:'gentle voice',meaning:'温柔的｜温柔的声音'}],
+      L3: [{word:'improve',phrase:'improve myself',meaning:'提升｜提升自己'},{word:'respect',phrase:'show respect',meaning:'尊重｜表达尊重'},{word:'patient',phrase:'be patient',meaning:'耐心的｜保持耐心'}]
+    }
+  };
+
+  function getStudyItem(k) {
+    const lv = LEARNING_LEVEL[k] || 'L1';
+    const pool = (STUDY_BANK[k] && STUDY_BANK[k][lv]) || [];
+    if (!pool.length) return { word:'learn', phrase:'keep learning', meaning:'学习｜持续学习' };
+    const d = new Date();
+    const idx = Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000) % pool.length;
+    return pool[idx];
+  }
+
+  function renderStudy(k) {
+    const lvEl = document.getElementById(`${k}-study-level`);
+    const wEl = document.getElementById(`${k}-study-word`);
+    const pEl = document.getElementById(`${k}-study-phrase`);
+    const mEl = document.getElementById(`${k}-study-meaning`);
+    if (!lvEl || !wEl || !pEl || !mEl) return;
+    const lv = LEARNING_LEVEL[k] || 'L1';
+    const item = getStudyItem(k);
+    lvEl.textContent = lv;
+    wEl.textContent = item.word;
+    pEl.textContent = item.phrase;
+    mEl.textContent = item.meaning;
+  }
+
+  function speakStudy(k) {
+    const item = getStudyItem(k);
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+      alert('当前浏览器暂不支持语音朗读');
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(`${item.word}. ${item.phrase}.`);
+      utter.lang = 'en-US';
+      utter.rate = 0.82; // 小学阶段语速：偏慢、更清晰
+      utter.pitch = 1.0;
+      utter.volume = 1.0;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const enVoice = voices.find(v => /^en(-|_)/i.test(v.lang));
+      if (enVoice) utter.voice = enVoice;
+      window.speechSynthesis.speak(utter);
+    } catch (e) {}
+  }
 
   function applyKidNames() {
     document.querySelectorAll('.dyn-name').forEach(el => {
@@ -1267,6 +1360,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentNav === 'home') {
       KIDS.forEach(kid => document.getElementById(`${kid}-panel`).classList.toggle('active', kid===k));
       renderKid(k);
+      renderStudy(k);
     } else if (currentNav === 'rewards') {
       renderRewards();
     } else if (currentNav === 'progress') {
@@ -1284,6 +1378,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('tab-lulu').onclick=()=>switchTab('lulu');
   document.getElementById('tab-qiqi').onclick=()=>switchTab('qiqi');
   document.getElementById('tab-mimi').onclick=()=>switchTab('mimi');
+  KIDS.forEach(k=>{
+    const btn=document.getElementById(`${k}-study-speak`);
+    if(btn)btn.onclick=e=>{e.stopPropagation();speakStudy(k);};
+  });
 
   function mathProblem(){if(Math.random()>.5){const a=Math.floor(Math.random()*90)+1,b=Math.floor(Math.random()*(100-a))+1;return{q:`${a} + ${b} = ?`,ans:(a+b).toString()};}else{const a=Math.floor(Math.random()*90)+10,b=Math.floor(Math.random()*a);return{q:`${a} - ${b} = ?`,ans:(a-b).toString()};}}
   function generateMath3(){let a,b,c,op1,op2,r1,fin;while(true){a=Math.floor(Math.random()*15)+1;b=Math.floor(Math.random()*15)+1;c=Math.floor(Math.random()*15)+1;op1=Math.random()>.5?1:-1;op2=Math.random()>.5?1:-1;r1=a+op1*b;fin=r1+op2*c;if(r1>=0&&r1<=20&&fin>=0&&fin<=20)break;}return{q:`${a} ${op1===1?'+':'-'} ${b} ${op2===1?'+':'-'} ${c} = ?`,ans:fin.toString()};}
@@ -1446,6 +1544,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('edit-name-lulu').value = KID_NAMES.lulu || 'Lulu';
     document.getElementById('edit-name-qiqi').value = KID_NAMES.qiqi || 'Qiqi';
     document.getElementById('edit-name-mimi').value = KID_NAMES.mimi || 'Mimi';
+    document.getElementById('edit-level-lulu').value = LEARNING_LEVEL.lulu || 'L1';
+    document.getElementById('edit-level-qiqi').value = LEARNING_LEVEL.qiqi || 'L1';
+    document.getElementById('edit-level-mimi').value = LEARNING_LEVEL.mimi || 'L1';
     KIDS.forEach(k=>{
       const cap=k.charAt(0).toUpperCase()+k.slice(1);
       const hl=document.getElementById(`edit${cap}List`);hl.innerHTML='';
@@ -1462,6 +1563,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const name3 = document.getElementById('edit-name-mimi').value.trim();
     KID_NAMES = { lulu: name1 || 'Lulu', qiqi: name2 || 'Qiqi', mimi: name3 || 'Mimi' };
     try { localStorage.setItem('kidNames_v6', JSON.stringify(KID_NAMES)); } catch(e){}
+    LEARNING_LEVEL = {
+      lulu: document.getElementById('edit-level-lulu').value || 'L1',
+      qiqi: document.getElementById('edit-level-qiqi').value || 'L1',
+      mimi: document.getElementById('edit-level-mimi').value || 'L1'
+    };
+    try { localStorage.setItem('studyLevels_v1', JSON.stringify(LEARNING_LEVEL)); } catch(e){}
 
     KIDS.forEach(k=>{
       const nh=[],ns=[];
@@ -1472,6 +1579,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     applyKidNames();
+    KIDS.forEach(k=>renderStudy(k));
     renderLists();KIDS.forEach(k=>renderKid(k));
     document.getElementById('editOverlay').classList.remove('show');
     alert('✅ 所有设置已保存！名字和习惯已更新！');
@@ -1480,9 +1588,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('editOverlay').onclick=()=>document.getElementById('editOverlay').classList.remove('show');
   document.querySelector('#editOverlay .edit-box').onclick=e=>e.stopPropagation();
 
-  document.getElementById('exportDataBtn').onclick=e=>{e.preventDefault();const data={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}data['kidNames_v6']=JSON.stringify(KID_NAMES);data['__backup_version__']=V;const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));const textarea=document.getElementById('backupTextarea');textarea.value=backupStr;document.getElementById('backupDisplay').style.display='block';setTimeout(()=>{textarea.focus();textarea.select();},100);};
+  document.getElementById('exportDataBtn').onclick=e=>{e.preventDefault();const data={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}data['kidNames_v6']=JSON.stringify(KID_NAMES);data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);data['__backup_version__']=V;const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));const textarea=document.getElementById('backupTextarea');textarea.value=backupStr;document.getElementById('backupDisplay').style.display='block';setTimeout(()=>{textarea.focus();textarea.select();},100);};
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const input=prompt('⚠️ 警告：导入将覆盖当前所有数据！\n\n请输入备份代码：');if(!input)return;try{const data=JSON.parse(decodeURIComponent(atob(input.trim())));const backupVer=data['__backup_version__']||'未知';if(backupVer!==V){if(!confirm(`⚠️ 版本不匹配（备份:${backupVer}, 当前:${V}）\n是否仍要继续导入？`))return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')||key==='kidNames_v6'){localStorage.setItem(key,data[key]);count++;}}if(count>0){alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);location.reload();}else alert('❌ 无效的备份代码！');}catch(err){alert('❌ 代码格式错误，恢复失败！');}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const input=prompt('⚠️ 警告：导入将覆盖当前所有数据！\n\n请输入备份代码：');if(!input)return;try{const data=JSON.parse(decodeURIComponent(atob(input.trim())));const backupVer=data['__backup_version__']||'未知';if(backupVer!==V){if(!confirm(`⚠️ 版本不匹配（备份:${backupVer}, 当前:${V}）\n是否仍要继续导入？`))return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')||key==='kidNames_v6'||key==='studyLevels_v1'){localStorage.setItem(key,data[key]);count++;}}if(count>0){alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);location.reload();}else alert('❌ 无效的备份代码！');}catch(err){alert('❌ 代码格式错误，恢复失败！');}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
@@ -1534,7 +1642,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });}catch(e){}
   }
 
-  loadAll(); renderLists(); KIDS.forEach(k=>renderKid(k)); renderDate(); checkGrowthReminder(); setInterval(checkDateReset,60000);
+  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); renderDate(); checkGrowthReminder(); setInterval(checkDateReset,60000);
 });
 </script>
 </body>
