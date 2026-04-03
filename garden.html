@@ -407,6 +407,18 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   70%{opacity:1;transform:translate(-50%,-50%) scale(1);}
   100%{opacity:0;transform:translate(-50%,-50%) scale(.92);}
 }
+.all-done-boom-overlay{
+  position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.all-done-boom-overlay.show{display:flex;}
+.all-done-boom-card{
+  width:min(88vw,340px);background:linear-gradient(135deg,#f0fff0,#e8fde8);
+  border:2.5px solid var(--warm-green);border-radius:var(--radius-lg);
+  padding:20px;text-align:center;
+  box-shadow:0 0 0 0 rgba(255,200,0,.45),0 0 0 18px rgba(255,200,0,.15),0 14px 40px rgba(42,105,0,.25);
+  animation:allDoneBoom 1.1s cubic-bezier(.2,1.25,.34,1) both;
+}
 .all-done-stars{font-size:1.8rem;display:block;margin-bottom:6px;}
 .all-done-text{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.1rem;color:var(--warm-green);}
 .all-done-sub{font-size:0.85rem;color:var(--text-mid);margin-top:4px;}
@@ -891,6 +903,13 @@ nav{
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="all-done-boom-overlay" id="allDoneBoomOverlay">
+  <div class="all-done-boom-card">
+    <span class="all-done-stars">🌟✨🌟✨🌟</span>
+    <div class="all-done-text" id="allDoneBoomName">太棒了！今天全部完成啦！🏆</div>
+    <div class="all-done-sub">继续保持，明天也会很闪亮 ✨</div>
+  </div>
+</div>
 
 <!-- 通用密码验证弹层 -->
 <div class="toast-overlay" id="pwdOverlay">
@@ -1492,10 +1511,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   function showAllDoneBoom(k){
-    const el=document.getElementById(`${k}-allDone`);
-    if(!el)return;
-    el.classList.add('boom');
-    setTimeout(()=>el.classList.remove('boom'),1100);
+    const inline=document.getElementById(`${k}-allDone`);
+    if(inline){inline.classList.add('boom');setTimeout(()=>inline.classList.remove('boom'),1100);}
+    const overlay=document.getElementById('allDoneBoomOverlay');
+    const title=document.getElementById('allDoneBoomName');
+    if(!overlay)return;
+    if(title)title.textContent=`太棒了！${KID_NAMES[k]||k} 今天全部完成啦！🏆`;
+    overlay.classList.remove('show');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    clearTimeout(showAllDoneBoom._timer);
+    showAllDoneBoom._timer=setTimeout(()=>overlay.classList.remove('show'),1200);
   }
 
   function renderKid(k){
