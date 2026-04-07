@@ -216,6 +216,17 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .study-word{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:2rem;color:var(--on-surface);line-height:1;position:relative;z-index:1;}
 .study-phonetic{font-size:0.9rem;color:var(--text-mid);margin-top:4px;font-weight:500;position:relative;z-index:1;}
 .study-meaning{font-size:1rem;font-weight:700;color:var(--on-surface);margin-top:6px;position:relative;z-index:1;}
+.study-actions{display:flex;gap:8px;margin-top:14px;position:relative;z-index:1;}
+.study-btn{
+  flex:1;padding:9px 0;border-radius:999px;border:none;
+  font-weight:900;font-family:inherit;font-size:0.88rem;cursor:pointer;
+  transition:transform 0.15s,opacity 0.2s;-webkit-tap-highlight-color:transparent;
+}
+.study-btn:active{transform:scale(0.95);}
+.study-btn.got-it{background:linear-gradient(135deg,var(--warm-green),var(--warm-green-mid));color:#fff;box-shadow:0 3px 10px rgba(42,105,0,0.25);}
+.study-btn.again{background:var(--cream-dark);color:var(--text-mid);border:1.5px solid var(--cream-dark);}
+.study-btn.done-today{background:var(--warm-green-light);color:var(--warm-green);border:1.5px solid var(--warm-green-mid);cursor:default;opacity:0.85;}
+.study-btn:disabled{cursor:default;opacity:0.7;}
 
 .poem-ruby-row{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1;}
 .poem-char{display:flex;flex-direction:column;align-items:center;transition:color 0.15s,transform 0.15s;}
@@ -254,18 +265,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 @keyframes stripeMove{0%{background-position:0 0;}100%{background-position:24px 0;}};
 
 /* 今日页进度条兔子：镜像后头朝右，并沿进度条做跳跃前进动画 */
-.tv-rabbit{
-  position:absolute;right:-14px;top:-26px;font-size:2rem;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-  transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  animation:tvRabbitAdvance 0.8s ease-in-out infinite;
-  transform-origin:center bottom;
-  z-index:10;
-}
-@keyframes tvRabbitAdvance{
-  0%,100%{transform:translateX(0) translateY(0) scaleX(-1) scaleY(1);}
-  50%{transform:translateX(6px) translateY(-14px) scaleX(-1) scaleY(1.05);}
-};
+
 .tv-bank-row{
   display:flex;align-items:center;justify-content:space-between;
   background:var(--cream-dark);border-radius:var(--radius-sm);padding:12px 16px;
@@ -391,43 +391,66 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   animation:slideUp 0.5s cubic-bezier(.36,1.1,.64,1) both;
 }
 .all-done-banner.visible{display:block;}
-.all-done-banner.boom{
-  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.6);
-  z-index:190;width:min(88vw,340px);display:block;pointer-events:none;
-  animation:allDoneBoom 1.05s cubic-bezier(.2,1.25,.34,1) both;
-  box-shadow:0 0 0 0 rgba(255,200,0,.45),0 0 0 18px rgba(255,200,0,.15),0 14px 40px rgba(42,105,0,.25);
-}
-.all-done-banner.boom::before{
-  content:'✨ 🎉 ✨';position:absolute;left:50%;top:-28px;transform:translateX(-50%);
-  font-size:1.25rem;animation:starRow .7s ease-in-out infinite;
-}
-@keyframes allDoneBoom{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.45);}
-  35%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}
-  70%{opacity:1;transform:translate(-50%,-50%) scale(1);}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(.92);}
-}
+/* ── Full-screen Celebration Overlay ── */
 .all-done-boom-overlay{
-  position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;
+  position:fixed;inset:0;z-index:300;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   pointer-events:none;
 }
-.all-done-boom-overlay.show{display:flex;}
+.all-done-boom-overlay.show{display:flex;animation:celebFadeIn 0.3s ease both;}
+.all-done-boom-overlay.hiding{animation:celebFadeOut 0.5s ease both;}
+@keyframes celebFadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes celebFadeOut{from{opacity:1;}to{opacity:0;}}
+
 .all-done-boom-card{
-  width:min(88vw,340px);background:linear-gradient(135deg,#f0fff0,#e8fde8);
-  border:2.5px solid var(--warm-green);border-radius:var(--radius-lg);
-  padding:20px;text-align:center;
-  box-shadow:0 0 0 0 rgba(255,200,0,.45),0 0 0 18px rgba(255,200,0,.15),0 14px 40px rgba(42,105,0,.25);
-  animation:allDoneBoom 1.1s cubic-bezier(.2,1.25,.34,1) both;
+  position:relative;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:0;
 }
-.all-done-boom-card .all-done-text.burst{
-  animation:boomTextShake .28s ease-in-out 2;
+
+/* Character dancer */
+.celeb-character{
+  font-size:7rem;line-height:1;
+  animation:charDance 0.5s ease-in-out infinite alternate;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.3));
+  transform-origin:bottom center;
 }
-@keyframes boomTextShake{
-  0%,100%{transform:translateX(0);}
-  20%{transform:translateX(-2px) rotate(-1deg);}
-  40%{transform:translateX(3px) rotate(1deg);}
-  60%{transform:translateX(-3px) rotate(-1deg);}
-  80%{transform:translateX(2px) rotate(1deg);}
+@keyframes charDance{
+  0%{transform:translateY(0) rotate(-12deg) scale(1);}
+  100%{transform:translateY(-28px) rotate(12deg) scale(1.08);}
+}
+
+/* Text card */
+.celeb-card{
+  background:linear-gradient(135deg,#fffde7,#fff9c4);
+  border:3px solid var(--gold);border-radius:var(--radius-xl);
+  padding:20px 32px;margin-top:16px;
+  box-shadow:0 8px 32px rgba(247,181,0,0.4), 0 0 0 6px rgba(247,181,0,0.15);
+  animation:cardPop 0.5s cubic-bezier(.36,1.56,.64,1) 0.15s both;
+}
+@keyframes cardPop{
+  0%{transform:scale(0.3);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+.celeb-title{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;
+  font-size:1.5rem;color:var(--on-surface);line-height:1.2;
+}
+.celeb-name{color:var(--accent);font-size:1.8rem;}
+.celeb-sub{font-size:0.95rem;color:var(--text-mid);font-weight:600;margin-top:6px;}
+.celeb-stars-row{font-size:1.6rem;margin-top:8px;animation:starsPulse 0.6s ease-in-out infinite alternate;}
+@keyframes starsPulse{0%{transform:scale(1);}100%{transform:scale(1.12);}}
+
+/* Burst stars */
+.celeb-star{
+  position:fixed;font-size:1.6rem;pointer-events:none;z-index:301;
+  animation:starBurst var(--dur) cubic-bezier(.2,1,.4,1) var(--delay) both;
+}
+@keyframes starBurst{
+  0%{transform:translate(0,0) scale(0) rotate(0deg);opacity:1;}
+  60%{opacity:1;}
+  100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0;}
 }
 .all-done-stars{font-size:1.8rem;display:block;margin-bottom:6px;}
 .all-done-text{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.1rem;color:var(--warm-green);}
@@ -508,20 +531,27 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   background: var(--card-bg); border-radius: var(--radius-md); padding: 16px 12px 14px;
   box-shadow: var(--shadow-sm); border: 2px solid transparent;
   display: flex; flex-direction: column; align-items: center; text-align: center;
-  transition: transform 0.15s; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, border-color 0.2s; cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 .store-item:active { transform: scale(0.96); }
-.store-item.disabled { opacity: 0.65; filter: grayscale(0.5); }
+.store-item.can-afford { border-color: var(--warm-green-mid); background: linear-gradient(135deg,#f5fff0,#f0fde8); }
+.store-item.cant-afford { opacity: 0.82; }
 .store-icon { font-size: 2.4rem; margin-bottom: 8px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
 .store-name { font-weight: 800; font-size: 0.95rem; color: var(--on-surface); line-height: 1.2; margin-bottom: 6px; }
-.store-desc { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 12px; line-height: 1.3; height: 2.6em; overflow: hidden; }
+.store-desc { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 10px; line-height: 1.3; height: 2.6em; overflow: hidden; }
+/* progress bar */
+.store-progress-wrap { width: 100%; margin-bottom: 10px; }
+.store-progress-bg { width:100%; height:6px; background:var(--cream-dark); border-radius:3px; overflow:hidden; }
+.store-progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--warm-green),var(--warm-green-mid)); transition:width 0.5s cubic-bezier(.36,1.56,.64,1); }
+.store-progress-label { font-size:0.68rem; font-weight:800; color:var(--text-light); margin-top:3px; }
 .store-btn {
   width: 100%; padding: 8px 0; border-radius: 999px; border: none;
-  font-weight: 900; font-family: inherit; font-size: 0.85rem; cursor: pointer;
+  font-weight: 900; font-family: inherit; font-size: 0.82rem; cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
 }
 .store-btn.money { background: linear-gradient(135deg, #a5d6a7, #66bb6a); color: #1b5e20; box-shadow: 0 3px 10px rgba(102,187,106,0.3); }
-.store-btn.star { background: linear-gradient(135deg, #ffe082, #ffca28); color: #f57f17; box-shadow: 0 3px 10px rgba(255,202,40,0.3); }
-.store-item.disabled .store-btn { background: #f0f0f0; color: #999; box-shadow: none; }
+.store-btn.star  { background: linear-gradient(135deg, #ffe082, #ffca28); color: #f57f17; box-shadow: 0 3px 10px rgba(255,202,40,0.3); }
+.store-btn.locked { background: #ebebeb; color: #999; box-shadow: none; cursor: default; font-size: 0.75rem; }
 
 /* ── Progress Map UI ── */
 #progress-view { display:none; animation: slideUp 0.35s both; padding-bottom: 40px;}
@@ -540,10 +570,10 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .map-node.today { border-color: var(--gold); box-shadow: 0 0 0 6px rgba(247,181,0,0.3), inset 0 -4px 0 rgba(0,0,0,0.2); transform: scale(1.1); }
 .map-node-day { position: absolute; bottom: -20px; font-size: 0.75rem; font-weight: 900; color: var(--text-mid); }
 /* 注意这里也加了 scaleX(-1) 让它面向前进方向，并且基于右下角跳跃 */
-.map-rabbit { position: absolute; top: -26px; font-size: 2rem; animation: rabbitJump 0.8s infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); z-index: 10; transform-origin: center bottom; }
+.map-rabbit { position: absolute; top: -26px; font-size: 2rem; animation: rabbitJump 0.8s ease-in-out infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); z-index: 10; transform-origin: center bottom; }
 @keyframes rabbitJump{
-  0%,100%{transform:scaleX(-1) translateY(0) scaleY(1);}
-  50%{transform:scaleX(-1) translateY(-14px) scaleY(1.05);}
+  0%,100%{transform:translateX(0) translateY(0) scaleX(-1) scaleY(1);}
+  50%{transform:translateX(6px) translateY(-14px) scaleX(-1) scaleY(1.05);}
 }
 
 /* ── 魔法豌豆树 UI ── */
@@ -719,6 +749,10 @@ nav{
       <div class="study-word" id="lulu-study-word">cat</div>
       <div class="study-phonetic" id="lulu-study-phrase">a cute cat</div>
       <div class="study-meaning" id="lulu-study-meaning">猫｜一只可爱的小猫</div>
+      <div class="study-actions">
+        <button class="study-btn got-it" id="lulu-study-gotit">✅ 我会了 +1分</button>
+        <button class="study-btn again" id="lulu-study-again">🔄 再看看</button>
+      </div>
     </div>
 
     <div class="section-title">🏆 超级挑战</div>
@@ -727,7 +761,7 @@ nav{
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-card-title">📺 今日电视能量</div><div class="tv-count-badge" id="lulu-tv-count-badge">0/9</div></div>
-      <div class="tv-track"><div class="tv-fill" id="lulu-tv-fill" style="width:0%"><div class="tv-rabbit">🐇</div></div></div>
+      <div class="tv-track"><div class="tv-fill" id="lulu-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="lulu-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="lulu-spendTvBtn">兑换时间</button></div>
     </div>
 
@@ -780,6 +814,10 @@ nav{
       <div class="study-word" id="qiqi-study-word">book</div>
       <div class="study-phonetic" id="qiqi-study-phrase">read a book</div>
       <div class="study-meaning" id="qiqi-study-meaning">书｜读一本书</div>
+      <div class="study-actions">
+        <button class="study-btn got-it" id="qiqi-study-gotit">✅ 我会了 +1分</button>
+        <button class="study-btn again" id="qiqi-study-again">🔄 再看看</button>
+      </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title">🏆 完成赢得 +50分</div><div class="super-list" id="qiqi-superList"></div></div>
@@ -787,7 +825,7 @@ nav{
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-card-title">📺 今日电视能量</div><div class="tv-count-badge" id="qiqi-tv-count-badge">0/9</div></div>
-      <div class="tv-track"><div class="tv-fill" id="qiqi-tv-fill" style="width:0%"><div class="tv-rabbit">🐇</div></div></div>
+      <div class="tv-track"><div class="tv-fill" id="qiqi-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="qiqi-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="qiqi-spendTvBtn">兑换时间</button></div>
     </div>
 
@@ -840,6 +878,10 @@ nav{
       <div class="study-word" id="mimi-study-word">happy</div>
       <div class="study-phonetic" id="mimi-study-phrase">feel happy</div>
       <div class="study-meaning" id="mimi-study-meaning">开心｜感到开心</div>
+      <div class="study-actions">
+        <button class="study-btn got-it" id="mimi-study-gotit">✅ 我会了 +1分</button>
+        <button class="study-btn again" id="mimi-study-again">🔄 再看看</button>
+      </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title">🏆 完成赢得 +50分</div><div class="super-list" id="mimi-superList"></div></div>
@@ -847,7 +889,7 @@ nav{
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-card-title">📺 今日电视能量</div><div class="tv-count-badge" id="mimi-tv-count-badge">0/9</div></div>
-      <div class="tv-track"><div class="tv-fill" id="mimi-tv-fill" style="width:0%"><div class="tv-rabbit">🐇</div></div></div>
+      <div class="tv-track"><div class="tv-fill" id="mimi-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="mimi-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="mimi-spendTvBtn">兑换时间</button></div>
     </div>
 
@@ -915,9 +957,12 @@ nav{
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 <div class="all-done-boom-overlay" id="allDoneBoomOverlay">
   <div class="all-done-boom-card">
-    <span class="all-done-stars">🌟✨🌟✨🌟</span>
-    <div class="all-done-text" id="allDoneBoomName">太棒了！今天全部完成啦！🏆</div>
-    <div class="all-done-sub">继续保持，明天也会很闪亮 ✨</div>
+    <div class="celeb-character" id="celebCharacter">👧</div>
+    <div class="celeb-card">
+      <div class="celeb-title"><span class="celeb-name" id="celebName">Lulu</span><br>今天全部完成啦！🏆</div>
+      <div class="celeb-sub" id="celebSub">超级棒，明天继续加油！</div>
+      <div class="celeb-stars-row">🌟✨⭐✨🌟</div>
+    </div>
   </div>
 </div>
 
@@ -1072,6 +1117,50 @@ document.addEventListener('DOMContentLoaded', function() {
     wEl.textContent = item.word;
     pEl.textContent = item.phrase;
     mEl.textContent = item.meaning;
+    renderStudyButtons(k);
+  }
+
+  function getStudyDoneKey(k){ return sk(k,'studyDone'); }
+  function isStudyDoneToday(k){
+    try{ return localStorage.getItem(getStudyDoneKey(k)) === todayStr(); }catch(e){return false;}
+  }
+  function markStudyDone(k){
+    try{ localStorage.setItem(getStudyDoneKey(k), todayStr()); }catch(e){}
+  }
+
+  function renderStudyButtons(k){
+    const gotitBtn = document.getElementById(`${k}-study-gotit`);
+    const againBtn = document.getElementById(`${k}-study-again`);
+    if(!gotitBtn || !againBtn) return;
+    if(isStudyDoneToday(k)){
+      gotitBtn.textContent = '🌟 今日已掌握！';
+      gotitBtn.className = 'study-btn done-today';
+      gotitBtn.disabled = true;
+      againBtn.style.display = 'none';
+    } else {
+      gotitBtn.textContent = '✅ 我会了 +1分';
+      gotitBtn.className = 'study-btn got-it';
+      gotitBtn.disabled = false;
+      againBtn.style.display = '';
+    }
+  }
+
+  function doStudyGotIt(k){
+    if(isStudyDoneToday(k)) return;
+    markStudyDone(k);
+    S[k].score += 1;
+    saveKidScore(k);
+    updateBankUI(k);
+    renderStudyButtons(k);
+    try{ playSuccess(false); }catch(e){}
+    try{ launchConfetti(); }catch(e){}
+    document.getElementById('toastSuccessName').textContent = '太棒了！';
+    document.getElementById('toastSuccessSub').textContent = `今日单词已掌握，学习积分 +1 ⭐`;
+    document.getElementById('toastSuccess').classList.add('show');
+  }
+
+  function doStudyAgain(k){
+    speakStudy(k);
   }
 
   function speakStudy(k) {
@@ -1216,10 +1305,27 @@ document.addEventListener('DOMContentLoaded', function() {
       if(lvl.items.length === 0) return;
       html += `<div style="margin-bottom:24px;"><div style="font-weight:900;font-size:1.05rem;color:var(--text-mid);margin-bottom:12px;">${lvl.title}</div><div class="store-grid">`;
       lvl.items.forEach(item => {
-        const canAfford = item.type === 'money' ? wallet >= item.price : score >= item.price;
-        const btnClass = item.type === 'money' ? 'money' : 'star';
-        const priceText = item.type === 'money' ? `¥${item.price}` : `⭐ ${item.price}`;
-        html += `<div class="store-item ${canAfford ? '' : 'disabled'}" onclick="window.buyStoreItem('${item.id}')"><div class="store-icon">${item.icon}</div><div class="store-name">${item.name}</div><div class="store-desc">${item.desc}</div><button class="store-btn ${btnClass}">${priceText} 兑换</button></div>`;
+        const isMoney = item.type === 'money';
+        const bal = isMoney ? wallet : score;
+        const canAfford = bal >= item.price;
+        const btnClass = canAfford ? (isMoney ? 'money' : 'star') : 'locked';
+        const priceText = isMoney ? `¥${item.price}` : `⭐ ${item.price}`;
+        const itemClass = canAfford ? 'can-afford' : 'cant-afford';
+        // progress bar
+        const pct = Math.min(100, Math.round((bal / item.price) * 100));
+        const diff = item.price - bal;
+        const diffText = isMoney ? `¥${diff.toFixed(2)}` : `${diff} 分`;
+        const progressHtml = canAfford
+          ? `<div class="store-progress-wrap"><div class="store-progress-bg"><div class="store-progress-fill" style="width:100%"></div></div><div class="store-progress-label" style="color:var(--warm-green);">✅ 可以兑换啦！</div></div>`
+          : `<div class="store-progress-wrap"><div class="store-progress-bg"><div class="store-progress-fill" style="width:${pct}%"></div></div><div class="store-progress-label">还差 ${diffText} 解锁 (${pct}%)</div></div>`;
+        const btnText = canAfford ? `${priceText} 兑换` : `🔒 还差 ${diffText} 解锁`;
+        html += `<div class="store-item ${itemClass}" onclick="window.buyStoreItem('${item.id}')">
+          <div class="store-icon">${item.icon}</div>
+          <div class="store-name">${item.name}</div>
+          <div class="store-desc">${item.desc}</div>
+          ${progressHtml}
+          <button class="store-btn ${btnClass}">${btnText}</button>
+        </div>`;
       });
       html += `</div></div>`;
     });
@@ -1308,7 +1414,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const isMoney = item.type === 'money';
     const bal = isMoney ? S[k].wallet : S[k].score;
     if (bal < item.price) {
-      alert(`❌ 余额不足哦！\n需要 ${item.price} ${isMoney?'元':'颗星星'}，继续攒够吧！💪`);
+      const diff = isMoney ? `¥${(item.price - bal).toFixed(2)}` : `${item.price - bal} 分`;
+      document.getElementById('toastEncourageName').textContent = `再努力一下！💪`;
+      document.getElementById('toastEncourageSub').textContent = `还差 ${diff} 就能兑换【${item.name}】啦，加油！🌟`;
+      document.getElementById('toastEncourage').classList.add('show');
       return;
     }
     showStoreConfirm(item, () => {
@@ -1477,6 +1586,10 @@ document.addEventListener('DOMContentLoaded', function() {
   KIDS.forEach(k=>{
     const btn=document.getElementById(`${k}-study-speak`);
     if(btn)btn.onclick=e=>{e.stopPropagation();speakStudy(k);};
+    const gotitBtn=document.getElementById(`${k}-study-gotit`);
+    if(gotitBtn)gotitBtn.onclick=e=>{e.stopPropagation();doStudyGotIt(k);};
+    const againBtn=document.getElementById(`${k}-study-again`);
+    if(againBtn)againBtn.onclick=e=>{e.stopPropagation();doStudyAgain(k);};
   });
 
   function mathProblem(){if(Math.random()>.5){const a=Math.floor(Math.random()*90)+1,b=Math.floor(Math.random()*(100-a))+1;return{q:`${a} + ${b} = ?`,ans:(a+b).toString()};}else{const a=Math.floor(Math.random()*90)+10,b=Math.floor(Math.random()*a);return{q:`${a} - ${b} = ?`,ans:(a-b).toString()};}}
@@ -1518,26 +1631,84 @@ document.addEventListener('DOMContentLoaded', function() {
       const subEl=document.getElementById(`selector-${kid}-sub`);if(subEl)subEl.textContent=`${done}/${TOTAL_HABITS}`;
     });
   }
-  function showAllDoneBoom(k){
-    const inline=document.getElementById(`${k}-allDone`);
-    if(inline){inline.classList.add('boom');setTimeout(()=>inline.classList.remove('boom'),1100);}
-    const overlay=document.getElementById('allDoneBoomOverlay');
-    const title=document.getElementById('allDoneBoomName');
-    if(!overlay)return;
-    if(title){
-      title.textContent=`太棒了！${KID_NAMES[k]||k} 今天全部完成啦！🏆`;
-      title.classList.remove('burst');
-      void title.offsetWidth;
-      title.classList.add('burst');
-      setTimeout(()=>title.classList.remove('burst'),620);
+  const KID_CHARS = { lulu:'👧', qiqi:'👧', mimi:'👧' };
+  const KID_MSGS  = {
+    lulu:['Lulu 太厉害了！','大宝超棒！','Lulu 今天满分！'],
+    qiqi:['Qiqi 真棒！','二宝加油！','Qiqi 全部完成！'],
+    mimi:['Mimi 好厉害！','三宝超强！','Mimi 完美收官！']
+  };
+
+  function launchCelebStars(){
+    const emojis=['⭐','🌟','✨','💫','🎉','🎊','🏆'];
+    const cx=window.innerWidth/2, cy=window.innerHeight/2;
+    for(let i=0;i<28;i++){
+      const el=document.createElement('div');
+      el.className='celeb-star';
+      el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      const angle=Math.random()*Math.PI*2;
+      const dist=120+Math.random()*200;
+      const tx=(Math.cos(angle)*dist).toFixed(0)+'px';
+      const ty=(Math.sin(angle)*dist - 80).toFixed(0)+'px';
+      const dur=(0.7+Math.random()*0.8).toFixed(2)+'s';
+      const delay=(Math.random()*0.35).toFixed(2)+'s';
+      const rot=(Math.random()*720-360).toFixed(0)+'deg';
+      el.style.cssText+=`left:${cx}px;top:${cy}px;--tx:${tx};--ty:${ty};--dur:${dur};--delay:${delay};--rot:${rot};`;
+      document.body.appendChild(el);
+      el.addEventListener('animationend',()=>el.remove());
     }
-    overlay.classList.remove('show');
+  }
+
+  function playCelebMusic(){
+    const ctx=getAC();if(!ctx)return;
+    try{
+      const now=ctx.currentTime;
+      const notes=[523,659,784,1047,784,1047,1319];
+      notes.forEach((freq,i)=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.type='sine';o.frequency.value=freq;
+        const t=now+i*0.13;
+        g.gain.setValueAtTime(0,t);
+        g.gain.linearRampToValueAtTime(0.18,t+0.04);
+        g.gain.exponentialRampToValueAtTime(0.001,t+0.38);
+        o.start(t);o.stop(t+0.4);
+      });
+    }catch(e){}
+  }
+
+  function showAllDoneBoom(k){
+    const overlay=document.getElementById('allDoneBoomOverlay');
+    if(!overlay)return;
+
+    // Update character & text
+    const charEl=document.getElementById('celebCharacter');
+    const nameEl=document.getElementById('celebName');
+    const subEl=document.getElementById('celebSub');
+    if(charEl) charEl.textContent=KID_CHARS[k]||'👧';
+    if(nameEl) nameEl.textContent=KID_NAMES[k]||k;
+    const msgs=KID_MSGS[k]||['太棒了！'];
+    if(subEl) subEl.textContent=msgs[Math.floor(Math.random()*msgs.length)];
+
+    // Accent colour matches kid
+    overlay.style.setProperty('--accent', k==='lulu'?'var(--lulu)':k==='qiqi'?'var(--qiqi)':'var(--mimi)');
+
+    // Show
+    overlay.classList.remove('show','hiding');
     void overlay.offsetWidth;
     overlay.classList.add('show');
+
+    // Stars + music
+    try{launchCelebStars();}catch(e){}
+    try{launchCelebStars();}catch(e){}
+    try{playCelebMusic();}catch(e){}
     try{launchConfetti();launchConfetti();}catch(e){}
-    try{playSuccess(true);}catch(e){}
+
+    // Auto-hide after 3s
     clearTimeout(showAllDoneBoom._timer);
-    showAllDoneBoom._timer=setTimeout(()=>overlay.classList.remove('show'),1500);
+    showAllDoneBoom._timer=setTimeout(()=>{
+      overlay.classList.add('hiding');
+      setTimeout(()=>{overlay.classList.remove('show','hiding');},500);
+    },3000);
   }
 
   function renderKid(k){
@@ -1564,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tvBank=document.getElementById(`${k}-tvTime`);if(tvBank)tvBank.textContent=S[k].tvTime;
     for(let j=0;j<TOTAL_SUPERS;j++){const sb=document.getElementById(`${k}-superCheck-${j}`);if(!sb)continue;if(S[k].supers[j]){sb.classList.add('checked');sb.innerHTML='✔';}else{sb.classList.remove('checked');sb.innerHTML='';}}
     const allDone=document.getElementById(`${k}-allDone`);if(allDone)allDone.classList.toggle('visible',count===TOTAL_HABITS);
-    updateSelectorUI(currentKid);
+    updateSelectorUI(k===currentKid ? k : currentKid);
     updateBankUI(k);
   }
 
@@ -1768,7 +1939,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function checkDateReset(){
-    try{KIDS.forEach(k=>{if(localStorage.getItem(sk(k,'date'))!==todayStr()){for(let i=0;i<TOTAL_HABITS;i++){if(S[k].habits[i]!==true)S[k].streaks[i]=0;}saveKidStreaks(k);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;saveTvState(k);saveKidState(k);renderLists();renderKid(k);}
+    try{KIDS.forEach(k=>{if(localStorage.getItem(sk(k,'date'))!==todayStr()){for(let i=0;i<TOTAL_HABITS;i++){if(S[k].habits[i]!==true)S[k].streaks[i]=0;}saveKidStreaks(k);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;saveTvState(k);saveKidState(k);try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}renderLists();renderKid(k);renderStudy(k);}
       if(localStorage.getItem(sk(k,'month'))!==monthStr()){const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;const lastMonth=localStorage.getItem(sk(k,'month'))||'';const earned=parseFloat((lastScore/10).toFixed(2));
         if(lastMonth&&lastScore>0){S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});if(S[k].monthHistory.length>3)S[k].monthHistory=S[k].monthHistory.slice(0,3);saveKidHistory(k);}
         S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); renderKid(k);}
@@ -1776,7 +1947,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });}catch(e){}
   }
 
-  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); renderDate(); checkGrowthReminder(); setInterval(checkDateReset,60000);
+  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); updateSelectorUI(currentKid); renderDate(); checkGrowthReminder(); setInterval(checkDateReset,60000);
 });
 </script>
 </body>
