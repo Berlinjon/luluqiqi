@@ -567,8 +567,47 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .store-btn.money { background: linear-gradient(135deg, #a5d6a7, #66bb6a); color: #1b5e20; box-shadow: 0 3px 10px rgba(102,187,106,0.3); }
 .store-btn.star  { background: linear-gradient(135deg, #ffe082, #ffca28); color: #f57f17; box-shadow: 0 3px 10px rgba(255,202,40,0.3); }
 .store-btn.locked { background: #ebebeb; color: #999; box-shadow: none; cursor: default; font-size: 0.75rem; }
+.store-edit-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-bottom:16px;padding:10px;border-radius:var(--radius-md);border:2px dashed var(--accent-mid);background:var(--accent-light);color:var(--accent);font-weight:900;font-size:0.88rem;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+/* Store item edit overlay */
+.store-edit-overlay{position:fixed;inset:0;z-index:280;background:rgba(0,0,0,0.5);display:none;align-items:flex-end;justify-content:center;}
+.store-edit-overlay.show{display:flex;}
+.store-edit-box{background:#fff;border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;padding:24px 20px 40px;}
+.store-edit-box-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.1rem;color:var(--on-surface);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.store-edit-item-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;background:var(--cream);border-radius:var(--radius-sm);padding:10px 12px;}
+.store-edit-icon-input{width:44px;font-size:1.4rem;text-align:center;border:1.5px solid var(--cream-dark);border-radius:10px;padding:4px;font-family:inherit;background:#fff;}
+.store-edit-text-input{flex:1;padding:8px 10px;border:1.5px solid var(--cream-dark);border-radius:10px;font-size:0.85rem;font-weight:700;font-family:inherit;color:var(--on-surface);background:#fff;outline:none;}
+.store-edit-text-input:focus{border-color:var(--warm-green);}
+.store-edit-price-input{width:64px;padding:8px 6px;border:1.5px solid var(--cream-dark);border-radius:10px;font-size:0.85rem;font-weight:900;font-family:inherit;text-align:center;background:#fff;outline:none;}
+.store-edit-type-tag{font-size:0.7rem;font-weight:900;padding:3px 8px;border-radius:999px;white-space:nowrap;}
+.store-edit-type-tag.money{background:#c8e6c9;color:#1b5e20;}
+.store-edit-type-tag.star{background:#fff9c4;color:#f57f17;}
+.store-edit-actions{display:flex;gap:10px;margin-top:16px;}
+/* Stats card */
+.stats-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(44,31,0,0.07);}
+.stats-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;color:var(--on-surface);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.stats-row{display:flex;gap:10px;margin-bottom:12px;}
+.stats-pill{flex:1;text-align:center;background:var(--cream-dark);border-radius:var(--radius-sm);padding:10px 8px;}
+.stats-pill-label{font-size:0.68rem;color:var(--text-mid);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
+.stats-pill-val{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.15rem;color:var(--on-surface);margin-top:2px;}
+.stats-bar-row{margin-bottom:8px;}
+.stats-bar-label{display:flex;justify-content:space-between;font-size:0.75rem;font-weight:800;color:var(--text-mid);margin-bottom:4px;}
+.stats-bar-bg{height:8px;background:var(--cream-dark);border-radius:4px;overflow:hidden;}
+.stats-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--warm-green),var(--warm-green-mid));transition:width 0.6s cubic-bezier(.36,1.56,.64,1);}
 
-/* ── Progress Map UI ── */
+/* ── Habit Heatmap ── */
+.heatmap-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 16px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(44,31,0,0.07);}
+.heatmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;color:var(--on-surface);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.heatmap-sub{font-size:0.72rem;color:var(--text-mid);font-weight:600;margin-bottom:12px;}
+.heatmap-months{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px;}
+.heatmap-month-col{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
+.heatmap-month-label{font-size:0.62rem;font-weight:900;color:var(--text-light);text-align:center;margin-bottom:2px;height:12px;}
+.heatmap-week{display:flex;flex-direction:column;gap:2px;}
+.heatmap-day{width:13px;height:13px;border-radius:3px;background:var(--cream-dark);}
+.heatmap-day.done{background:var(--warm-green);opacity:0.9;}
+.heatmap-day.today{outline:2px solid var(--gold);outline-offset:1px;}
+.heatmap-day.future{background:transparent;}
+.heatmap-legend{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:0.68rem;color:var(--text-light);font-weight:700;}
+.heatmap-legend-box{width:11px;height:11px;border-radius:2px;}
 #progress-view { display:none; animation: slideUp 0.35s both; padding-bottom: 40px;}
 .map-header { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow-sm); border: 1.5px solid var(--accent-mid); margin-bottom: 24px; text-align: center; }
 .map-title { font-size: 1.1rem; font-weight: 900; color: var(--accent); margin-bottom: 6px; }
@@ -791,8 +830,8 @@ nav{
       </div>
       <div class="wallet-history" id="lulu-historyTimeline"></div>
     </div>
-
-    <div class="section-title">📏 成长档案</div>
+    <div class="section-title">📊 完成率统计</div>
+    <div class="stats-card" id="lulu-statsCard"></div>
     <div class="growth-remind" id="lulu-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
     <div class="growth-card" id="lulu-growthCard">
       <div class="growth-header" id="lulu-growthHeader">
@@ -806,6 +845,12 @@ nav{
     </div>
 
     <div class="section-title">✅ 今日好习惯</div>
+    <div class="heatmap-card" style="margin-bottom:10px;">
+      <div class="heatmap-title">🗓️ 打卡热力图</div>
+      <div class="heatmap-sub">过去90天全部完成记录</div>
+      <div class="heatmap-months" id="lulu-heatmap"></div>
+      <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+    </div>
     <div class="habits-grid" id="lulu-habitsList"></div>
     <div class="all-done-banner" id="lulu-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
     <div class="gap"></div><button class="reset-btn" id="lulu-resetBtn">🔄 重置今日打卡</button><div class="gap"></div>
@@ -848,6 +893,8 @@ nav{
       </div>
       <div class="wallet-history" id="qiqi-historyTimeline"></div>
     </div>
+    <div class="section-title">📊 完成率统计</div>
+    <div class="stats-card" id="qiqi-statsCard"></div>
 
     <div class="section-title">📏 成长档案</div>
     <div class="growth-remind" id="qiqi-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
@@ -863,6 +910,12 @@ nav{
     </div>
 
     <div class="section-title">✅ 今日好习惯</div>
+    <div class="heatmap-card" style="margin-bottom:10px;">
+      <div class="heatmap-title">🗓️ 打卡热力图</div>
+      <div class="heatmap-sub">过去90天全部完成记录</div>
+      <div class="heatmap-months" id="qiqi-heatmap"></div>
+      <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+    </div>
     <div class="habits-grid" id="qiqi-habitsList"></div>
     <div class="all-done-banner" id="qiqi-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
     <div class="gap"></div><button class="reset-btn" id="qiqi-resetBtn">🔄 重置今日打卡</button><div class="gap"></div>
@@ -905,6 +958,8 @@ nav{
       </div>
       <div class="wallet-history" id="mimi-historyTimeline"></div>
     </div>
+    <div class="section-title">📊 完成率统计</div>
+    <div class="stats-card" id="mimi-statsCard"></div>
 
     <div class="section-title">📏 成长档案</div>
     <div class="growth-remind" id="mimi-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
@@ -920,6 +975,12 @@ nav{
     </div>
 
     <div class="section-title">✅ 今日好习惯</div>
+    <div class="heatmap-card" style="margin-bottom:10px;">
+      <div class="heatmap-title">🗓️ 打卡热力图</div>
+      <div class="heatmap-sub">过去90天全部完成记录</div>
+      <div class="heatmap-months" id="mimi-heatmap"></div>
+      <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+    </div>
     <div class="habits-grid" id="mimi-habitsList"></div>
     <div class="all-done-banner" id="mimi-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
     <div class="gap"></div><button class="reset-btn" id="mimi-resetBtn">🔄 重置今日打卡</button><div class="gap"></div>
@@ -955,6 +1016,25 @@ nav{
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="store-edit-overlay" id="storeEditOverlay">
+  <div class="store-edit-box">
+    <div class="store-edit-box-title">
+      <span>🛍️ 编辑奖励商品</span>
+      <button class="edit-btn danger" id="storeEditCloseBtn" style="padding:6px 16px;font-size:0.82rem;">关闭</button>
+    </div>
+    <div id="storeEditList"></div>
+    <div class="store-edit-actions">
+      <button class="edit-btn primary" id="storeEditSaveBtn" style="flex:1;">💾 保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- 备份提醒悬浮条 -->
+<div id="backupReminder" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:200;background:#fff3e0;border:2px solid #ffb74d;border-radius:var(--radius-md);padding:10px 18px;font-size:0.82rem;font-weight:800;color:#e65100;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:10px;max-width:340px;width:90%;">
+  <span>⚠️ 已超过7天未备份数据，建议导出备份！</span>
+  <button onclick="document.getElementById('backupReminder').style.display='none';document.getElementById('navSettings').click();" style="border:none;background:#ff9800;color:#fff;border-radius:999px;padding:4px 12px;font-weight:900;font-size:0.78rem;cursor:pointer;white-space:nowrap;">去备份</button>
+</div>
+
 <div class="all-done-boom-overlay" id="allDoneBoomOverlay">
   <div class="all-done-boom-card">
     <div class="celeb-character" id="celebCharacter">👧</div>
@@ -1046,8 +1126,8 @@ nav{
     <div class="edit-section" style="color:#5e35b1;">👧 <span class="dyn-name" data-kid="mimi">Mimi</span> 日常习惯</div><div id="editMimiList"></div>
 
     <div class="edit-actions"><button class="edit-btn danger" id="cancelEditBtn">取消</button><button class="edit-btn primary" id="saveEditBtn">保存设置</button></div>
-    <div class="edit-actions" style="margin-top:10px;"><button class="edit-btn purple" id="exportDataBtn">📤 导出备份</button><button class="edit-btn orange" id="importDataBtn">📥 导入恢复</button></div>
-    <div class="backup-area" id="backupDisplay"><div style="font-size:0.75rem;font-weight:700;color:#7b1fa2;margin-bottom:6px;">📋 请长按全选下方备份码，复制保存：</div><textarea class="backup-textarea" id="backupTextarea" readonly></textarea><div style="font-size:0.7rem;color:#9c27b0;margin-top:4px;font-weight:700;">⚠️ 版本：v6</div><button class="edit-btn primary" id="closeBackupBtn" style="margin-top:8px;width:100%;">关闭</button></div>
+    <div class="edit-actions" style="margin-top:10px;"><button class="edit-btn purple" id="exportDataBtn">📤 导出备份文件</button><button class="edit-btn orange" id="importDataBtn">📥 导入恢复</button></div>
+    <div class="backup-area" id="backupDisplay"><div style="font-size:0.75rem;font-weight:700;color:#2e7d32;margin-bottom:6px;">✅ 备份文件已生成，请保存到安全位置！</div><button class="edit-btn primary" id="closeBackupBtn" style="margin-top:8px;width:100%;">关闭</button></div>
   </div>
 </div>
 
@@ -1160,8 +1240,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('toastSuccess').classList.add('show');
     // 检查是否全部完成
     const habitsDone=(S[k].habits||[]).filter(v=>v===true).length;
-    if(habitsDone+1===TOTAL_TASKS && currentKid===k){
-      setTimeout(()=>showAllDoneBoom(k), 800);
+    const totalNow=habitsDone+1;
+    if(totalNow===TOTAL_TASKS){
+      if(!S[k].calendar) S[k].calendar={};
+      S[k].calendar[todayStr()]=true;
+      saveKidCalendar(k);
+      if(currentKid===k) setTimeout(()=>showAllDoneBoom(k), 800);
     }
   }
 
@@ -1286,21 +1370,59 @@ document.addEventListener('DOMContentLoaded', function() {
   function launchConfetti(){const colors=['#ffd600','#ff5252','#64ffda','#e040fb','#69f0ae','#ff6d00','#40c4ff'];for(let i=0;i<36;i++){const el=document.createElement('div');el.className='confetti-piece';const s=7+Math.random()*12;el.style.cssText=`left:${5+Math.random()*90}%;width:${s}px;height:${s}px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.2+Math.random()*1.4}s;animation-delay:${Math.random()*0.3}s;border-radius:${Math.random()>.5?'50%':'3px'};`;document.body.appendChild(el);el.addEventListener('animationend',()=>el.remove());}}
 
   // Rewards Logic
-  const STORE_ITEMS = [
-    { id: 'm1', type: 'money', price: 5, icon: '🍬', name: '零食自主权', desc: '挑选一样喜欢的小零食' },
-    { id: 'm2', type: 'money', price: 10, icon: '🎁', name: '小文具盲盒', desc: '漂亮橡皮、闪光笔或贴纸' },
-    { id: 'm4', type: 'money', price: 20, icon: '📖', name: '新绘本/故事书', desc: '挑选一本最想看的新书' },
-    { id: 'm6', type: 'money', price: 80, icon: '🎪', name: '游乐场畅玩', desc: '淘气堡、蹦床或夹娃娃' },
-    { id: 'm7', type: 'money', price: 100, icon: '🍕', name: '大餐决定权', desc: '这周末吃什么由你来定！' },
-    { id: 'm10', type: 'money', price: 200, icon: '🎢', name: '游乐园一日游', desc: '去大型动物园或主题乐园' },
-    { id: 's1', type: 'star', price: 30, icon: '🛡️', name: '家务豁免卡', desc: '今天合法偷懒一次，免做家务' },
-    { id: 's2', type: 'star', price: 50, icon: '🌙', name: '晚睡半小时卡', desc: '仅限周末使用，晚睡30分钟' }
+  // ── 奖励商店自定义 ──────────────────────────────────────────────────────
+  const STORE_KEY = 'custom_store_v1';
+  let STORE_ITEMS = [
+    { id: 'm1', type: 'money', price: 5,   icon: '🍬', name: '零食自主权',   desc: '挑选一样喜欢的小零食' },
+    { id: 'm2', type: 'money', price: 10,  icon: '🎁', name: '小文具盲盒',   desc: '漂亮橡皮、闪光笔或贴纸' },
+    { id: 'm4', type: 'money', price: 20,  icon: '📖', name: '新绘本/故事书', desc: '挑选一本最想看的新书' },
+    { id: 'm6', type: 'money', price: 80,  icon: '🎪', name: '游乐场畅玩',   desc: '淘气堡、蹦床或夹娃娃' },
+    { id: 'm7', type: 'money', price: 100, icon: '🍕', name: '大餐决定权',   desc: '这周末吃什么由你来定！' },
+    { id: 'm10',type: 'money', price: 200, icon: '🎢', name: '游乐园一日游', desc: '去大型动物园或主题乐园' },
+    { id: 's1', type: 'star',  price: 30,  icon: '🛡️', name: '家务豁免卡',   desc: '今天合法偷懒一次，免做家务' },
+    { id: 's2', type: 'star',  price: 50,  icon: '🌙', name: '晚睡半小时卡', desc: '仅限周末使用，晚睡30分钟' }
   ];
+  try{ const saved=JSON.parse(localStorage.getItem(STORE_KEY)); if(saved&&saved.length) STORE_ITEMS=saved; }catch(e){}
+
+  function saveStoreItems(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(STORE_ITEMS)); }catch(e){} }
+
+  function openStoreEdit(){
+    const list=document.getElementById('storeEditList');
+    list.innerHTML=STORE_ITEMS.map((item,idx)=>`
+      <div class="store-edit-item-row">
+        <input class="store-edit-icon-input" id="sedit-icon-${idx}" value="${item.icon}" maxlength="2">
+        <input class="store-edit-text-input" id="sedit-name-${idx}" value="${item.name}" placeholder="奖励名称">
+        <input class="store-edit-price-input" id="sedit-price-${idx}" type="number" value="${item.price}" min="1">
+        <span class="store-edit-type-tag ${item.type}">${item.type==='money'?'💰元':'⭐星'}</span>
+      </div>`).join('');
+    document.getElementById('storeEditOverlay').classList.add('show');
+  }
+
+  document.getElementById('storeEditCloseBtn').onclick=()=>document.getElementById('storeEditOverlay').classList.remove('show');
+  document.getElementById('storeEditSaveBtn').onclick=()=>{
+    STORE_ITEMS.forEach((item,idx)=>{
+      item.icon=document.getElementById(`sedit-icon-${idx}`)?.value||item.icon;
+      item.name=document.getElementById(`sedit-name-${idx}`)?.value||item.name;
+      const p=parseInt(document.getElementById(`sedit-price-${idx}`)?.value);
+      if(!isNaN(p)&&p>0) item.price=p;
+    });
+    saveStoreItems();
+    document.getElementById('storeEditOverlay').classList.remove('show');
+    renderRewards();
+    alert('✅ 奖励商品已保存！');
+  };
+
+  window.openStoreEditWithPwd = async function(){
+    const ok = await showPwdOverlay('🔒 编辑奖励商品','请输入家长密码后继续');
+    if(!ok) return;
+    openStoreEdit();
+  };
 
   function renderRewards() {
     const view = document.getElementById('rewards-view');
     const k = currentKid; const wallet = S[k].wallet; const score = S[k].score;
     let html = `<div class="store-header-card"><div class="store-bal-item"><div class="store-bal-label">👛 零钱余额</div><div class="store-bal-val" style="color:#2e7d32">¥${wallet.toFixed(2)}</div></div><div style="width:2px;height:36px;background:var(--cream-dark);"></div><div class="store-bal-item"><div class="store-bal-label">⭐ 可用星星</div><div class="store-bal-val" style="color:#f57f17">${score}</div></div></div>`;
+    html += `<button class="store-edit-btn" onclick="window.openStoreEditWithPwd()">✏️ 家长自定义奖励商品</button>`;
     const levels = [
       { title: '🥉 日常小确幸', items: STORE_ITEMS.filter(i => i.type==='money' && i.price <= 20) },
       { title: '🥈 周末大体验', items: STORE_ITEMS.filter(i => i.type==='money' && i.price > 20 && i.price <= 120) },
@@ -1615,6 +1737,58 @@ document.addEventListener('DOMContentLoaded', function() {
   function mathProblem(){if(Math.random()>.5){const a=Math.floor(Math.random()*90)+1,b=Math.floor(Math.random()*(100-a))+1;return{q:`${a} + ${b} = ?`,ans:(a+b).toString()};}else{const a=Math.floor(Math.random()*90)+10,b=Math.floor(Math.random()*a);return{q:`${a} - ${b} = ?`,ans:(a-b).toString()};}}
   function generateMath3(){let a,b,c,op1,op2,r1,fin;while(true){a=Math.floor(Math.random()*15)+1;b=Math.floor(Math.random()*15)+1;c=Math.floor(Math.random()*15)+1;op1=Math.random()>.5?1:-1;op2=Math.random()>.5?1:-1;r1=a+op1*b;fin=r1+op2*c;if(r1>=0&&r1<=20&&fin>=0&&fin<=20)break;}return{q:`${a} ${op1===1?'+':'-'} ${b} ${op2===1?'+':'-'} ${c} = ?`,ans:fin.toString()};}
 
+  function renderHeatmap(k){
+    const el=document.getElementById(`${k}-heatmap`);
+    if(!el) return;
+    const cal=S[k].calendar||{};
+    const today=new Date();
+    const todayStr2=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+
+    // 生成过去90天，按周分组
+    const days=[];
+    for(let i=89;i>=0;i--){
+      const d=new Date(today);
+      d.setDate(today.getDate()-i);
+      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      days.push({ds, dow:d.getDay(), date:d, month:d.getMonth(), day:d.getDate()});
+    }
+
+    // 按周列分组（每7天一列）
+    const weeks=[];
+    let week=[];
+    // 从第一天的星期几开始填充
+    const firstDow=days[0].dow;
+    for(let p=0;p<firstDow;p++) week.push(null); // 前置空格
+    days.forEach(d=>{
+      week.push(d);
+      if(week.length===7){weeks.push(week);week=[];}
+    });
+    if(week.length>0){while(week.length<7)week.push(null);weeks.push(week);}
+
+    // 按月分组显示月份标签
+    let html='';
+    let lastMonth=-1;
+    weeks.forEach(w=>{
+      // 找本周第一个有效日期的月份
+      const firstValid=w.find(d=>d!==null);
+      const monthLabel=firstValid&&firstValid.day<=7&&firstValid.month!==lastMonth
+        ?['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][firstValid.month]
+        :'';
+      if(firstValid&&firstValid.day<=7) lastMonth=firstValid?.month??lastMonth;
+
+      html+=`<div class="heatmap-month-col">`;
+      html+=`<div class="heatmap-month-label">${monthLabel}</div>`;
+      w.forEach(d=>{
+        if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
+        const done=cal[d.ds]===true;
+        const isToday=d.ds===todayStr2;
+        html+=`<div class="heatmap-day${done?' done':''}${isToday?' today':''}" title="${d.ds}"></div>`;
+      });
+      html+=`</div>`;
+    });
+    el.innerHTML=html;
+  }
+
   function renderHistoryTimeline(k){
     const el=document.getElementById(`${k}-historyTimeline`);
     if(!el)return;
@@ -1637,21 +1811,68 @@ document.addEventListener('DOMContentLoaded', function() {
     el.innerHTML=html;
   }
 
+  function renderStatsCard(k){
+    const el=document.getElementById(`${k}-statsCard`);
+    if(!el) return;
+    const cal=S[k].calendar||{};
+    const today=new Date();
+    // 本月统计
+    const year=today.getFullYear(),month=today.getMonth();
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    const todayNum=today.getDate();
+    let monthDone=0,monthTotal=todayNum;
+    for(let d=1;d<=todayNum;d++){
+      const ds=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      if(cal[ds]===true) monthDone++;
+    }
+    const monthPct=monthTotal>0?Math.round((monthDone/monthTotal)*100):0;
+    // 本周统计
+    const dayOfWeek=today.getDay()||7;
+    let weekDone=0,weekTotal=dayOfWeek;
+    for(let i=dayOfWeek-1;i>=0;i--){
+      const d2=new Date(today);d2.setDate(today.getDate()-i);
+      const ds2=d2.getFullYear()+'-'+String(d2.getMonth()+1).padStart(2,'0')+'-'+String(d2.getDate()).padStart(2,'0');
+      if(cal[ds2]===true) weekDone++;
+    }
+    const weekPct=weekTotal>0?Math.round((weekDone/weekTotal)*100):0;
+    // 连续天数
+    const maxStreak=Math.max(...(S[k].streaks||[0]),0);
+    el.innerHTML=`
+      <div class="stats-title">📊 完成率统计</div>
+      <div class="stats-row">
+        <div class="stats-pill"><div class="stats-pill-label">本周全完成</div><div class="stats-pill-val">${weekDone}/${weekTotal}天</div></div>
+        <div class="stats-pill"><div class="stats-pill-label">本月全完成</div><div class="stats-pill-val">${monthDone}/${monthTotal}天</div></div>
+        <div class="stats-pill"><div class="stats-pill-label">最长连续</div><div class="stats-pill-val">🔥${maxStreak}天</div></div>
+      </div>
+      <div class="stats-bar-row"><div class="stats-bar-label"><span>本周完成率</span><span>${weekPct}%</span></div><div class="stats-bar-bg"><div class="stats-bar-fill" style="width:${weekPct}%"></div></div></div>
+      <div class="stats-bar-row"><div class="stats-bar-label"><span>本月完成率</span><span>${monthPct}%</span></div><div class="stats-bar-bg"><div class="stats-bar-fill" style="width:${monthPct}%"></div></div></div>
+    `;
+  }
+
   function updateBankUI(k){
     const money=parseFloat((S[k].score/10).toFixed(2));
     const mEl=document.getElementById(`${k}-monthScore`);if(mEl)mEl.textContent=S[k].score;
     const mmEl=document.getElementById(`${k}-monthMoney`);if(mmEl)mmEl.textContent=money.toFixed(1);
     const wEl=document.getElementById(`${k}-wallet`);if(wEl)wEl.textContent=S[k].wallet.toFixed(2);
     renderHistoryTimeline(k);
+    renderStatsCard(k);
+    renderHeatmap(k);
   }
 
   function renderLists(){
     KIDS.forEach(k=>{
       const hl=document.getElementById(`${k}-habitsList`);hl.innerHTML='';
-      for(let i=0;i<TOTAL_HABITS;i++){
+      // 构建索引数组，未完成置顶，已完成/已叉沉底
+      const indices=Array.from({length:TOTAL_HABITS},(_,i)=>i);
+      indices.sort((a,b)=>{
+        const sa=S[k].habits[a]===null?0:1;
+        const sb=S[k].habits[b]===null?0:1;
+        return sa-sb;
+      });
+      indices.forEach((i,pos)=>{
         const streak=S[k].streaks[i]||0;const streakHtml=streak>0?`<div class="streak-tag">🔥 ${streak}天</div>`:'';
-        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${i*0.04}s"><span class="habit-emoji">${S[k].currentHabits[i].emoji}</span><div class="habit-label-wrap"><div class="habit-label">${S[k].currentHabits[i].text}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}">✖️</button></div></div>`;
-      }
+        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${pos*0.04}s"><span class="habit-emoji">${S[k].currentHabits[i].emoji}</span><div class="habit-label-wrap"><div class="habit-label">${S[k].currentHabits[i].text}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}">✖️</button></div></div>`;
+      });
       const sl=document.getElementById(`${k}-superList`);sl.innerHTML='';
       for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${S[k].currentSupers[j].text}</span><span class="super-pts">+50分</span></div>`;}
     });
@@ -1815,7 +2036,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const count=S[k].habits.filter(v=>v===true).length;
     const totalCount=count+(isStudyDoneToday(k)?1:0);
-    if(count === TOTAL_HABITS) {
+    if(totalCount === TOTAL_TASKS) {
       if(!S[k].calendar) S[k].calendar = {};
       S[k].calendar[todayStr()] = true;
       saveKidCalendar(k);
@@ -1941,7 +2162,28 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('editOverlay').onclick=()=>document.getElementById('editOverlay').classList.remove('show');
   document.querySelector('#editOverlay .edit-box').onclick=e=>e.stopPropagation();
 
-  document.getElementById('exportDataBtn').onclick=e=>{e.preventDefault();const data={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}data['kidNames_v6']=JSON.stringify(KID_NAMES);data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);data['__backup_version__']=V;const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));const textarea=document.getElementById('backupTextarea');textarea.value=backupStr;document.getElementById('backupDisplay').style.display='block';setTimeout(()=>{textarea.focus();textarea.select();},100);};
+  document.getElementById('exportDataBtn').onclick=e=>{
+    e.preventDefault();
+    const data={};
+    for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}
+    data['kidNames_v6']=JSON.stringify(KID_NAMES);
+    data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
+    data['__backup_version__']=V;
+    const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));
+    // 创建下载文件
+    const d=new Date();
+    const fname=`每日花园备份_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
+    const blob=new Blob([backupStr],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=fname;
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    document.getElementById('backupDisplay').style.display='block';
+    try{localStorage.setItem('last_backup_date',todayStr());}catch(e2){}
+    const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
+  };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
   document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const input=prompt('⚠️ 警告：导入将覆盖当前所有数据！\n\n请输入备份代码：');if(!input)return;try{const data=JSON.parse(decodeURIComponent(atob(input.trim())));const backupVer=data['__backup_version__']||'未知';if(backupVer!==V){if(!confirm(`⚠️ 版本不匹配（备份:${backupVer}, 当前:${V}）\n是否仍要继续导入？`))return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')||key==='kidNames_v6'||key==='studyLevels_v1'){localStorage.setItem(key,data[key]);count++;}}if(count>0){alert(`✅ 数据恢复成功！共恢复 ${count} 条记录。\n页面将自动刷新。`);location.reload();}else alert('❌ 无效的备份代码！');}catch(err){alert('❌ 代码格式错误，恢复失败！');}};
 
@@ -2014,7 +2256,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });}catch(e){}
   }
 
-  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); updateSelectorUI(currentKid); renderDate(); checkGrowthReminder(); setInterval(checkDateReset,60000);
+  // ── 备份提醒 ──────────────────────────────────────────────────────────────
+  function checkBackupReminder(){
+    try{
+      const lastBackup=localStorage.getItem('last_backup_date');
+      const today=todayStr();
+      if(!lastBackup){localStorage.setItem('last_backup_date',today);return;}
+      const diff=Math.floor((new Date(today)-new Date(lastBackup))/(1000*60*60*24));
+      if(diff>=7){
+        const banner=document.getElementById('backupReminder');
+        if(banner) banner.style.display='flex';
+      }
+    }catch(e){}
+  }
+
+  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); updateSelectorUI(currentKid); renderDate(); checkGrowthReminder(); checkBackupReminder(); setInterval(checkDateReset,60000);
 });
 </script>
 </body>
