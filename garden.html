@@ -50,6 +50,112 @@ body.kid-mimi {
   --accent-mid: var(--mimi-mid);
 }
 
+/* ── 夜间模式 (跟随系统) ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cream: #1e1510;
+    --cream-dark: #2a1e14;
+    --warm-green: #7ec84a;
+    --warm-green-light: #1e2e10;
+    --warm-green-mid: #a0d060;
+    --gold: #e8a800;
+    --gold-light: #2e2408;
+    --on-surface: #f0e0c8;
+    --text-mid: #c8a878;
+    --text-light: #8a6848;
+    --card-bg: #261a10;
+    --shadow-sm: 0 2px 12px rgba(0,0,0,0.35);
+    --shadow-md: 0 6px 28px rgba(0,0,0,0.45);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.55);
+    /* kid 颜色在深色下略微提亮 */
+    --lulu: #f07aaa;
+    --lulu-light: #2e1020;
+    --lulu-mid: #a04060;
+    --qiqi: #3abce8;
+    --qiqi-light: #0a1e2e;
+    --qiqi-mid: #1878a0;
+    --mimi: #a88bf0;
+    --mimi-light: #1a1030;
+    --mimi-mid: #6040b0;
+  }
+  body {
+    background: var(--cream);
+    color: var(--on-surface);
+  }
+  /* header 背景 */
+  header {
+    background: rgba(30,21,16,0.92);
+    border-bottom-color: rgba(232,168,0,0.15);
+  }
+  /* 选择器 */
+  #charSelector {
+    background: rgba(38,26,16,0.96);
+    border-color: rgba(232,168,0,0.15);
+  }
+  /* 导航栏 */
+  nav {
+    background: rgba(30,21,16,0.95);
+    border-top-color: rgba(232,168,0,0.12);
+  }
+  /* 卡片类 */
+  .tv-card, .wallet-card, .super-card, .growth-card,
+  .study-card, .heatmap-card, .stats-card, .store-header-card,
+  .beanstalk-wrapper, .map-header {
+    background: var(--card-bg);
+    border-color: rgba(232,168,0,0.12);
+  }
+  /* 习惯项目 */
+  .habit-item { background: var(--card-bg); }
+  .habit-item.done { background: #1a2810; border-color: #3a5820; }
+  .habit-item.missed { background: #2a1010; border-color: #6a2020; }
+  /* 按钮 */
+  .habit-btn { background: #2a1e14; }
+  .music-btn { background: var(--cream-dark); }
+  /* 输入框 */
+  .growth-input, .edit-text {
+    background: #2a1e14;
+    border-color: #3a2a1a;
+    color: var(--on-surface);
+  }
+  /* 编辑弹层 */
+  .edit-box, .store-edit-box, .toast-box {
+    background: #261a10;
+    color: var(--on-surface);
+  }
+  .edit-overlay { background: rgba(0,0,0,0.75); }
+  /* 超级挑战卡 */
+  .super-card { background: linear-gradient(135deg,#241800,#1e1400); border-color: #604800; }
+  .super-item { background: #2a1e10; }
+  /* 进度地图 */
+  #progress-view .map-header { background: var(--card-bg); }
+  /* 所有弹层 */
+  .toast-overlay { background: rgba(0,0,0,0.7); }
+  /* 备份提醒 */
+  #backupReminder { background: #2a1800; border-color: #804000; color: #e8a060; }
+  /* 豌豆树 */
+  .beanstalk-wrapper { background: linear-gradient(to bottom,#1a2810,#141e0c); border-color: #2a4018; }
+  /* store item */
+  .store-item { background: var(--card-bg); }
+  .store-item.can-afford { background: #1a2810; }
+  /* 热力图 */
+  .heatmap-day { background: #2a1e14; }
+  .heatmap-day.done { background: var(--warm-green); }
+  /* tv track */
+  .tv-track { background: #1a1008; }
+  /* 密码输入框 */
+  #pwdInput, #storeConfirmPwd {
+    background: #2a1e14;
+    color: var(--on-surface);
+    border-color: #3a2a1a;
+  }
+  /* 成长表格 */
+  .growth-table th, .growth-table td { border-color: #3a2a1a; }
+  /* selector menu */
+  .selector-menu { background: rgba(38,26,16,0.98); }
+  .selector-option { background: var(--card-bg); }
+  .selector-option.active { background: var(--cream-dark); }
+}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{
@@ -623,6 +729,23 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .map-node { width: 52px; height: 52px; border-radius: 50%; background: #8d6e63; border: 3px solid #5d4037; position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15); transition: transform 0.3s; }
 .map-node.today { border-color: var(--gold); box-shadow: 0 0 0 6px rgba(247,181,0,0.3), inset 0 -4px 0 rgba(0,0,0,0.2); transform: scale(1.1); }
 .map-node-day { position: absolute; bottom: -20px; font-size: 0.75rem; font-weight: 900; color: var(--text-mid); }
+/* 部分完成分级颜色 */
+.map-node.partial-low  { background:#7a5533; border-color:#5a3a1a; } /* 1-3个 */
+.map-node.partial-mid  { background:#6a7a30; border-color:#4a5a10; } /* 4-6个 */
+.map-node.partial-high { background:#3a7a3a; border-color:#1a5a1a; } /* 7-9个 */
+/* 部分完成进度弧线 */
+.map-node .partial-ring {
+  position:absolute;inset:-3px;border-radius:50%;
+  border:3px solid transparent;
+  border-top-color: var(--warm-green-mid);
+  pointer-events:none;
+}
+/* 进度标签 */
+.map-node .partial-label {
+  position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);
+  font-size:0.6rem;font-weight:900;color:var(--warm-green);
+  white-space:nowrap;
+}
 /* 注意这里也加了 scaleX(-1) 让它面向前进方向，并且基于右下角跳跃 */
 .map-rabbit { position: absolute; top: -26px; font-size: 2rem; animation: rabbitJump 0.8s ease-in-out infinite; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); z-index: 10; transform-origin: center bottom; }
 @keyframes rabbitJump{
@@ -1818,11 +1941,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 检查是否全部完成
     const habitsDone=(S[k].habits||[]).filter(v=>v===true).length;
     const totalNow=habitsDone+1;
-    if(totalNow===TOTAL_TASKS){
-      if(!S[k].calendar) S[k].calendar={};
-      S[k].calendar[todayStr()]=true;
-      saveKidCalendar(k);
-      if(currentKid===k) setTimeout(()=>showAllDoneBoom(k), 800);
+    if(!S[k].calendar) S[k].calendar={};
+    S[k].calendar[todayStr()]=totalNow===TOTAL_TASKS ? true : totalNow;
+    saveKidCalendar(k);
+    if(totalNow===TOTAL_TASKS && currentKid===k){
+      setTimeout(()=>showAllDoneBoom(k), 800);
+      checkMilestone(k);
     }
   }
 
@@ -2200,7 +2324,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(dayNum).padStart(2,'0');
-        const isBloomed = S[k].calendar && S[k].calendar[dateStr] === true;
+        const calVal = S[k].calendar && S[k].calendar[dateStr];
+        const isBloomed = calVal === true;
+        const partialCount = (!isBloomed && typeof calVal === 'number') ? calVal : 0;
         const isToday = dayNum === todayNum;
         const isPast = dayNum < todayNum;
         const isSpecial = [7, 14, 21, 28].includes(dayNum);
@@ -2208,21 +2334,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if(isBloomed) bloomedCount++;
 
         let content = '';
+        let extraClass = isToday ? 'today' : '';
+        let extraStyle = '';
+
         if (isSpecial) {
-           content = isBloomed ? '🎁' : (isPast ? '🧰' : '🎁');
+          content = isBloomed ? '🎁' : (isPast ? '🧰' : '🎁');
         } else if (isBloomed) {
-           content = plants[dayNum % plants.length];
+          content = plants[dayNum % plants.length];
+        } else if (partialCount > 0) {
+          // 部分完成：分3级显示
+          if (partialCount <= 3) {
+            extraClass += ' partial-low';
+            content = '🌱';
+          } else if (partialCount <= 6) {
+            extraClass += ' partial-mid';
+            content = '🌿';
+          } else {
+            extraClass += ' partial-high';
+            content = '🍀';
+          }
+          // 加完成数小标签
+          content += `<div class="partial-label">${partialCount}/${TOTAL_TASKS}</div>`;
         } else if (isPast) {
-           content = '🍂';
+          content = '🍂';
         }
 
-        let extraClass = isToday ? 'today' : '';
-        let rabbitHtml = isToday ? `<div class="map-rabbit">🐇</div>` : '';
-        rowHtml += `<div class="map-node ${extraClass}">${rabbitHtml}${content}<div class="map-node-day">${dayNum}</div></div>`;
+        const rabbitHtml = isToday ? `<div class="map-rabbit">🐇</div>` : '';
+        rowHtml += `<div class="map-node ${extraClass.trim()}" style="${extraStyle}">${rabbitHtml}${content}<div class="map-node-day">${dayNum}</div></div>`;
       }
       rowHtml += `</div>`;
       mapHtml += rowHtml;
     }
+
+    // 加图例
+    mapHtml += `<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px;font-size:0.72rem;font-weight:800;color:var(--text-mid);">
+      <span>🍂 未打卡</span>
+      <span>🌱 1-3个</span>
+      <span>🌿 4-6个</span>
+      <span>🍀 7-9个</span>
+      <span>🌷 全部完成</span>
+    </div>`;
+
     container.innerHTML = mapHtml;
     document.getElementById('map-flower-count').textContent = bloomedCount;
     applyKidNames();
@@ -2634,6 +2786,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }catch(e){}
   }
 
+  // ── 里程碑庆祝（30天/60天）──────────────────────────────────────────────
+  const MILESTONE_KEY = 'milestone_shown';
+  function getMilestoneShown(k){
+    try{ return JSON.parse(localStorage.getItem(`${MILESTONE_KEY}_${k}`))||[]; }catch(e){ return []; }
+  }
+  function saveMilestoneShown(k, arr){
+    try{ localStorage.setItem(`${MILESTONE_KEY}_${k}`, JSON.stringify(arr)); }catch(e){}
+  }
+
+  function checkMilestone(k){
+    const cal = S[k].calendar || {};
+    const totalDone = Object.values(cal).filter(v => v === true).length;
+    const milestones = [30, 60];
+    const shown = getMilestoneShown(k);
+    for(const m of milestones){
+      if(totalDone === m && !shown.includes(m)){
+        shown.push(m);
+        saveMilestoneShown(k, shown);
+        setTimeout(()=>showMilestoneBoom(k, m), 1200);
+        return;
+      }
+    }
+  }
+
+  function showMilestoneBoom(k, days){
+    const overlay = document.getElementById('allDoneBoomOverlay');
+    if(!overlay) return;
+    const charEl = document.getElementById('celebCharacter');
+    const nameEl = document.getElementById('celebName');
+    const subEl  = document.getElementById('celebSub');
+    if(charEl) charEl.textContent = KID_CHARS[k] || '👧';
+    if(nameEl) nameEl.textContent = KID_NAMES[k] || k;
+    if(subEl)  subEl.textContent  = `连续坚持达到 ${days} 天全部完成！🏆`;
+    // 改标题为里程碑专属文字
+    const titleEl = overlay.querySelector('.celeb-title');
+    if(titleEl) titleEl.innerHTML = `<span class="celeb-name" style="font-size:2.2rem;">${days}天</span><br>里程碑达成！🎖️`;
+    overlay.style.setProperty('--accent', k==='lulu'?'var(--lulu)':k==='qiqi'?'var(--qiqi)':'var(--mimi)');
+    overlay.classList.remove('show','hiding');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    try{launchCelebStars();launchCelebStars();}catch(e){}
+    try{playCelebMusic();}catch(e){}
+    try{launchConfetti();launchConfetti();launchConfetti();}catch(e){}
+    clearTimeout(showMilestoneBoom._timer);
+    showMilestoneBoom._timer = setTimeout(()=>{
+      overlay.classList.add('hiding');
+      // 恢复标题
+      if(titleEl) titleEl.innerHTML = `<span class="celeb-name" id="celebName">${KID_NAMES[k]||k}</span><br>今天全部完成啦！🏆`;
+      setTimeout(()=>{ overlay.classList.remove('show','hiding'); }, 500);
+    }, 4000);
+  }
+
   function showAllDoneBoom(k){
     const overlay=document.getElementById('allDoneBoomOverlay');
     if(!overlay)return;
@@ -2728,18 +2932,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const count=S[k].habits.filter(v=>v===true).length;
     const totalCount=count+(isStudyDoneToday(k)?1:0);
-    if(totalCount === TOTAL_TASKS) {
-      if(!S[k].calendar) S[k].calendar = {};
-      S[k].calendar[todayStr()] = true;
-      saveKidCalendar(k);
-    }
+    // 每次打卡都记录当日完成数（用于地图分级显示）
+    if(!S[k].calendar) S[k].calendar = {};
+    S[k].calendar[todayStr()] = totalCount===TOTAL_TASKS ? true : totalCount;
+    saveKidCalendar(k);
 
     renderLists(); renderKid(k);
 
     if(totalCount===TOTAL_TASKS && !S[k].tvRewardGiven){
       S[k].tvTime += 1; S[k].tvRewardGiven = true; saveTvState(k); renderKid(k);
     }
-    if(totalCount===TOTAL_TASKS && currentKid===k){showAllDoneBoom(k);}
+    if(totalCount===TOTAL_TASKS && currentKid===k){
+      showAllDoneBoom(k);
+      checkMilestone(k);
+    }
 
     // 触发盲盒条件：当前累计恰好到达第7天
     if(S[k].streaks[id] === 7){
