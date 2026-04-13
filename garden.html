@@ -110,7 +110,6 @@ body.kid-mimi {
   .habit-item.missed { background: #2a1010; border-color: #6a2020; }
   /* 按钮 */
   .habit-btn { background: #2a1e14; }
-  .music-btn { background: var(--cream-dark); }
   /* 输入框 */
   .growth-input, .edit-text {
     background: #2a1e14;
@@ -202,14 +201,6 @@ header{
   border-radius:999px;padding:5px 12px;
   font-size:0.82rem;font-weight:900;color:#a07000;
 }
-.music-btn{
-  width:36px;height:36px;border-radius:50%;border:none;
-  background:var(--cream-dark);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;transition:all 0.2s;
-  box-shadow:var(--shadow-sm);-webkit-tap-highlight-color:transparent;
-}
-.music-btn.playing{background:var(--gold-light);animation:spin 4s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}};
 
 /* ── Collapsible Kid Selector ── */
@@ -862,7 +853,6 @@ nav{
   </div>
   <div class="header-right">
     <div class="streak-pill" id="streakPill">🔥 0天连续</div>
-    <button class="music-btn" id="musicBtn" title="背景音乐">🎵</button>
   </div>
 </header>
 
@@ -2050,20 +2040,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function saveKidCalendar(k){try{localStorage.setItem(sk(k,'cal'),JSON.stringify(S[k].calendar));}catch(e){}}
 
   // Audio System
-  let bgmCtx=null,bgmPlaying=false,bgmNodes=[];
-  const MELODY=[523,587,659,784,880,784,659,587,523,659,784,880,784,659,523,587];
-  const musicBtn=document.getElementById('musicBtn');
-  function startBgm(){
-    if(bgmPlaying)return;if(!bgmCtx){try{window.AudioContext=window.AudioContext||window.webkitAudioContext;bgmCtx=new AudioContext();}catch(e){return;}}
-    if(bgmCtx.state==='suspended')bgmCtx.resume();bgmPlaying=true;let step=0;
-    function sched(){if(!bgmPlaying)return;const osc=bgmCtx.createOscillator(),g=bgmCtx.createGain();osc.connect(g);g.connect(bgmCtx.destination);osc.type='sine';osc.frequency.value=MELODY[step%MELODY.length];const t=bgmCtx.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.07,t+0.04);g.gain.exponentialRampToValueAtTime(0.001,t+0.49);osc.start(t);osc.stop(t+0.55);step++;bgmNodes.push(setTimeout(sched,550));}
-    sched();musicBtn.classList.add('playing');
-  }
-  function stopBgm(){bgmPlaying=false;bgmNodes.forEach(t=>clearTimeout(t));bgmNodes=[];musicBtn.classList.remove('playing');}
-  musicBtn.onclick=e=>{e.stopPropagation();bgmPlaying?stopBgm():startBgm();};
-  function initBgm(){startBgm();document.body.removeEventListener('touchstart',initBgm);document.body.removeEventListener('click',initBgm);}
-  document.body.addEventListener('touchstart',initBgm,{once:true});document.body.addEventListener('click',initBgm,{once:true});
-
   let AC=null;function getAC(){if(!AC){try{window.AudioContext=window.AudioContext||window.webkitAudioContext;if(window.AudioContext)AC=new AudioContext();}catch(e){return null;}}if(AC&&AC.state==='suspended'){try{AC.resume();}catch(e){}}return AC;}
   function playSuccess(big){const ctx=getAC();if(!ctx)return;try{const now=ctx.currentTime;[800,1100,1400].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';const t=now+i*0.13;o.frequency.setValueAtTime(f*0.85,t);o.frequency.linearRampToValueAtTime(f*1.15,t+0.25);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.15,t+0.04);g.gain.exponentialRampToValueAtTime(0.001,t+0.45);o.start(t);o.stop(t+0.5);});}catch(e){}}
 
