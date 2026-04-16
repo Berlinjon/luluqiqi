@@ -290,6 +290,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 /* ── 翻卡学习卡片 ── */
 .study-flip-wrap{
   perspective:1000px;
+  -webkit-perspective:1000px;
   min-height:160px;
   margin-bottom:0;
   cursor:pointer;
@@ -298,10 +299,13 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .study-flip-inner{
   position:relative;width:100%;min-height:160px;
   transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
   transition:transform 0.5s cubic-bezier(.36,1.1,.64,1);
+  -webkit-transition:-webkit-transform 0.5s cubic-bezier(.36,1.1,.64,1);
 }
 .study-flip-wrap.flipped .study-flip-inner{
   transform:rotateY(180deg);
+  -webkit-transform:rotateY(180deg);
 }
 .study-face{
   position:absolute;inset:0;
@@ -322,6 +326,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 }
 .study-face-back{
   transform:rotateY(180deg);
+  -webkit-transform:rotateY(180deg);
   background:linear-gradient(135deg,var(--warm-green-light),var(--card-bg));
   border-color:var(--warm-green-mid);
 }
@@ -364,7 +369,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .study-btn.done-today{background:var(--warm-green-light);color:var(--warm-green);border:1.5px solid var(--warm-green-mid);cursor:default;opacity:0.85;}
 .study-btn:disabled{cursor:default;opacity:0.7;}
 /* 已完成态 — 直接显示完成 */
-.study-flip-wrap.done-state .study-flip-inner{transform:rotateY(180deg);}
+.study-flip-wrap.done-state .study-flip-inner{transform:rotateY(180deg);-webkit-transform:rotateY(180deg);}
 .study-flip-wrap.done-state{cursor:default;}
 
 .poem-ruby-row{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap;position:relative;z-index:1;}
