@@ -1008,6 +1008,7 @@ nav{
               <button class="study-btn got-it" id="lulu-study-gotit">✅ 我会了 +1分</button>
               <button class="study-btn again" id="lulu-study-again">🔄 再看看</button>
             </div>
+            <div id="lulu-studyProgress"></div>
           </div>
         </div>
       </div>
@@ -1087,6 +1088,7 @@ nav{
               <button class="study-btn got-it" id="qiqi-study-gotit">✅ 我会了 +1分</button>
               <button class="study-btn again" id="qiqi-study-again">🔄 再看看</button>
             </div>
+            <div id="qiqi-studyProgress"></div>
           </div>
         </div>
       </div>
@@ -1165,6 +1167,7 @@ nav{
               <button class="study-btn got-it" id="mimi-study-gotit">✅ 我会了 +1分</button>
               <button class="study-btn again" id="mimi-study-again">🔄 再看看</button>
             </div>
+            <div id="mimi-studyProgress"></div>
           </div>
         </div>
       </div>
@@ -1981,6 +1984,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
+  // ── 学习进度追踪 & 自动升级 ────────────────────────────────────────────
+  const LEVEL_THRESHOLDS = { L1: 20, L2: 40 }; // L1满20天升L2，L2满40天升L3
+  const NEXT_LEVEL = { L1:'L2', L2:'L3', L3:'L3' };
+
+  function getStudyCount(k){ try{ return parseInt(localStorage.getItem(sk(k,'studyCount'))||'0'); }catch(e){return 0;} }
+  function saveStudyCount(k,n){ try{ localStorage.setItem(sk(k,'studyCount'),String(n)); }catch(e){} }
+
+  function renderStudyProgress(k){
+    const el = document.getElementById(`${k}-studyProgress`);
+    if(!el) return;
+    const lv = LEARNING_LEVEL[k] || 'L1';
+    if(lv==='L3'){ el.innerHTML=`<div style="font-size:0.72rem;font-weight:800;color:#f57f17;text-align:center;margin-top:8px;">🏆 已达最高难度 L3！</div>`; return; }
+    const count = getStudyCount(k);
+    const threshold = LEVEL_THRESHOLDS[lv];
+    const remain = threshold - count;
+    const pct = Math.round((count/threshold)*100);
+    el.innerHTML=`
+      <div style="margin-top:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;font-weight:800;color:var(--text-mid);margin-bottom:4px;">
+          <span>📈 升级进度 → ${NEXT_LEVEL[lv]}</span>
+          <span>${count}/${threshold}天</span>
+        </div>
+        <div style="height:5px;background:var(--cream-dark);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;border-radius:3px;background:linear-gradient(90deg,#7b5ea7,#a78bdb);transition:width 0.5s cubic-bezier(.36,1.56,.64,1);"></div>
+        </div>
+        <div style="font-size:0.65rem;color:var(--text-light);font-weight:700;margin-top:3px;">再坚持 ${remain} 天自动升级 ✨</div>
+      </div>`;
+  }
+
+  function checkStudyLevelUp(k){
+    const lv = LEARNING_LEVEL[k] || 'L1';
+    if(lv==='L3') return;
+    const count = getStudyCount(k);
+    const threshold = LEVEL_THRESHOLDS[lv];
+    if(count >= threshold){
+      const next = NEXT_LEVEL[lv];
+      LEARNING_LEVEL[k] = next;
+      try{ localStorage.setItem('studyLevels_v1', JSON.stringify(LEARNING_LEVEL)); }catch(e){}
+      // 升级庆祝
+      setTimeout(()=>{
+        document.getElementById('toastSuccessName').textContent = `🎓 难度升级啦！`;
+        document.getElementById('toastSuccessSub').textContent = `${KID_NAMES[k]} 的单词难度已升级到 ${next}，继续加油！🌟`;
+        document.getElementById('toastSuccess').classList.add('show');
+        try{launchConfetti();launchConfetti();}catch(e){}
+        try{playCelebMusic();}catch(e){}
+      }, 600);
+      renderStudy(k);
+    }
+  }
+
   function getStudyItem(k) {
     const lv = LEARNING_LEVEL[k] || 'L1';
     const pool = (STUDY_BANK[k] && STUDY_BANK[k][lv]) || [];
@@ -2012,6 +2065,7 @@ document.addEventListener('DOMContentLoaded', function() {
       else wrap.classList.remove('done-state');
     }
     renderStudyButtons(k);
+    renderStudyProgress(k);
   }
 
   function getStudyDoneKey(k){ return sk(k,'studyDone'); }
@@ -2047,6 +2101,9 @@ document.addEventListener('DOMContentLoaded', function() {
     vib(VIB_STUDY);
     markStudyDone(k);
     S[k].score += 1;
+    // 累计学习天数
+    const newCount = getStudyCount(k) + 1;
+    saveStudyCount(k, newCount);
     saveKidScore(k);
     updateBankUI(k);
     renderStudyButtons(k);
@@ -2056,7 +2113,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('toastSuccessName').textContent = '太棒了！';
     document.getElementById('toastSuccessSub').textContent = `今日单词已掌握，学习积分 +1 ⭐`;
     document.getElementById('toastSuccess').classList.add('show');
-    // 检查是否全部完成
+    // 检查升级
+    checkStudyLevelUp(k);
+    renderStudyProgress(k);
     const habitsDone=(S[k].habits||[]).filter(v=>v===true).length;
     const totalNow=habitsDone+1;
     if(!S[k].calendar) S[k].calendar={};
