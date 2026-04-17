@@ -954,7 +954,7 @@ nav{
         </svg>
         <b id="selector-lulu-pct">0%</b>
       </div>
-      <div class="opt-name"><span class="dyn-name" data-kid="lulu">Lulu</span></div>
+      <div class="opt-name"><span class="dyn-emoji" data-kid="lulu" style="font-size:1.1rem;">👧</span><span class="dyn-name" data-kid="lulu">Lulu</span></div>
       <div class="opt-sub" id="selector-lulu-sub">0/9</div>
     </button>
     <button class="selector-option" data-kid="qiqi">
@@ -965,7 +965,7 @@ nav{
         </svg>
         <b id="selector-qiqi-pct">0%</b>
       </div>
-      <div class="opt-name"><span class="dyn-name" data-kid="qiqi">Qiqi</span></div>
+      <div class="opt-name"><span class="dyn-emoji" data-kid="qiqi" style="font-size:1.1rem;">👧</span><span class="dyn-name" data-kid="qiqi">Qiqi</span></div>
       <div class="opt-sub" id="selector-qiqi-sub">0/9</div>
     </button>
     <button class="selector-option" data-kid="mimi">
@@ -976,7 +976,7 @@ nav{
         </svg>
         <b id="selector-mimi-pct">0%</b>
       </div>
-      <div class="opt-name"><span class="dyn-name" data-kid="mimi">Mimi</span></div>
+      <div class="opt-name"><span class="dyn-emoji" data-kid="mimi" style="font-size:1.1rem;">👧</span><span class="dyn-name" data-kid="mimi">Mimi</span></div>
       <div class="opt-sub" id="selector-mimi-sub">0/9</div>
     </button>
   </div>
@@ -1335,12 +1335,20 @@ nav{
   <div class="edit-box">
     <div class="edit-title">🛠️ 家长控制台</div>
 
-    <div class="edit-section" style="color:var(--text-dark);">🏷️ 宝贝名字自定义</div>
-    <div class="edit-row">
-      <input class="edit-text" id="edit-name-lulu" placeholder="大宝名字 (默认Lulu)">
-      <input class="edit-text" id="edit-name-qiqi" placeholder="二宝名字 (默认Qiqi)">
-      <input class="edit-text" id="edit-name-mimi" placeholder="三宝名字 (默认Mimi)">
+    <div class="edit-section" style="color:var(--text-dark);">🏷️ 宝贝名字 & 头像</div>
+    <div class="edit-row" style="align-items:center;">
+      <input class="edit-emoji" id="edit-emoji-lulu" placeholder="👧" style="width:44px;flex-shrink:0;">
+      <input class="edit-text" id="edit-name-lulu" placeholder="大宝名字 (默认Lulu)" style="flex:1;">
     </div>
+    <div class="edit-row" style="align-items:center;">
+      <input class="edit-emoji" id="edit-emoji-qiqi" placeholder="👧" style="width:44px;flex-shrink:0;">
+      <input class="edit-text" id="edit-name-qiqi" placeholder="二宝名字 (默认Qiqi)" style="flex:1;">
+    </div>
+    <div class="edit-row" style="align-items:center;">
+      <input class="edit-emoji" id="edit-emoji-mimi" placeholder="👧" style="width:44px;flex-shrink:0;">
+      <input class="edit-text" id="edit-name-mimi" placeholder="三宝名字 (默认Mimi)" style="flex:1;">
+    </div>
+    <div style="font-size:0.7rem;color:var(--text-light);font-weight:600;margin:-4px 0 8px;">👆 头像框可输入任意 emoji，如 🐼 🦊 🐰 🌸</div>
 
     <div class="edit-section" style="color:#7b1fa2;">🔐 家长密码管理</div>
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
@@ -1406,9 +1414,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   let KID_NAMES = { lulu: 'Lulu', qiqi: 'Qiqi', mimi: 'Mimi' };
+  let KID_EMOJIS = { lulu: '👧', qiqi: '👧', mimi: '👧' };
   try {
     const storedNames = JSON.parse(localStorage.getItem('kidNames_v6'));
     if(storedNames) KID_NAMES = { ...KID_NAMES, ...storedNames };
+    const storedEmojis = JSON.parse(localStorage.getItem('kidEmojis_v1'));
+    if(storedEmojis) KID_EMOJIS = { ...KID_EMOJIS, ...storedEmojis };
   } catch(e){}
 
   let LEARNING_LEVEL = { lulu: 'L1', qiqi: 'L1', mimi: 'L1' };
@@ -2169,6 +2180,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const k = el.dataset.kid;
       if (k === 'current') el.textContent = KID_NAMES[currentKid];
       else if (KID_NAMES[k]) el.textContent = KID_NAMES[k];
+    });
+    // 更新 selector 里的 emoji
+    document.querySelectorAll('.dyn-emoji').forEach(el => {
+      const k = el.dataset.kid;
+      const emoji = k === 'current' ? KID_EMOJIS[currentKid] : KID_EMOJIS[k];
+      if(emoji) el.textContent = emoji;
     });
   }
 
@@ -3029,7 +3046,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const subEl=document.getElementById(`selector-${kid}-sub`);if(subEl)subEl.textContent=`${done}/${TOTAL_TASKS}`;
     });
   }
-  const KID_CHARS = { lulu:'👧', qiqi:'👧', mimi:'👧' };
+  const KID_CHARS = KID_EMOJIS; // 统一使用 KID_EMOJIS
   const KID_MSGS  = {
     lulu:['Lulu 太厉害了！','大宝超棒！','Lulu 今天满分！'],
     qiqi:['Qiqi 真棒！','二宝加油！','Qiqi 全部完成！'],
@@ -3306,6 +3323,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('edit-name-lulu').value = KID_NAMES.lulu || 'Lulu';
     document.getElementById('edit-name-qiqi').value = KID_NAMES.qiqi || 'Qiqi';
     document.getElementById('edit-name-mimi').value = KID_NAMES.mimi || 'Mimi';
+    document.getElementById('edit-emoji-lulu').value = KID_EMOJIS.lulu || '👧';
+    document.getElementById('edit-emoji-qiqi').value = KID_EMOJIS.qiqi || '👧';
+    document.getElementById('edit-emoji-mimi').value = KID_EMOJIS.mimi || '👧';
     document.getElementById('edit-level-lulu').value = LEARNING_LEVEL.lulu || 'L1';
     document.getElementById('edit-level-qiqi').value = LEARNING_LEVEL.qiqi || 'L1';
     document.getElementById('edit-level-mimi').value = LEARNING_LEVEL.mimi || 'L1';
@@ -3325,6 +3345,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const name3 = document.getElementById('edit-name-mimi').value.trim();
     KID_NAMES = { lulu: name1 || 'Lulu', qiqi: name2 || 'Qiqi', mimi: name3 || 'Mimi' };
     try { localStorage.setItem('kidNames_v6', JSON.stringify(KID_NAMES)); } catch(e){}
+    const e1 = document.getElementById('edit-emoji-lulu')?.value.trim() || '👧';
+    const e2 = document.getElementById('edit-emoji-qiqi')?.value.trim() || '👧';
+    const e3 = document.getElementById('edit-emoji-mimi')?.value.trim() || '👧';
+    KID_EMOJIS = { lulu: e1, qiqi: e2, mimi: e3 };
+    try { localStorage.setItem('kidEmojis_v1', JSON.stringify(KID_EMOJIS)); } catch(e){}
     LEARNING_LEVEL = {
       lulu: document.getElementById('edit-level-lulu').value || 'L1',
       qiqi: document.getElementById('edit-level-qiqi').value || 'L1',
@@ -3438,7 +3463,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function checkDateReset(){
     try{KIDS.forEach(k=>{if(localStorage.getItem(sk(k,'date'))!==todayStr()){for(let i=0;i<TOTAL_HABITS;i++){if(S[k].habits[i]!==true)S[k].streaks[i]=0;}saveKidStreaks(k);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;saveTvState(k);saveKidState(k);try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}renderLists();renderKid(k);renderStudy(k);}
       if(localStorage.getItem(sk(k,'month'))!==monthStr()){const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;const lastMonth=localStorage.getItem(sk(k,'month'))||'';const earned=parseFloat((lastScore/10).toFixed(2));
-        if(lastMonth&&lastScore>0){S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});if(S[k].monthHistory.length>3)S[k].monthHistory=S[k].monthHistory.slice(0,3);saveKidHistory(k);}
+        if(lastMonth&&lastScore>0){S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});if(S[k].monthHistory.length>12)S[k].monthHistory=S[k].monthHistory.slice(0,12);saveKidHistory(k);}
         S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); renderKid(k);}
       if(localStorage.getItem(sk(k,'week'))!==getMondayStr()){S[k].tvTime=0;saveTvState(k);localStorage.setItem(sk(k,'week'),getMondayStr());renderKid(k);}
     });}catch(e){}
