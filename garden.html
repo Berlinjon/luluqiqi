@@ -869,6 +869,38 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .report-cheer{background:linear-gradient(135deg,var(--warm-green-light),var(--card-bg));border-radius:var(--radius-md);padding:12px 14px;font-size:0.85rem;font-weight:800;color:var(--on-surface);line-height:1.6;text-align:center;border:1.5px solid var(--warm-green-mid);}
 .report-empty{text-align:center;padding:28px 16px;font-size:0.85rem;font-weight:700;color:var(--text-light);line-height:1.7;}
 
+/* ── 孩子模式 ── */
+.kid-mode-banner{
+  position:sticky;top:72px;z-index:39;
+  background:linear-gradient(90deg,#e8f5e9,#f1f8e9);
+  border-bottom:2px solid #a5d6a7;
+  padding:8px 16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:0.82rem;font-weight:900;color:#2e7d32;
+}
+/* 孩子模式下隐藏的元素 */
+body.kid-mode .section-title:not(.kid-visible),
+body.kid-mode .wallet-card,
+body.kid-mode .stats-card,
+body.kid-mode .heatmap-card,
+body.kid-mode .growth-card,
+body.kid-mode .growth-remind,
+body.kid-mode .reset-btn,
+body.kid-mode #navRewards,
+body.kid-mode #navSettings,
+body.kid-mode .all-done-banner{
+  display:none !important;
+}
+body.kid-mode .beanstalk-wrapper,
+body.kid-mode .correlation-wrapper,
+body.kid-mode .report-wrapper{
+  display:none !important;
+}
+/* 孩子模式进度页只显示地图 */
+body.kid-mode #navModeToggle{ color:#e53935; }
+/* 孩子模式nav图标变红提示 */
+nav{ grid-template-columns: repeat(5,1fr); }
+
 nav{
   position:fixed;bottom:0;left:0;right:0;z-index:50;
   display:flex;justify-content:space-around;align-items:center;
@@ -1002,6 +1034,9 @@ nav{
 </div>
 
 <main style="padding-top:8px;">
+  <div class="kid-mode-banner" id="kidModeBanner" style="display:none;">
+    👧 孩子模式 — 家长功能已隐藏
+  </div>
   <!-- 今日摘要条 -->
 
   <div class="kid-panel active" id="lulu-panel">
@@ -1289,6 +1324,7 @@ nav{
   <button class="nav-btn" id="navProgress"><span class="material-symbols-outlined">map</span>进度</button>
   <button class="nav-btn" id="navRewards"><span class="material-symbols-outlined">storefront</span>奖励</button>
   <button class="nav-btn" id="navSettings"><span class="material-symbols-outlined">settings</span>设置</button>
+  <button class="nav-btn" id="navModeToggle"><span class="material-symbols-outlined">child_care</span>孩子</button>
 </nav>
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
@@ -3013,7 +3049,44 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectorUI(k);
   }
 
-  document.getElementById('navHome').onclick = () => switchNav('home');
+  // ── 孩子/家长 双视角模式 ────────────────────────────────────────────────
+  let isKidMode = false;
+  try{ isKidMode = localStorage.getItem('kidMode') === '1'; }catch(e){}
+
+  function applyKidMode(){
+    document.body.classList.toggle('kid-mode', isKidMode);
+    const banner = document.getElementById('kidModeBanner');
+    if(banner) banner.style.display = isKidMode ? 'flex' : 'none';
+    const btn = document.getElementById('navModeToggle');
+    if(btn){
+      btn.querySelector('.material-symbols-outlined').textContent = isKidMode ? 'supervisor_account' : 'child_care';
+      btn.querySelector('.material-symbols-outlined').nextSibling
+        && (btn.childNodes[1].textContent = isKidMode ? '家长' : '孩子');
+      btn.innerHTML = isKidMode
+        ? `<span class="material-symbols-outlined">supervisor_account</span>家长`
+        : `<span class="material-symbols-outlined">child_care</span>孩子`;
+    }
+    // 孩子模式下切到今日页
+    if(isKidMode && currentNav !== 'home' && currentNav !== 'progress'){
+      switchNav('home');
+    }
+  }
+
+  document.getElementById('navModeToggle').onclick = async () => {
+    if(isKidMode){
+      // 切回家长模式需要密码
+      const ok = await showPwdOverlay('🔒 切换家长模式', '请输入家长密码');
+      if(!ok) return;
+      isKidMode = false;
+    } else {
+      isKidMode = true;
+    }
+    try{ localStorage.setItem('kidMode', isKidMode ? '1' : '0'); }catch(e){}
+    applyKidMode();
+  };
+
+  // 初始化时应用模式
+  applyKidMode();
   document.getElementById('navRewards').onclick = () => switchNav('rewards');
   document.getElementById('navProgress').onclick = () => switchNav('progress');
   document.getElementById('navSettings').onclick = async () => {
