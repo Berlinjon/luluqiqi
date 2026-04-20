@@ -1377,7 +1377,7 @@ nav{
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
-<div class="onboard-overlay" id="onboardOverlay" style="display:none;pointer-events:none;">
+<div class="onboard-overlay" id="onboardOverlay" style="display:none;">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
     <div class="onboard-title">欢迎来到每日花园！</div>
@@ -1432,7 +1432,7 @@ nav{
 </div>
 
 <!-- 备份提醒悬浮条 -->
-<div id="backupReminder" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:200;background:#fff3e0;border:2px solid #ffb74d;border-radius:var(--radius-md);padding:10px 18px;font-size:0.82rem;font-weight:800;color:#e65100;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:10px;max-width:340px;width:90%;">
+<div id="backupReminder" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:200;background:#fff3e0;border:2px solid #ffb74d;border-radius:var(--radius-md);padding:10px 18px;font-size:0.82rem;font-weight:800;color:#e65100;box-shadow:var(--shadow-md);align-items:center;gap:10px;max-width:340px;width:90%;">
   <span>⚠️ 已超过7天未备份数据，建议导出备份！</span>
   <button onclick="document.getElementById('backupReminder').style.display='none';document.getElementById('navSettings').click();" style="border:none;background:#ff9800;color:#fff;border-radius:999px;padding:4px 12px;font-weight:900;font-size:0.78rem;cursor:pointer;white-space:nowrap;">去备份</button>
 </div>
