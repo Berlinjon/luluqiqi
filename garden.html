@@ -1377,7 +1377,7 @@ nav{
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
-<div class="onboard-overlay" id="onboardOverlay" style="display:none;">
+<div class="onboard-overlay" id="onboardOverlay" style="display:none;pointer-events:none;">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
     <div class="onboard-title">欢迎来到每日花园！</div>
@@ -3172,7 +3172,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  document.getElementById('navModeToggle').onclick = async () => {
+  document.getElementById('navModeToggle').addEventListener('click', async () => {
     if(isKidMode){
       // 切回家长模式需要密码
       const ok = await showPwdOverlay('🔒 切换家长模式', '请输入家长密码');
@@ -3227,12 +3227,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  document.getElementById('navRewards').onclick = () => switchNav('rewards');
-  document.getElementById('navProgress').onclick = () => switchNav('progress');
-  document.getElementById('navSettings').onclick = async () => {
+  // ── 导航绑定（用 addEventListener 确保 iOS Safari 兼容）──────────────────
+  document.getElementById('navHome').addEventListener('click', () => switchNav('home'));
+  document.getElementById('navProgress').addEventListener('click', () => switchNav('progress'));
+  document.getElementById('navRewards').addEventListener('click', () => switchNav('rewards'));
+  document.getElementById('navSettings').addEventListener('click', async () => {
     const ok = await showPwdOverlay('🔒 家长验证', '请输入家长密码进入设置');
     if (ok) openEditModal();
-  };
+  });
   const selectorRoot=document.getElementById('charSelector');
   const selectorToggle=document.getElementById('charSelectorToggle');
   selectorToggle.onclick=e=>{e.stopPropagation();selectorRoot.classList.toggle('open');};
@@ -3983,15 +3985,19 @@ document.addEventListener('DOMContentLoaded', function() {
     try{
       if(!localStorage.getItem('onboard_done_v1')){
         const overlay = document.getElementById('onboardOverlay');
-        if(overlay) overlay.style.display = 'flex';
+        if(overlay){ overlay.style.display = 'flex'; overlay.style.pointerEvents = 'auto'; }
       }
     }catch(e){}
     const btn = document.getElementById('onboardDoneBtn');
-    if(btn) btn.onclick = () => {
+    if(btn) btn.addEventListener('click', () => {
       try{ localStorage.setItem('onboard_done_v1','1'); }catch(e){}
       const overlay = document.getElementById('onboardOverlay');
-      if(overlay){ overlay.style.opacity='0'; overlay.style.transition='opacity 0.3s'; setTimeout(()=>overlay.style.display='none', 300); }
-    };
+      if(overlay){
+        overlay.style.opacity='0';
+        overlay.style.transition='opacity 0.3s';
+        setTimeout(()=>{ overlay.style.display='none'; overlay.style.pointerEvents='none'; }, 300);
+      }
+    });
   })();
 });
 </script>
