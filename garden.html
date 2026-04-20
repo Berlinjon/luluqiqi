@@ -988,6 +988,26 @@ nav{
 /* ── Edit Overlay ── */
 .edit-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150;align-items:center;justify-content:center;background:rgba(44,31,0,0.35);backdrop-filter:blur(6px); }
 .edit-overlay.show{display:flex;animation:fadeIn 0.2s ease;}
+
+/* 统一修复：隐藏状态下弹层不拦截点击，避免“看不见的遮罩层”导致顶部/底部按钮失效 */
+.toast-overlay,
+.easter-overlay,
+.onboard-overlay,
+.edit-overlay,
+.habit-edit-overlay,
+.store-edit-overlay,
+.all-done-boom-overlay {
+  pointer-events: none;
+}
+.toast-overlay.show,
+.easter-overlay.show,
+.onboard-overlay.show,
+.edit-overlay.show,
+.habit-edit-overlay.show,
+.store-edit-overlay.show,
+.all-done-boom-overlay.show {
+  pointer-events: auto;
+}
 .edit-box{ background:#fff;border-radius:var(--radius-xl);padding:28px 22px;max-width:380px;width:94%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg); }
 .edit-title{font-weight:900;font-size:1.1rem;color:var(--on-surface);margin-bottom:16px;}
 .edit-section{font-weight:900;font-size:0.8rem;color:var(--text-mid);text-transform:uppercase;margin:12px 0 6px;}
@@ -2179,7 +2199,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>`;
       return;
     }
-    const count = getStudyCount(k);
     const threshold = LEVEL_THRESHOLDS[lv];
     const remain = threshold - count;
     const pct = Math.round((count/threshold)*100);
@@ -3173,7 +3192,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  document.getElementById('navModeToggle').addEventListener('click', async () => {
+  const handleModeToggle = async () => {
     if(isKidMode){
       // 切回家长模式需要密码
       const ok = await showPwdOverlay('🔒 切换家长模式', '请输入家长密码');
@@ -3229,17 +3248,42 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // ── 导航绑定（用 addEventListener 确保 iOS Safari 兼容）──────────────────
-  document.getElementById('navHome').addEventListener('click', () => switchNav('home'));
-  document.getElementById('navProgress').addEventListener('click', () => switchNav('progress'));
-  document.getElementById('navRewards').addEventListener('click', () => switchNav('rewards'));
-  document.getElementById('navSettings').addEventListener('click', async () => {
+  function bindTap(el, handler){
+    if(!el || typeof handler !== 'function') return;
+    let touched = false;
+    el.addEventListener('touchend', e => {
+      touched = true;
+      e.preventDefault();
+      handler(e);
+      setTimeout(()=>{ touched = false; }, 380);
+    }, { passive: false });
+    el.addEventListener('click', e => {
+      if(touched){
+        e.preventDefault();
+        return;
+      }
+      handler(e);
+    });
+  }
+  bindTap(document.getElementById('navHome'), () => switchNav('home'));
+  bindTap(document.getElementById('navProgress'), () => switchNav('progress'));
+  bindTap(document.getElementById('navRewards'), () => switchNav('rewards'));
+  bindTap(document.getElementById('navSettings'), async () => {
     const ok = await showPwdOverlay('🔒 家长验证', '请输入家长密码进入设置');
     if (ok) openEditModal();
   });
+  bindTap(document.getElementById('navModeToggle'), handleModeToggle);
   const selectorRoot=document.getElementById('charSelector');
   const selectorToggle=document.getElementById('charSelectorToggle');
-  selectorToggle.onclick=e=>{e.stopPropagation();selectorRoot.classList.toggle('open');};
-  document.querySelectorAll('.selector-option').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const next=btn.dataset.kid;if(next!==currentKid){playSwitchKid();vib(VIB_SWITCH);}switchTab(next);};});
+  bindTap(selectorToggle, e=>{e.stopPropagation();selectorRoot.classList.toggle('open');});
+  document.querySelectorAll('.selector-option').forEach(btn=>{
+    bindTap(btn, e=>{
+      e.stopPropagation();
+      const next=btn.dataset.kid;
+      if(next!==currentKid){playSwitchKid();vib(VIB_SWITCH);}
+      switchTab(next);
+    });
+  });
   document.addEventListener('click',e=>{if(!selectorRoot.contains(e.target))selectorRoot.classList.remove('open');});
   KIDS.forEach(k=>{
     // 翻卡：点击卡片正面翻转
