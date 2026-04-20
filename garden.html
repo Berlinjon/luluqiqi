@@ -887,7 +887,8 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .habit-edit-text-input:focus,.habit-edit-emoji-input:focus{border-color:var(--warm-green);}
 .habit-edit-actions{display:flex;gap:10px;}
 /* ── 首次使用引导 ── */
-.onboard-overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:400;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.onboard-overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:400;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.onboard-overlay.show{display:flex;}
 .onboard-box{background:var(--card-bg);border-radius:var(--radius-xl);padding:28px 24px 24px;max-width:360px;width:100%;box-shadow:var(--shadow-lg);border:2px solid rgba(247,181,0,0.3);animation:cardPop 0.4s cubic-bezier(.36,1.56,.64,1) both;}
 .onboard-icon{font-size:3rem;text-align:center;margin-bottom:12px;}
 .onboard-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.2rem;color:var(--on-surface);text-align:center;margin-bottom:6px;}
@@ -1377,7 +1378,7 @@ nav{
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
 <div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
-<div class="onboard-overlay" id="onboardOverlay" style="display:none;">
+<div class="onboard-overlay" id="onboardOverlay">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
     <div class="onboard-title">欢迎来到每日花园！</div>
@@ -3985,7 +3986,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try{
       if(!localStorage.getItem('onboard_done_v1')){
         const overlay = document.getElementById('onboardOverlay');
-        if(overlay){ overlay.style.display = 'flex'; overlay.style.pointerEvents = 'auto'; }
+        if(overlay) overlay.classList.add('show');
       }
     }catch(e){}
     const btn = document.getElementById('onboardDoneBtn');
@@ -3995,7 +3996,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if(overlay){
         overlay.style.opacity='0';
         overlay.style.transition='opacity 0.3s';
-        setTimeout(()=>{ overlay.style.display='none'; overlay.style.pointerEvents='none'; }, 300);
+        setTimeout(()=>{
+          overlay.classList.remove('show');
+          overlay.style.opacity='';
+          overlay.style.transition='';
+        }, 300);
       }
     });
   })();
