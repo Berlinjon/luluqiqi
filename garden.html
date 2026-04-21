@@ -521,6 +521,39 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   background:#ef5350;border-radius:999px;padding:2px 9px;
 }
 
+.badge-roadmap{
+  margin-top:12px;
+  background:linear-gradient(120deg,#fffaf0,#fff4dc);
+  border:1.5px dashed #ffd180;
+  border-radius:14px;
+  padding:10px 10px 8px;
+}
+.badge-roadmap-title{font-size:0.72rem;font-weight:900;color:#a07000;margin-bottom:8px;}
+.badge-roadmap-track{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;padding-bottom:2px;}
+.badge-node{min-width:92px;text-align:center;position:relative;}
+.badge-node:not(:last-child)::after{content:'';position:absolute;top:18px;right:-8px;width:8px;height:2px;background:#e6c27a;}
+.badge-icon{
+  width:36px;height:36px;border-radius:50%;margin:0 auto 4px;
+  display:flex;align-items:center;justify-content:center;font-size:1.15rem;
+  background:#fff;border:2px solid #e0c080;
+}
+.badge-node.unlocked .badge-icon{background:linear-gradient(135deg,#fff8e1,#ffe082);border-color:#ffca28;box-shadow:0 0 0 3px rgba(255,202,40,0.2);}
+.badge-node.current .badge-icon{border-color:#66bb6a;box-shadow:0 0 0 3px rgba(102,187,106,0.2);}
+.badge-label{font-size:0.68rem;font-weight:900;color:var(--on-surface);line-height:1.2;}
+.badge-need{font-size:0.62rem;font-weight:800;color:var(--text-mid);margin-top:2px;}
+
+.badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#f8fbff,#eef7ff);border:1.5px solid #c6ddff;border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm);}
+.badge-mindmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:0.95rem;font-weight:900;color:#2157a3;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.badge-mindmap-sub{font-size:0.72rem;font-weight:700;color:#5f789d;margin-bottom:12px;}
+.badge-mindmap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.badge-branch{background:#fff;border:1.5px solid #d8e6ff;border-radius:12px;padding:10px 10px 8px;}
+.badge-branch-title{font-size:0.76rem;font-weight:900;color:#24456e;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
+.badge-branch-item{font-size:0.69rem;font-weight:700;color:#3b4f68;line-height:1.5;}
+.badge-branch-item.done{color:#1f7a36;}
+.badge-branch-item.locked{opacity:0.65;}
+@media (max-width:440px){.badge-mindmap-grid{grid-template-columns:1fr;}}
+
+
 /* ── Habits Grid ── */
 .habits-grid{display:flex;flex-direction:column;gap:10px;}
 .habit-item{
@@ -1176,7 +1209,7 @@ nav{
     </div>
 
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div></div>
+    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1257,7 +1290,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div></div>
+    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1338,7 +1371,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div></div>
+    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1399,6 +1432,12 @@ nav{
       <div class="beanstalk-title">🌱 魔法豌豆树 (成长轨迹)</div>
       <div class="beanstalk-scene" id="beanstalk-tree"></div>
       <div class="beanstalk-cloud" id="beanstalk-cloud" style="display:none;">☁️</div>
+    </div>
+
+    <div class="badge-mindmap-wrapper" id="badgeMindmap">
+      <div class="badge-mindmap-title">🧠 勋章成长导图</div>
+      <div class="badge-mindmap-sub">看清楚“做什么会得勋章”，孩子更有目标感。</div>
+      <div class="badge-mindmap-grid" id="badgeMindmapGrid"></div>
     </div>
 
     <div class="correlation-wrapper">
@@ -2427,6 +2466,18 @@ document.addEventListener('DOMContentLoaded', function() {
     qiqi:[{text:'独立完成一道菜'},{text:'练习一首新歌'},{text:'帮家里大扫除'}],
     mimi:[{text:'独立准备早餐'},{text:'完成一本小书阅读'},{text:'整理房间并保持整洁'}]
   };
+  const BADGE_ROADMAP_LEVELS=[
+    {icon:'🌱',label:'见习小队员',need:1},
+    {icon:'🌟',label:'成长小新星',need:3},
+    {icon:'🏅',label:'自律小勇士',need:6},
+    {icon:'👑',label:'习惯小榜样',need:10}
+  ];
+  const BADGE_MINDMAP_BRANCHES=[
+    {icon:'🔥',title:'坚持习惯',items:['连续打卡 3 天','连续打卡 7 天','本周全勤挑战']},
+    {icon:'📘',title:'学习专注',items:['学习卡完成 10 次','连续 3 天完成学习','朗读累计 15 次']},
+    {icon:'🧺',title:'责任行动',items:['整理任务累计 10 次','卫生任务累计 10 次','主动承担家务']},
+    {icon:'🤝',title:'友善品格',items:['帮助家人 1 次','主动关心他人 1 次','礼貌表达与合作']}
+  ];
 
   const S={}; KIDS.forEach(k=>{S[k]={habits:[],supers:[],score:0,wallet:0,badgeTotal:0,currentHabits:[],currentSupers:[],streaks:Array(TOTAL_HABITS).fill(0),streakDates:Array(TOTAL_HABITS).fill(''),tvTime:0,tvRewardGiven:false,monthHistory:[],calendar:{}};});
 
@@ -2840,6 +2891,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyKidNames();
 
     renderBeanstalk();
+    renderBadgeMindmap();
     renderCorrelationChart();
     renderMonthlyReport();
   }
@@ -3613,6 +3665,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 4000);
   }
 
+  function getBadgeTitle(total){
+    const unlocked=[...BADGE_ROADMAP_LEVELS].filter(item=>total>=item.need);
+    return unlocked.length?unlocked[unlocked.length-1].label:'未解锁称号';
+  }
+
+  function renderBadgeRoadmap(k){
+    const root=document.getElementById(`${k}-badgeRoadmap`);
+    if(!root) return;
+    const total=S[k].badgeTotal||0;
+    const currentIdx=BADGE_ROADMAP_LEVELS.findIndex(item=>total<item.need);
+    const activeIdx=currentIdx===-1?BADGE_ROADMAP_LEVELS.length-1:currentIdx;
+    const nodes=BADGE_ROADMAP_LEVELS.map((item,idx)=>{
+      const unlocked=total>=item.need;
+      const current=!unlocked && idx===activeIdx;
+      return `<div class="badge-node ${unlocked?'unlocked':''} ${current?'current':''}">
+        <div class="badge-icon">${item.icon}</div>
+        <div class="badge-label">${item.label}</div>
+        <div class="badge-need">累计 ${item.need} 枚</div>
+      </div>`;
+    }).join('');
+    root.innerHTML=`<div class="badge-roadmap-title">🗺️ 勋章路线图 · 当前称号：${getBadgeTitle(total)}</div><div class="badge-roadmap-track">${nodes}</div>`;
+  }
+
+  function renderBadgeMindmap(){
+    const grid=document.getElementById('badgeMindmapGrid');
+    if(!grid) return;
+    const total=S[currentKid]?.badgeTotal||0;
+    const doneCount=(S[currentKid]?.supers||[]).filter(Boolean).length;
+    const branchHtml=BADGE_MINDMAP_BRANCHES.map((branch,idx)=>{
+      const unlockedGate=Math.floor((idx+1)*2);
+      const open=total>=unlockedGate;
+      const items=branch.items.map(item=>`<div class="badge-branch-item ${open?'done':'locked'}">${open?'✅':'🔒'} ${item}</div>`).join('');
+      return `<div class="badge-branch"><div class="badge-branch-title">${branch.icon} ${branch.title}</div>${items}</div>`;
+    }).join('');
+    grid.innerHTML=branchHtml+`<div class="badge-branch" style="grid-column:1/-1;background:#fffef5;border-color:#ffe29c;"><div class="badge-branch-title">🏁 当前总览</div><div class="badge-branch-item">本月成就：${doneCount}/${TOTAL_SUPERS}</div><div class="badge-branch-item">累计勋章：${total} 枚</div><div class="badge-branch-item">当前称号：${getBadgeTitle(total)}</div></div>`;
+  }
+
   function showAllDoneBoom(k){
     const overlay=document.getElementById('allDoneBoomOverlay');
     if(!overlay)return;
@@ -3680,6 +3769,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if(badgeSummary) badgeSummary.textContent = `🏅 本月成就 ${badgeDone}/${TOTAL_SUPERS}`;
     const badgeTotalEl=document.getElementById(`${k}-superBadgeTotal`);
     if(badgeTotalEl) badgeTotalEl.textContent = `累计勋章 ${S[k].badgeTotal||0}`;
+    renderBadgeRoadmap(k);
+    if(currentKid===k) renderBadgeMindmap();
     const allDone=document.getElementById(`${k}-allDone`);if(allDone)allDone.classList.toggle('visible',totalCount===TOTAL_TASKS);
     updateSelectorUI(k===currentKid ? k : currentKid);
     updateBankUI(k);
