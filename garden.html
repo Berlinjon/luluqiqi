@@ -547,6 +547,14 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .weekly-review-title{font-size:0.76rem;font-weight:900;color:#1f7a36;margin-bottom:4px;}
 .weekly-review-line{font-size:0.7rem;font-weight:700;color:#35584a;line-height:1.5;}
 
+.activity-menu-card{margin-top:8px;background:#fff;border:1.5px solid #e6f2dc;border-radius:12px;padding:8px 10px;}
+.activity-menu-title{font-size:0.72rem;font-weight:900;color:#517a2f;margin-bottom:6px;}
+.activity-menu-item{display:flex;justify-content:space-between;gap:8px;padding:4px 0;font-size:0.7rem;font-weight:700;color:#34503a;border-bottom:1px dashed #e8efe0;}
+.activity-menu-item:last-child{border-bottom:none;}
+.activity-menu-cost{font-weight:900;color:#8d6e00;white-space:nowrap;}
+.activity-menu-item.locked{opacity:0.65;}
+
+
 
 .badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#f8fbff,#eef7ff);border:1.5px solid #c6ddff;border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm);}
 .badge-mindmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:0.95rem;font-weight:900;color:#2157a3;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
@@ -1233,6 +1241,7 @@ nav{
       <div class="tv-track"><div class="tv-fill" id="lulu-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="lulu-tvTime">0</span> 点</div><button class="tv-spend-btn" id="lulu-spendTvBtn">兑换活动</button></div>
     </div>
+    <div class="activity-menu-card" id="lulu-activityMenu"></div>
     <div class="kid-score-hint" id="lulu-kidScoreHint">⭐ 今天 +0 星星</div>
 
     <div class="section-title">🏦 积分银行</div>
@@ -1314,6 +1323,7 @@ nav{
       <div class="tv-track"><div class="tv-fill" id="qiqi-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="qiqi-tvTime">0</span> 点</div><button class="tv-spend-btn" id="qiqi-spendTvBtn">兑换活动</button></div>
     </div>
+    <div class="activity-menu-card" id="qiqi-activityMenu"></div>
     <div class="kid-score-hint" id="qiqi-kidScoreHint">⭐ 今天 +0 星星</div>
 
     <div class="section-title">🏦 积分银行</div>
@@ -1395,6 +1405,7 @@ nav{
       <div class="tv-track"><div class="tv-fill" id="mimi-tv-fill" style="width:0%"></div></div>
       <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="mimi-tvTime">0</span> 点</div><button class="tv-spend-btn" id="mimi-spendTvBtn">兑换活动</button></div>
     </div>
+    <div class="activity-menu-card" id="mimi-activityMenu"></div>
     <div class="kid-score-hint" id="mimi-kidScoreHint">⭐ 今天 +0 星星</div>
 
     <div class="section-title">🏦 积分银行</div>
@@ -2492,6 +2503,12 @@ document.addEventListener('DOMContentLoaded', function() {
     qiqi:[{text:'独立完成一道菜'},{text:'练习一首新歌'},{text:'帮家里大扫除'}],
     mimi:[{text:'独立准备早餐'},{text:'完成一本小书阅读'},{text:'整理房间并保持整洁'}]
   };
+  const GROWTH_ACTIVITY_OPTIONS=[
+    {id:1,name:'📚 亲子共读 20 分钟',cost:1},
+    {id:2,name:'🎨 创作时间 30 分钟',cost:1.5},
+    {id:3,name:'🧩 家庭游戏 1 局',cost:2},
+    {id:4,name:'🚶 户外探索 30 分钟',cost:2}
+  ];
   const BADGE_ROADMAP_LEVELS=[
     {icon:'🌱',label:'小苗章',needDays:5,needSupers:1,needStreak:2},
     {icon:'⭐',label:'小勇士章',needDays:10,needSupers:2,needStreak:3},
@@ -3651,6 +3668,17 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
+  function renderGrowthActivityMenu(k){
+    const el=document.getElementById(`${k}-activityMenu`);
+    if(!el) return;
+    const points=S[k].tvTime||0;
+    const rows=GROWTH_ACTIVITY_OPTIONS.map(item=>{
+      const locked=points<item.cost;
+      return `<div class="activity-menu-item ${locked?'locked':''}"><span>${item.name}</span><span class="activity-menu-cost">${item.cost}点 ${locked?'🔒':'✅'}</span></div>`;
+    }).join('');
+    el.innerHTML=`<div class="activity-menu-title">🎁 可兑换活动清单（兑换前可查看）</div>${rows}`;
+  }
+
   function getNextBadgeHint(info){
     const next=BADGE_ROADMAP_LEVELS[info.tier];
     if(!next) return '🎉 已达本月最高等级';
@@ -3785,6 +3813,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tvBadge=document.getElementById(`${k}-tv-count-badge`);if(tvBadge)tvBadge.textContent=`${totalCount}/${TOTAL_TASKS}`;
     const tvFill=document.getElementById(`${k}-tv-fill`);if(tvFill)tvFill.style.width=((totalCount/TOTAL_TASKS)*100)+'%';
     const tvBank=document.getElementById(`${k}-tvTime`);if(tvBank)tvBank.textContent=S[k].tvTime;
+    renderGrowthActivityMenu(k);
     const kidHint=document.getElementById(`${k}-kidScoreHint`);
     if(kidHint) kidHint.textContent = `⭐ 今天 +${totalCount} 星星`;
     for(let j=0;j<TOTAL_SUPERS;j++){const sb=document.getElementById(`${k}-superCheck-${j}`);if(!sb)continue;if(S[k].supers[j]){sb.classList.add('checked');sb.innerHTML='✔';}else{sb.classList.remove('checked');sb.innerHTML='';}}
@@ -3931,12 +3960,7 @@ ${p.q}`);
       return;
     }
 
-    const options=[
-      {id:1,name:'📚 亲子共读 20 分钟',cost:1},
-      {id:2,name:'🎨 创作时间 30 分钟',cost:1.5},
-      {id:3,name:'🧩 家庭游戏 1 局',cost:2},
-      {id:4,name:'🚶 户外探索 30 分钟',cost:2}
-    ];
+    const options=GROWTH_ACTIVITY_OPTIONS;
     const menu=options.map(o=>`${o.id}. ${o.name}（${o.cost}点）`).join('\n');
     const pick=prompt(`✅ 解锁成功！
 当前成长卡：${S[k].tvTime} 点
