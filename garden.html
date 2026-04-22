@@ -163,6 +163,7 @@ body{
   font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
   color:var(--on-surface);
   overflow-x:hidden;
+  touch-action:manipulation;
   padding-bottom:100px;
 }
 
@@ -1666,6 +1667,16 @@ nav{
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // 防止手机端双击/双指误触导致页面缩放
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+  }, { passive:false });
+  document.addEventListener('dblclick', e => e.preventDefault(), { passive:false });
+  document.addEventListener('gesturestart', e => e.preventDefault(), { passive:false });
+
   const TOTAL_HABITS = 9, TOTAL_SUPERS = 3, TOTAL_TASKS = 10;
   const KIDS = ['lulu','qiqi','mimi'];
   const V = 'v6';
