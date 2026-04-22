@@ -542,6 +542,11 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .badge-label{font-size:0.68rem;font-weight:900;color:var(--on-surface);line-height:1.2;}
 .badge-need{font-size:0.62rem;font-weight:800;color:var(--text-mid);margin-top:2px;}
 
+.weekly-review-card{margin-top:10px;background:linear-gradient(135deg,#eefaf3,#ffffff);border:1.5px solid #b9e3c8;border-radius:14px;padding:10px 12px;}
+.weekly-review-title{font-size:0.76rem;font-weight:900;color:#1f7a36;margin-bottom:4px;}
+.weekly-review-line{font-size:0.7rem;font-weight:700;color:#35584a;line-height:1.5;}
+
+
 .badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#f8fbff,#eef7ff);border:1.5px solid #c6ddff;border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm);}
 .badge-mindmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:0.95rem;font-weight:900;color:#2157a3;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .badge-mindmap-sub{font-size:0.72rem;font-weight:700;color:#5f789d;margin-bottom:12px;}
@@ -878,6 +883,16 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .b-leaf-label .b-diff.up{background:#c8e6c9;color:#1b5e20;}
 .b-leaf-label .b-diff.dn{background:#bbdefb;color:#1565c0;}
 .beanstalk-cloud{font-size:2.4rem;animation:cloudFloat 3s ease-in-out infinite;display:block;margin-top:4px;}
+
+.parent-growth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px;}
+.parent-growth-stat{background:#fff;border:1.5px solid #c8e6c9;border-radius:12px;padding:10px 8px;}
+.parent-growth-val{font-size:1.05rem;font-weight:900;color:#1b5e20;}
+.parent-growth-label{font-size:0.7rem;font-weight:800;color:#5f7a63;margin-top:2px;}
+.parent-growth-list{margin-top:12px;background:#fff;border:1.5px solid #dcefdc;border-radius:12px;padding:8px 10px;max-height:230px;overflow:auto;}
+.parent-growth-row{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:6px 0;border-bottom:1px dashed #d8e8d8;font-size:0.74rem;font-weight:700;color:#31503a;}
+.parent-growth-row:last-child{border-bottom:none;}
+.parent-growth-empty{color:var(--text-mid);font-size:0.88rem;font-weight:700;padding:20px 10px;line-height:1.6;}
+
 @keyframes cloudFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 
 /* ── 成长关联图 ── */
@@ -1209,7 +1224,7 @@ nav{
     </div>
 
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div>
+    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div><div class="weekly-review-card" id="lulu-weeklyReview"></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1290,7 +1305,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div>
+    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div><div class="weekly-review-card" id="qiqi-weeklyReview"></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1371,7 +1386,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div>
+    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div><div class="weekly-review-card" id="mimi-weeklyReview"></div>
 
     <div class="section-title">📺 电视能量</div>
     <div class="tv-card">
@@ -1429,7 +1444,7 @@ nav{
       </div>
 
     <div class="beanstalk-wrapper">
-      <div class="beanstalk-title">🌱 魔法豌豆树 (成长轨迹)</div>
+      <div class="beanstalk-title">📌 家长成长看板</div>
       <div class="beanstalk-scene" id="beanstalk-tree"></div>
       <div class="beanstalk-cloud" id="beanstalk-cloud" style="display:none;">☁️</div>
     </div>
@@ -2467,16 +2482,24 @@ document.addEventListener('DOMContentLoaded', function() {
     mimi:[{text:'独立准备早餐'},{text:'完成一本小书阅读'},{text:'整理房间并保持整洁'}]
   };
   const BADGE_ROADMAP_LEVELS=[
-    {icon:'🥉',label:'启航铜章',needDays:5,needSupers:1,needStreak:2},
-    {icon:'🥈',label:'进步银章',needDays:10,needSupers:2,needStreak:3},
-    {icon:'🥇',label:'自律金章',needDays:15,needSupers:3,needStreak:5},
-    {icon:'🏆',label:'榜样大师章',needDays:20,needSupers:3,needStreak:7}
+    {icon:'🌱',label:'小苗章',needDays:5,needSupers:1,needStreak:2},
+    {icon:'⭐',label:'小勇士章',needDays:10,needSupers:2,needStreak:3},
+    {icon:'🏅',label:'小达人章',needDays:15,needSupers:3,needStreak:5},
+    {icon:'👑',label:'小榜样章',needDays:20,needSupers:3,needStreak:7}
   ];
   const BADGE_MINDMAP_BRANCHES=[
-    {icon:'✅',title:'每日打卡',items:['当天学习+习惯全部完成','累计成本月“全完成天数”']},
-    {icon:'🏆',title:'超级挑战',items:['每月最多完成 3 项挑战','与打卡共同决定勋章等级']},
-    {icon:'🏅',title:'当月晋升',items:['铜章→银章→金章→大师章','达成更高档位自动晋级']},
-    {icon:'🧺',title:'累计荣誉',items:['每晋升 1 档累计 +1 勋章','累计勋章长期保留不清零']}
+    {icon:'🔥',title:'坚持习惯',tasks:[
+      {label:'本周全完成 ≥ 3 天',target:3,metric:'week_done'},
+      {label:'本周全完成 ≥ 5 天',target:5,metric:'week_done'}
+    ]},
+    {icon:'📘',title:'学习专注',tasks:[
+      {label:'本月学习打卡 ≥ 8 天',target:8,metric:'study_days'},
+      {label:'本月学习打卡 ≥ 15 天',target:15,metric:'study_days'}
+    ]},
+    {icon:'🧺',title:'责任行动',tasks:[
+      {label:'本月超级挑战 ≥ 1 项',target:1,metric:'super_done'},
+      {label:'本月超级挑战 ≥ 3 项',target:3,metric:'super_done'}
+    ]}
   ];
 
   const S={}; KIDS.forEach(k=>{S[k]={habits:[],supers:[],score:0,wallet:0,badgeTotal:0,badgeLedger:{},currentHabits:[],currentSupers:[],streaks:Array(TOTAL_HABITS).fill(0),streakDates:Array(TOTAL_HABITS).fill(''),tvTime:0,tvRewardGiven:false,monthHistory:[],calendar:{}};});
@@ -3093,129 +3116,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const records = loadGrowth(k);
 
     if (records.length === 0) {
-      scene.innerHTML = `<div style="color:var(--text-mid);font-size:0.88rem;font-weight:700;padding:20px 10px;line-height:1.6;">🌱 还没有记录哦<br>快去首页录入第一次身高体重吧！</div>`;
+      scene.innerHTML = `<div class="parent-growth-empty">📏 还没有成长记录<br>建议先在首页录入第一次身高体重。</div>`;
       if(cloudEl) cloudEl.style.display='none';
       return;
     }
 
-    // 从旧到新排列
-    const ordered = [...records].reverse();
-    const heights = ordered.map(r => r.height);
-    const minH = Math.min(...heights);
-    const maxH = Math.max(...heights);
-    const hRange = maxH - minH || 10;
+    const ordered = [...records].reverse(); // 旧 -> 新
+    const first = ordered[0];
+    const latest = ordered[ordered.length - 1];
+    const months = Math.max(ordered.length - 1, 1);
+    const totalHeightGain = (latest.height - first.height).toFixed(1);
+    const totalWeightChange = (latest.weight - first.weight).toFixed(1);
+    const avgHeightPerMonth = ((latest.height - first.height) / months).toFixed(2);
+    const avgWeightPerMonth = ((latest.weight - first.weight) / months).toFixed(2);
 
-    // 树的高度：每条记录至少60px，最多400px
-    const TREE_MIN_H = 80;
-    const TREE_MAX_H = 400;
-    const treeH = Math.min(TREE_MAX_H, Math.max(TREE_MIN_H, ordered.length * 70));
-    const TRUNK_W = 14;
-    const LEAF_W = 52; // SVG叶子宽
-    const LEAF_H = 30; // SVG叶子高
-    const PADDING_TOP = 20;
-    const PADDING_BOT = 24;
-    const usableH = treeH - PADDING_TOP - PADDING_BOT;
+    const statsHtml = `
+      <div class="parent-growth-grid">
+        <div class="parent-growth-stat"><div class="parent-growth-val">${latest.height} cm</div><div class="parent-growth-label">当前身高</div></div>
+        <div class="parent-growth-stat"><div class="parent-growth-val">${latest.weight} kg</div><div class="parent-growth-label">当前体重</div></div>
+        <div class="parent-growth-stat"><div class="parent-growth-val">${totalHeightGain > 0 ? '+' : ''}${totalHeightGain} cm</div><div class="parent-growth-label">累计身高变化</div></div>
+        <div class="parent-growth-stat"><div class="parent-growth-val">${totalWeightChange > 0 ? '+' : ''}${totalWeightChange} kg</div><div class="parent-growth-label">累计体重变化</div></div>
+        <div class="parent-growth-stat"><div class="parent-growth-val">${avgHeightPerMonth > 0 ? '+' : ''}${avgHeightPerMonth}</div><div class="parent-growth-label">月均身高变化</div></div>
+        <div class="parent-growth-stat"><div class="parent-growth-val">${avgWeightPerMonth > 0 ? '+' : ''}${avgWeightPerMonth}</div><div class="parent-growth-label">月均体重变化</div></div>
+      </div>`;
 
-    // 叶子颜色（旧→新渐变，越新越深绿）
-    const leafColors = [
-      '#a5d6a7','#81c784','#66bb6a','#4caf50','#43a047','#388e3c','#2e7d32'
-    ];
-
-    // 构建 SVG 树干 + 叶子
-    const sceneW = scene.offsetWidth || 300;
-    const cx = sceneW / 2;
-
-    // 树干 SVG
-    let svg = `<svg width="${sceneW}" height="${treeH}" style="display:block;overflow:visible;">
-      <defs>
-        <linearGradient id="trunkGrad" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0%" stop-color="#5d4037"/>
-          <stop offset="60%" stop-color="#66bb6a"/>
-          <stop offset="100%" stop-color="#a5d6a7"/>
-        </linearGradient>
-      </defs>
-      <!-- 树干 -->
-      <rect x="${cx - TRUNK_W/2}" y="${PADDING_TOP}" width="${TRUNK_W}" height="${usableH + PADDING_BOT - 4}"
-        rx="7" fill="url(#trunkGrad)" filter="drop-shadow(0 2px 4px rgba(46,125,50,0.25))"/>`;
-
-    // 叶子和文字标签
+    let rows = '<div class="parent-growth-list">';
     ordered.forEach((r, i) => {
-      const isLatest = i === ordered.length - 1;
-      const isLeft = i % 2 === 0;
-      const color = leafColors[Math.min(i, leafColors.length - 1)];
-      const leafColor = isLatest ? '#2e7d32' : color;
-      const strokeColor = isLatest ? '#1b5e20' : '#4caf50';
-
-      // 垂直位置：身高越高，叶子位置越高（y越小）
-      const hRatio = hRange > 0 ? (r.height - minH) / hRange : (i / Math.max(ordered.length-1,1));
-      const leafY = PADDING_TOP + usableH - Math.round(hRatio * usableH);
-
-      // 叶子附着在树干上，左右各一侧
-      const leafX = isLeft ? cx - TRUNK_W/2 - LEAF_W + 4 : cx + TRUNK_W/2 - 4;
-      // 叶子旋转：左叶向左倾，右叶向右倾
-      const rotate = isLeft ? -18 : 18;
-      const rotateOrigin = isLeft ? `${leafX + LEAF_W} ${leafY}` : `${leafX} ${leafY}`;
-
-      // 叶片 SVG（椭圆形+叶脉）
-      const delay = i * 0.1;
-      svg += `<g style="animation:leafGrow ${0.45+i*0.05}s cubic-bezier(.36,1.56,.64,1) ${delay}s both;"
-               transform="rotate(${rotate} ${rotateOrigin})">
-        <!-- 叶片 -->
-        <ellipse cx="${leafX + (isLeft ? LEAF_W*0.45 : LEAF_W*0.55)}" cy="${leafY}"
-          rx="${LEAF_W*0.48}" ry="${LEAF_H*0.42}"
-          fill="${leafColor}" opacity="${isLatest?1:0.82}"
-          stroke="${strokeColor}" stroke-width="1.5"
-          filter="${isLatest?'drop-shadow(0 3px 8px rgba(46,125,50,0.4))':''}"/>
-        <!-- 主叶脉 -->
-        <line x1="${isLeft ? leafX+4 : leafX+LEAF_W-4}" y1="${leafY}"
-              x2="${isLeft ? leafX+LEAF_W-4 : leafX+4}" y2="${leafY}"
-              stroke="${strokeColor}" stroke-width="1" opacity="0.6"/>
-      </g>`;
-
-      // 连接小茎
-      const stemX = isLeft ? cx - TRUNK_W/2 : cx + TRUNK_W/2;
-      svg += `<line x1="${stemX}" y1="${leafY}" x2="${isLeft ? cx-TRUNK_W/2-6 : cx+TRUNK_W/2+6}" y2="${leafY}"
-        stroke="#81c784" stroke-width="2" stroke-linecap="round"
-        style="animation:leafGrow 0.3s ease ${delay}s both;"/>`;
+      const prev = i > 0 ? ordered[i - 1] : null;
+      const dh = prev ? (r.height - prev.height).toFixed(1) : '--';
+      const dw = prev ? (r.weight - prev.weight).toFixed(1) : '--';
+      const dhText = prev ? `${parseFloat(dh) >= 0 ? '+' : ''}${dh} cm` : '--';
+      const dwText = prev ? `${parseFloat(dw) >= 0 ? '+' : ''}${dw} kg` : '--';
+      rows += `<div class="parent-growth-row"><div>${r.month}</div><div>📏 ${r.height}cm（${dhText}）</div><div>⚖️ ${r.weight}kg（${dwText}）</div></div>`;
     });
+    rows += '</div>';
 
-    svg += `</svg>`;
-    scene.innerHTML = svg;
-
-    // 文字标签（HTML 绝对定位在 scene 上）
-    scene.style.position = 'relative';
-    ordered.forEach((r, i) => {
-      const isLatest = i === ordered.length - 1;
-      const isLeft = i % 2 === 0;
-      const hRatio = hRange > 0 ? (r.height - minH) / hRange : (i / Math.max(ordered.length-1,1));
-      const leafY = PADDING_TOP + usableH - Math.round(hRatio * usableH);
-      const delay = i * 0.1;
-
-      // 找上一条记录（时间上更早）
-      const prevR = i > 0 ? ordered[i-1] : null;
-      let diffH = '', diffW = '';
-      if(prevR){
-        const dh = (r.height - prevR.height).toFixed(1);
-        const dw = (r.weight - prevR.weight).toFixed(1);
-        if(parseFloat(dh)>0) diffH=`<span class="b-diff up">↑+${dh}</span>`;
-        else if(parseFloat(dh)<0) diffH=`<span class="b-diff dn">↓${dh}</span>`;
-        if(parseFloat(dw)>0) diffW=`<span class="b-diff up">↑+${dw}</span>`;
-        else if(parseFloat(dw)<0) diffW=`<span class="b-diff dn">↓${dw}</span>`;
-      }
-
-      const label = document.createElement('div');
-      label.className = `b-leaf ${isLeft?'left':'right'}`;
-      label.style.cssText = `top:${leafY - 22}px;animation-delay:${delay}s;`;
-      label.innerHTML = `
-        <div class="b-leaf-label${isLatest?' latest':''}">
-          <span class="b-month">${r.month}${isLatest?' 🌟':''}</span>
-          <span class="b-height">📏 ${r.height}cm ${diffH}</span><br>
-          <span class="b-weight">⚖️ ${r.weight}kg ${diffW}</span>
-        </div>`;
-      scene.appendChild(label);
-    });
-
-    if(cloudEl){ cloudEl.style.display='block'; }
+    scene.innerHTML = statsHtml + rows;
+    if(cloudEl) cloudEl.style.display='none';
   }
 
   // ── Nav & Switcher Logic ──
@@ -3677,6 +3614,45 @@ document.addEventListener('DOMContentLoaded', function() {
     return (S[k].supers||[]).filter(Boolean).length;
   }
 
+  function getWeekDoneDays(k){
+    const cal=S[k].calendar||{};
+    const now=new Date();
+    const day=now.getDay()||7;
+    const monday=new Date(now);
+    monday.setDate(now.getDate()-day+1);
+    monday.setHours(0,0,0,0);
+    let done=0;
+    for(let i=0;i<7;i++){
+      const d=new Date(monday);
+      d.setDate(monday.getDate()+i);
+      if(d>now) break;
+      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      if(cal[ds]===true) done++;
+    }
+    return done;
+  }
+
+  function getMindmapMetrics(k){
+    return {
+      week_done:getWeekDoneDays(k),
+      study_days:getStudyCount(k),
+      super_done:getMonthSuperDone(k)
+    };
+  }
+
+  function getNextBadgeHint(info){
+    const next=BADGE_ROADMAP_LEVELS[info.tier];
+    if(!next) return '🎉 已达本月最高等级';
+    const leftDays=Math.max(0,next.needDays-info.days);
+    const leftSupers=Math.max(0,next.needSupers-info.supers);
+    const leftStreak=Math.max(0,next.needStreak-info.maxStreak);
+    const tips=[];
+    if(leftDays>0) tips.push(`打卡${leftDays}天`);
+    if(leftSupers>0) tips.push(`挑战${leftSupers}项`);
+    if(leftStreak>0) tips.push(`连续${leftStreak}天`);
+    return `下一步：再${tips.join(' + ')}`;
+  }
+
   function getCurrentBadgeTier(k){
     const days=getMonthDoneDays(k);
     const supers=getMonthSuperDone(k);
@@ -3727,12 +3703,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if(!grid) return;
     const info=getCurrentBadgeTier(currentKid);
     const total=S[currentKid]?.badgeTotal||0;
-    const branchHtml=BADGE_MINDMAP_BRANCHES.map((branch,idx)=>{
-      const open=idx<=info.tier;
-      const items=branch.items.map(item=>`<div class="badge-branch-item ${open?'done':'locked'}">${open?'✅':'🔒'} ${item}</div>`).join('');
+    const metrics=getMindmapMetrics(currentKid);
+    const branchHtml=BADGE_MINDMAP_BRANCHES.map(branch=>{
+      const items=branch.tasks.map(task=>{
+        const current=metrics[task.metric]||0;
+        const done=current>=task.target;
+        return `<div class="badge-branch-item ${done?'done':'locked'}">${done?'✅':'⬜'} ${task.label}（${Math.min(current,task.target)}/${task.target}）</div>`;
+      }).join('');
       return `<div class="badge-branch"><div class="badge-branch-title">${branch.icon} ${branch.title}</div>${items}</div>`;
     }).join('');
-    grid.innerHTML=branchHtml+`<div class="badge-branch" style="grid-column:1/-1;background:#fffef5;border-color:#ffe29c;"><div class="badge-branch-title">🏁 当前总览</div><div class="badge-branch-item">本月全完成：${info.days} 天</div><div class="badge-branch-item">本月挑战完成：${info.supers}/${TOTAL_SUPERS}</div><div class="badge-branch-item">当前称号：${getBadgeTitle(info.tier)}（${info.tier}/${BADGE_ROADMAP_LEVELS.length}）</div><div class="badge-branch-item">累计勋章：${total} 枚</div></div>`;
+    grid.innerHTML=branchHtml+`<div class="badge-branch" style="grid-column:1/-1;background:#fffef5;border-color:#ffe29c;"><div class="badge-branch-title">🏁 当前总览</div><div class="badge-branch-item">当前等级：${getBadgeTitle(info.tier)}（${info.tier}/${BADGE_ROADMAP_LEVELS.length}）</div><div class="badge-branch-item">${getNextBadgeHint(info)}</div><div class="badge-branch-item">次级信息：本月挑战 ${info.supers}/${TOTAL_SUPERS} ｜ 累计勋章 ${total} 枚</div></div>`;
   }
 
   function showAllDoneBoom(k){
@@ -3801,10 +3781,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const badgeDone=(S[k].supers||[]).filter(Boolean).length;
     const badgeInfo=getCurrentBadgeTier(k);
     const badgeSummary=document.getElementById(`${k}-superBadgeSummary`);
-    if(badgeSummary) badgeSummary.textContent = `🏅 本月挑战 ${badgeDone}/${TOTAL_SUPERS} ｜ 勋章等级 ${badgeInfo.tier}/${BADGE_ROADMAP_LEVELS.length}`;
+    if(badgeSummary) badgeSummary.textContent = `🏅 当前等级：${getBadgeTitle(badgeInfo.tier)}`;
     const badgeTotalEl=document.getElementById(`${k}-superBadgeTotal`);
-    if(badgeTotalEl) badgeTotalEl.textContent = `累计勋章 ${S[k].badgeTotal||0}`;
+    if(badgeTotalEl) badgeTotalEl.textContent = getNextBadgeHint(badgeInfo);
     renderBadgeRoadmap(k);
+    const weeklyEl=document.getElementById(`${k}-weeklyReview`);
+    if(weeklyEl){
+      const weekDone=getWeekDoneDays(k);
+      const best=weekDone>=5?'坚持打卡':'挑战进阶';
+      const nextGoal=weekDone>=5?'下周目标：礼貌表达与合作 3 次':'下周目标：全完成天数提升到 5 天';
+      weeklyEl.innerHTML=`<div class="weekly-review-title">📝 本周复盘小卡片</div><div class="weekly-review-line">本周你最棒的是：${best}</div><div class="weekly-review-line">${nextGoal}</div>`;
+    }
     if(currentKid===k) renderBadgeMindmap();
     const allDone=document.getElementById(`${k}-allDone`);if(allDone)allDone.classList.toggle('visible',totalCount===TOTAL_TASKS);
     updateSelectorUI(k===currentKid ? k : currentKid);
@@ -3905,11 +3892,11 @@ document.addEventListener('DOMContentLoaded', function() {
       renderKid(k);
       const afterTotal=S[k].badgeTotal||0;
       const afterTier=getCurrentBadgeTier(k).tier;
-      vib(VIB_SUPER);
-      try{launchConfetti();launchConfetti();}catch(e){}
-      try{playSuccessKid(k,true);}catch(e){}
-      const superName=(S[k].currentSupers?.[j]?.text)||'本月挑战';
       const levelUp=afterTier>beforeTier || afterTotal>beforeTotal;
+      vib(levelUp ? [20,50,30,60,40] : VIB_SUPER);
+      try{ if(levelUp){ launchConfetti();launchConfetti();launchConfetti(); } else { launchConfetti(); } }catch(e){}
+      try{playSuccessKid(k,levelUp);}catch(e){}
+      const superName=(S[k].currentSupers?.[j]?.text)||'本月挑战';
       document.getElementById('toastSuccessName').textContent=levelUp?'勋章晋级！':'挑战完成！';
       document.getElementById('toastSuccessSub').innerHTML=
         `🏆 ${superName}<br>当前称号：${getBadgeTitle(afterTier)}（${afterTier}/${BADGE_ROADMAP_LEVELS.length}）<br>累计勋章：${afterTotal} 枚`;
