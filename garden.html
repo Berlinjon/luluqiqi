@@ -1227,11 +1227,11 @@ nav{
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div><div class="weekly-review-card" id="lulu-weeklyReview"></div>
 
-    <div class="section-title">📺 电视能量</div>
+    <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-count-badge" id="lulu-tv-count-badge">0/10</div></div>
       <div class="tv-track"><div class="tv-fill" id="lulu-tv-fill" style="width:0%"></div></div>
-      <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="lulu-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="lulu-spendTvBtn">兑换时间</button></div>
+      <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="lulu-tvTime">0</span> 点</div><button class="tv-spend-btn" id="lulu-spendTvBtn">兑换活动</button></div>
     </div>
     <div class="kid-score-hint" id="lulu-kidScoreHint">⭐ 今天 +0 星星</div>
 
@@ -1308,11 +1308,11 @@ nav{
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div><div class="weekly-review-card" id="qiqi-weeklyReview"></div>
 
-    <div class="section-title">📺 电视能量</div>
+    <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-count-badge" id="qiqi-tv-count-badge">0/10</div></div>
       <div class="tv-track"><div class="tv-fill" id="qiqi-tv-fill" style="width:0%"></div></div>
-      <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="qiqi-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="qiqi-spendTvBtn">兑换时间</button></div>
+      <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="qiqi-tvTime">0</span> 点</div><button class="tv-spend-btn" id="qiqi-spendTvBtn">兑换活动</button></div>
     </div>
     <div class="kid-score-hint" id="qiqi-kidScoreHint">⭐ 今天 +0 星星</div>
 
@@ -1389,11 +1389,11 @@ nav{
     <div class="section-title">🏆 超级挑战</div>
     <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div><div class="weekly-review-card" id="mimi-weeklyReview"></div>
 
-    <div class="section-title">📺 电视能量</div>
+    <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
       <div class="tv-card-header"><div class="tv-count-badge" id="mimi-tv-count-badge">0/10</div></div>
       <div class="tv-track"><div class="tv-fill" id="mimi-tv-fill" style="width:0%"></div></div>
-      <div class="tv-bank-row"><div class="tv-bank-info">📺 小金库：<span id="mimi-tvTime">0</span> 小时</div><button class="tv-spend-btn" id="mimi-spendTvBtn">兑换时间</button></div>
+      <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="mimi-tvTime">0</span> 点</div><button class="tv-spend-btn" id="mimi-spendTvBtn">兑换活动</button></div>
     </div>
     <div class="kid-score-hint" id="mimi-kidScoreHint">⭐ 今天 +0 星星</div>
 
@@ -3916,7 +3916,53 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('❌ 算错啦！再仔细算算~');
     }
   }
-  function doSpendTv(k){if(S[k].tvTime<=0){alert('❌ 小金库空空如也，快完成每天的好习惯赚取时间吧！');return;}const p=generateMath3();const ans=prompt(`【算术锁】算对看电视：\n\n${p.q}`);if(ans===null)return;if(ans.trim()!==p.ans){alert('❌ 算错啦！再仔细检查一下吧~');return;}const hrs=prompt(`✅ 解锁成功！\n当前小金库：${S[k].tvTime} 小时\n请输入本次想扣除多少小时？(支持 0.5)`);if(hrs===null)return;const h=parseFloat(hrs);if(isNaN(h)||h<=0){alert('❌ 输入无效哦');return;}if(h>S[k].tvTime){alert(`❌ 余额不足！只有 ${S[k].tvTime} 小时`);return;}S[k].tvTime=parseFloat((S[k].tvTime-h).toFixed(2));saveTvState(k);renderKid(k);alert(`📺 兑换成功！尽情享受 ${h} 小时的快乐时光！`);}
+  function doSpendTv(k){
+    if(S[k].tvTime<=0){
+      alert('❌ 成长卡点数不足，先完成今日任务再来兑换吧！');
+      return;
+    }
+    const p=generateMath3();
+    const ans=prompt(`【算术锁】答对才可兑换活动：
+
+${p.q}`);
+    if(ans===null) return;
+    if(ans.trim()!==p.ans){
+      alert('❌ 算错啦！再仔细检查一下吧~');
+      return;
+    }
+
+    const options=[
+      {id:1,name:'📚 亲子共读 20 分钟',cost:1},
+      {id:2,name:'🎨 创作时间 30 分钟',cost:1.5},
+      {id:3,name:'🧩 家庭游戏 1 局',cost:2},
+      {id:4,name:'🚶 户外探索 30 分钟',cost:2}
+    ];
+    const menu=options.map(o=>`${o.id}. ${o.name}（${o.cost}点）`).join('\n');
+    const pick=prompt(`✅ 解锁成功！
+当前成长卡：${S[k].tvTime} 点
+
+请选择要兑换的活动：
+${menu}
+
+请输入序号：`);
+    if(pick===null) return;
+    const selected=options.find(o=>String(o.id)===String((pick||'').trim()));
+    if(!selected){
+      alert('❌ 选择无效，请输入正确序号');
+      return;
+    }
+    if(selected.cost>S[k].tvTime){
+      alert(`❌ 点数不足！当前仅有 ${S[k].tvTime} 点`);
+      return;
+    }
+
+    S[k].tvTime=parseFloat((S[k].tvTime-selected.cost).toFixed(2));
+    saveTvState(k);
+    renderKid(k);
+    alert(`🌟 兑换成功！
+已兑换：${selected.name}
+剩余成长卡：${S[k].tvTime} 点`);
+  }
   async function doReset(k){const ok=await showPwdOverlay('🔒 重置今日打卡','请输入家长密码后继续');if(!ok)return;if(!confirm(`确定重置今天的打卡吗？\n⚠️ 今日积分会被扣除。`))return;const earned=S[k].habits.filter(v=>v===true).length;const studyBonus=isStudyDoneToday(k)?1:0;S[k].score=Math.max(0,S[k].score-earned-studyBonus);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;if(S[k].calendar)S[k].calendar[todayStr()]=false;saveKidCalendar(k);saveTvState(k);saveKidState(k);saveKidScore(k);try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}renderStudy(k);renderKid(k);}
 
   function bindEvents(){
