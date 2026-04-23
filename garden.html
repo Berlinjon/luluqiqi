@@ -2541,6 +2541,30 @@ document.addEventListener('DOMContentLoaded', function() {
   function monthStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
   function getMondayStr(){const d=new Date(),day=d.getDay()||7,mon=new Date(d.setDate(d.getDate()-day+1));return mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');}
   function sk(k,t){return `tab_${k}_${t}_${V}`;}
+  function logSoftError(tag,e){
+    try{
+      if(window && window.console && console.warn){
+        console.warn(`[soft-error] ${tag}`, e && e.message ? e.message : e);
+      }
+    }catch(_){}
+  }
+  function safeJsonParse(raw, fallback, tag){
+    if(raw == null || raw === '') return fallback;
+    try{return JSON.parse(raw);}catch(e){logSoftError(tag || 'json_parse', e);return fallback;}
+  }
+  function safeGetItem(key, fallback, tag){
+    try{
+      const v = localStorage.getItem(key);
+      return v == null ? fallback : v;
+    }catch(e){
+      logSoftError(tag || 'ls_get', e);
+      return fallback;
+    }
+  }
+  function safeSetItem(key, val, tag){
+    try{ localStorage.setItem(key, val); return true; }
+    catch(e){ logSoftError(tag || 'ls_set', e); return false; }
+  }
 
   const defaultHabits={
     lulu:[{emoji:'⏰',text:'按时起床'},{emoji:'🦷',text:'刷牙大于1分钟'},{emoji:'🛏️',text:'自己叠被子'},{emoji:'📝',text:'自主写作业'},{emoji:'🪑',text:'坐姿端正'},{emoji:'🍽️',text:'光盘行动'},{emoji:'🧹',text:'做家务'},{emoji:'🗂️',text:'整理物品'},{emoji:'💤',text:'按时睡觉'}],
@@ -2583,48 +2607,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function loadAll(){
     KIDS.forEach(k=>{
-      try{S[k].habits=JSON.parse(localStorage.getItem(sk(k,'state')))||Array(TOTAL_HABITS).fill(null);}catch(e){S[k].habits=Array(TOTAL_HABITS).fill(null);}
-      try{S[k].supers=JSON.parse(localStorage.getItem(sk(k,'supers')))||Array(TOTAL_SUPERS).fill(false);}catch(e){S[k].supers=Array(TOTAL_SUPERS).fill(false);}
-      try{S[k].score=parseInt(localStorage.getItem(sk(k,'score')))||0;}catch(e){}
-      try{S[k].wallet=parseFloat(localStorage.getItem(sk(k,'wallet')))||0;}catch(e){}
-      try{S[k].badgeTotal=parseInt(localStorage.getItem(sk(k,'badgeTotal')))||0;}catch(e){}
-      try{S[k].badgeLedger=JSON.parse(localStorage.getItem(sk(k,'badgeLedger')))||{};}catch(e){S[k].badgeLedger={};}
-      try{S[k].streaks=JSON.parse(localStorage.getItem(sk(k,'streaks')))||Array(TOTAL_HABITS).fill(0);}catch(e){S[k].streaks=Array(TOTAL_HABITS).fill(0);}
-      try{S[k].streakDates=JSON.parse(localStorage.getItem(sk(k,'streakDates')))||Array(TOTAL_HABITS).fill('');}catch(e){S[k].streakDates=Array(TOTAL_HABITS).fill('');}
-      try{const tv=JSON.parse(localStorage.getItem(sk(k,'tv')));if(tv){S[k].tvTime=tv.time||0;S[k].tvRewardGiven=tv.rewarded||false;}}catch(e){}
-      try{S[k].monthHistory=JSON.parse(localStorage.getItem(sk(k,'hist')))||[];}catch(e){}
-      try{S[k].calendar=JSON.parse(localStorage.getItem(sk(k,'cal')))||{};}catch(e){}
+      S[k].habits = safeJsonParse(safeGetItem(sk(k,'state'),'',`load_state_${k}`), Array(TOTAL_HABITS).fill(null), `parse_state_${k}`) || Array(TOTAL_HABITS).fill(null);
+      S[k].supers = safeJsonParse(safeGetItem(sk(k,'supers'),'',`load_supers_${k}`), Array(TOTAL_SUPERS).fill(false), `parse_supers_${k}`) || Array(TOTAL_SUPERS).fill(false);
+      S[k].score = parseInt(safeGetItem(sk(k,'score'),'0',`load_score_${k}`),10) || 0;
+      S[k].wallet = parseFloat(safeGetItem(sk(k,'wallet'),'0',`load_wallet_${k}`)) || 0;
+      S[k].badgeTotal = parseInt(safeGetItem(sk(k,'badgeTotal'),'0',`load_badge_total_${k}`),10) || 0;
+      S[k].badgeLedger = safeJsonParse(safeGetItem(sk(k,'badgeLedger'),'{}',`load_badge_ledger_${k}`), {}, `parse_badge_ledger_${k}`) || {};
+      S[k].streaks = safeJsonParse(safeGetItem(sk(k,'streaks'),'[]',`load_streaks_${k}`), Array(TOTAL_HABITS).fill(0), `parse_streaks_${k}`) || Array(TOTAL_HABITS).fill(0);
+      S[k].streakDates = safeJsonParse(safeGetItem(sk(k,'streakDates'),'[]',`load_streak_dates_${k}`), Array(TOTAL_HABITS).fill(''), `parse_streak_dates_${k}`) || Array(TOTAL_HABITS).fill('');
+      const tv = safeJsonParse(safeGetItem(sk(k,'tv'),'{}',`load_tv_${k}`), {}, `parse_tv_${k}`);
+      if(tv){S[k].tvTime=tv.time||0;S[k].tvRewardGiven=tv.rewarded||false;}
+      S[k].monthHistory = safeJsonParse(safeGetItem(sk(k,'hist'),'[]',`load_hist_${k}`), [], `parse_hist_${k}`) || [];
+      S[k].calendar = safeJsonParse(safeGetItem(sk(k,'cal'),'{}',`load_cal_${k}`), {}, `parse_cal_${k}`) || {};
 
       try{
-        let savedHabits = JSON.parse(localStorage.getItem(sk(k,'hcfg')));
+        let savedHabits = safeJsonParse(safeGetItem(sk(k,'hcfg'),'',`load_hcfg_${k}`), null, `parse_hcfg_${k}`);
         if(savedHabits && k==='lulu') {
           if(savedHabits[0].text === '按时到校') { savedHabits[0].emoji = '⏰'; savedHabits[0].text = '按时起床'; }
           if(savedHabits[8].text === '照顾妹妹') { savedHabits[8].emoji = '💤'; savedHabits[8].text = '按时睡觉'; }
-          localStorage.setItem(sk(k,'hcfg'), JSON.stringify(savedHabits));
+          safeSetItem(sk(k,'hcfg'), JSON.stringify(savedHabits), `save_hcfg_fix_${k}`);
         }
         S[k].currentHabits = savedHabits || defaultHabits[k];
-      }catch(e){S[k].currentHabits=defaultHabits[k];}
+      }catch(e){logSoftError(`load_current_habits_${k}`,e);S[k].currentHabits=defaultHabits[k];}
 
-      try{S[k].currentSupers=JSON.parse(localStorage.getItem(sk(k,'scfg')))||defaultSupers[k];}catch(e){S[k].currentSupers=defaultSupers[k];}
+      try{S[k].currentSupers=safeJsonParse(safeGetItem(sk(k,'scfg'),'',`load_scfg_${k}`), defaultSupers[k], `parse_scfg_${k}`)||defaultSupers[k];}catch(e){logSoftError(`load_current_supers_${k}`,e);S[k].currentSupers=defaultSupers[k];}
 
-      if(!localStorage.getItem(sk(k,'date')))localStorage.setItem(sk(k,'date'),todayStr());
-      if(!localStorage.getItem(sk(k,'month')))localStorage.setItem(sk(k,'month'),monthStr());
-      if(!localStorage.getItem(sk(k,'week')))localStorage.setItem(sk(k,'week'),getMondayStr());
+      if(!safeGetItem(sk(k,'date'),'',`load_date_${k}`))safeSetItem(sk(k,'date'),todayStr(),`save_date_${k}`);
+      if(!safeGetItem(sk(k,'month'),'',`load_month_${k}`))safeSetItem(sk(k,'month'),monthStr(),`save_month_${k}`);
+      if(!safeGetItem(sk(k,'week'),'',`load_week_${k}`))safeSetItem(sk(k,'week'),getMondayStr(),`save_week_${k}`);
     });
     applyKidNames();
   }
 
-  function saveKidState(k){try{localStorage.setItem(sk(k,'state'),JSON.stringify(S[k].habits));localStorage.setItem(sk(k,'date'),todayStr());}catch(e){}}
-  function saveKidSupers(k){try{localStorage.setItem(sk(k,'supers'),JSON.stringify(S[k].supers));}catch(e){}}
-  function saveKidScore(k){try{localStorage.setItem(sk(k,'score'),S[k].score);}catch(e){}}
-  function saveKidWallet(k){try{localStorage.setItem(sk(k,'wallet'),S[k].wallet);}catch(e){}}
-  function saveKidBadgeTotal(k){try{localStorage.setItem(sk(k,'badgeTotal'),String(S[k].badgeTotal||0));}catch(e){}}
-  function saveKidBadgeLedger(k){try{localStorage.setItem(sk(k,'badgeLedger'),JSON.stringify(S[k].badgeLedger||{}));}catch(e){}}
-  function saveKidStreaks(k){try{localStorage.setItem(sk(k,'streaks'),JSON.stringify(S[k].streaks));}catch(e){}}
-  function saveKidStreakDates(k){try{localStorage.setItem(sk(k,'streakDates'),JSON.stringify(S[k].streakDates));}catch(e){}}
-  function saveTvState(k){try{localStorage.setItem(sk(k,'tv'),JSON.stringify({time:S[k].tvTime,rewarded:S[k].tvRewardGiven}));}catch(e){}}
-  function saveKidHistory(k){try{localStorage.setItem(sk(k,'hist'),JSON.stringify(S[k].monthHistory));}catch(e){}}
-  function saveKidCalendar(k){try{localStorage.setItem(sk(k,'cal'),JSON.stringify(S[k].calendar));}catch(e){}}
+  function saveKidState(k){safeSetItem(sk(k,'state'),JSON.stringify(S[k].habits),`save_state_${k}`);safeSetItem(sk(k,'date'),todayStr(),`save_date_${k}`);}
+  function saveKidSupers(k){safeSetItem(sk(k,'supers'),JSON.stringify(S[k].supers),`save_supers_${k}`);}
+  function saveKidScore(k){safeSetItem(sk(k,'score'),String(S[k].score),`save_score_${k}`);}
+  function saveKidWallet(k){safeSetItem(sk(k,'wallet'),String(S[k].wallet),`save_wallet_${k}`);}
+  function saveKidBadgeTotal(k){safeSetItem(sk(k,'badgeTotal'),String(S[k].badgeTotal||0),`save_badge_total_${k}`);}
+  function saveKidBadgeLedger(k){safeSetItem(sk(k,'badgeLedger'),JSON.stringify(S[k].badgeLedger||{}),`save_badge_ledger_${k}`);}
+  function saveKidStreaks(k){safeSetItem(sk(k,'streaks'),JSON.stringify(S[k].streaks),`save_streaks_${k}`);}
+  function saveKidStreakDates(k){safeSetItem(sk(k,'streakDates'),JSON.stringify(S[k].streakDates),`save_streak_dates_${k}`);}
+  function saveTvState(k){safeSetItem(sk(k,'tv'),JSON.stringify({time:S[k].tvTime,rewarded:S[k].tvRewardGiven}),`save_tv_${k}`);}
+  function saveKidHistory(k){safeSetItem(sk(k,'hist'),JSON.stringify(S[k].monthHistory),`save_hist_${k}`);}
+  function saveKidCalendar(k){safeSetItem(sk(k,'cal'),JSON.stringify(S[k].calendar),`save_cal_${k}`);}
 
   // Audio System
   let AC=null;function getAC(){if(!AC){try{window.AudioContext=window.AudioContext||window.webkitAudioContext;if(window.AudioContext)AC=new AudioContext();}catch(e){return null;}}if(AC&&AC.state==='suspended'){try{AC.resume();}catch(e){}}return AC;}
