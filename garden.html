@@ -2482,11 +2482,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const customPhraseAudio = normalizeStudyAudioUrl(item.phraseAudio);
     const customAudioList = [customWordAudio, customPhraseAudio].filter(Boolean);
 
-    if(customAudioList.length){
+    if(customAudioList.length && typeof Audio === 'function'){
       playStudyAudioUrls(customAudioList).catch(() => speakStudyByTts(item));
       return;
     }
     speakStudyByTts(item);
+  }
+
+  // 兼容旧调用入口（避免历史绑定或外部脚本失效）
+  function speakStudy(k){
+    playStudyPronunciation(k);
   }
 
   function speakStudyByTts(item) {
@@ -2513,7 +2518,9 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       wordUtter.onend = () => setTimeout(() => window.speechSynthesis.speak(phraseUtter), isMobile ? 700 : 500);
       window.speechSynthesis.speak(wordUtter);
-    } catch (e) {}
+    } catch (e) {
+      alert('发音播放失败，请稍后重试');
+    }
   }
 
   function applyKidNames() {
