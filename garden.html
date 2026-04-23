@@ -554,6 +554,9 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .activity-menu-cost{font-weight:900;color:#8d6e00;white-space:nowrap;}
 .activity-menu-item.locked{opacity:0.65;}
 
+.badge-detail-toggle{margin-top:8px;width:100%;border:none;border-radius:999px;padding:7px 12px;background:#f2f8ff;color:#315f9a;font-size:0.74rem;font-weight:900;cursor:pointer;}
+
+
 
 
 .badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#f8fbff,#eef7ff);border:1.5px solid #c6ddff;border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm);}
@@ -1233,7 +1236,7 @@ nav{
     </div>
 
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div><div class="weekly-review-card" id="lulu-weeklyReview"></div>
+    <div class="super-card"><div class="super-title"><span id="lulu-superBadgeSummary">🏅 本月成就 0/3</span><span id="lulu-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="lulu-superList"></div><div class="badge-roadmap" id="lulu-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="lulu-badgeDetailToggle">📂 查看详情</button><div class="weekly-review-card" id="lulu-weeklyReview"></div>
 
     <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
@@ -1315,7 +1318,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div><div class="weekly-review-card" id="qiqi-weeklyReview"></div>
+    <div class="super-card"><div class="super-title"><span id="qiqi-superBadgeSummary">🏅 本月成就 0/3</span><span id="qiqi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="qiqi-superList"></div><div class="badge-roadmap" id="qiqi-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="qiqi-badgeDetailToggle">📂 查看详情</button><div class="weekly-review-card" id="qiqi-weeklyReview"></div>
 
     <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
@@ -1397,7 +1400,7 @@ nav{
       </div>
     </div>
     <div class="section-title">🏆 超级挑战</div>
-    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div><div class="weekly-review-card" id="mimi-weeklyReview"></div>
+    <div class="super-card"><div class="super-title"><span id="mimi-superBadgeSummary">🏅 本月成就 0/3</span><span id="mimi-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="mimi-superList"></div><div class="badge-roadmap" id="mimi-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="mimi-badgeDetailToggle">📂 查看详情</button><div class="weekly-review-card" id="mimi-weeklyReview"></div>
 
     <div class="section-title">🌟 成长能量</div>
     <div class="tv-card">
@@ -3186,6 +3189,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── Nav & Switcher Logic ──
   let currentNav = 'home';
   let currentKid = 'lulu';
+  const badgeDetailOpen = {lulu:false, qiqi:false, mimi:false};
 
   function switchNav(view) {
     currentNav = view;
@@ -3825,14 +3829,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const badgeTotalEl=document.getElementById(`${k}-superBadgeTotal`);
     if(badgeTotalEl) badgeTotalEl.textContent = getNextBadgeHint(badgeInfo);
     renderBadgeRoadmap(k);
+    const roadEl=document.getElementById(`${k}-badgeRoadmap`);
     const weeklyEl=document.getElementById(`${k}-weeklyReview`);
+    const toggleBtn=document.getElementById(`${k}-badgeDetailToggle`);
+    const detailOpen=!!badgeDetailOpen[k];
+    if(roadEl) roadEl.style.display=detailOpen?'block':'none';
     if(weeklyEl){
       const weekDone=getWeekDoneDays(k);
       const best=weekDone>=5?'坚持打卡':'挑战进阶';
       const nextGoal=weekDone>=5?'下周目标：礼貌表达与合作 3 次':'下周目标：全完成天数提升到 5 天';
       weeklyEl.innerHTML=`<div class="weekly-review-title">📝 本周复盘小卡片</div><div class="weekly-review-line">本周你最棒的是：${best}</div><div class="weekly-review-line">${nextGoal}</div>`;
+      weeklyEl.style.display=detailOpen?'block':'none';
     }
-    if(currentKid===k) renderBadgeMindmap();
+    if(toggleBtn) toggleBtn.textContent=detailOpen?'📁 收起详情':'📂 查看详情';
+    if(currentKid===k && detailOpen) renderBadgeMindmap();
     const allDone=document.getElementById(`${k}-allDone`);if(allDone)allDone.classList.toggle('visible',totalCount===TOTAL_TASKS);
     updateSelectorUI(k===currentKid ? k : currentKid);
     updateBankUI(k);
@@ -4018,6 +4028,7 @@ ${menu}
       for(let j=0;j<TOTAL_SUPERS;j++){const sb=document.getElementById(`${k}-superBox-${j}`);if(sb)sb.onclick=e=>{e.preventDefault();doSuperCheck(k,j);};}
       const rb=document.getElementById(`${k}-resetBtn`);if(rb)rb.onclick=async e=>{e.preventDefault();await doReset(k);};
       const tvBtn=document.getElementById(`${k}-spendTvBtn`);if(tvBtn)tvBtn.onclick=e=>{e.preventDefault();doSpendTv(k);};
+      const detailBtn=document.getElementById(`${k}-badgeDetailToggle`);if(detailBtn)detailBtn.onclick=e=>{e.preventDefault();badgeDetailOpen[k]=!badgeDetailOpen[k];renderKid(k);if(currentNav==='progress'&&badgeDetailOpen[k])renderMap();};
     });
   }
 
