@@ -2952,19 +2952,44 @@ document.addEventListener('DOMContentLoaded', function() {
     renderMonthlyReport();
   }
 
+  function getGrowthAnalytics(k){
+    const records = loadGrowth(k); // [{month:'2024-11',height:120,weight:23},...]
+    const ordered = [...records].reverse(); // 旧 -> 新
+    const count = ordered.length;
+
+    if(count === 0){
+      return { records, ordered, count };
+    }
+
+    const first = ordered[0];
+    const latest = ordered[count - 1];
+    const months = ordered.map(r => r.month);
+    const heights = ordered.map(r => r.height);
+    const weights = ordered.map(r => r.weight);
+    const spanMonths = Math.max(count - 1, 1);
+    const totalHeightGain = +(latest.height - first.height).toFixed(1);
+    const totalWeightChange = +(latest.weight - first.weight).toFixed(1);
+    const avgHeightPerMonth = +(((latest.height - first.height) / spanMonths).toFixed(2));
+    const avgWeightPerMonth = +(((latest.weight - first.weight) / spanMonths).toFixed(2));
+
+    return {
+      records, ordered, count, first, latest,
+      months, heights, weights,
+      spanMonths, totalHeightGain, totalWeightChange,
+      avgHeightPerMonth, avgWeightPerMonth
+    };
+  }
+
   function renderCorrelationChart(){
     const k = currentKid;
     const el = document.getElementById('correlationChart');
     if(!el) return;
 
-    const growthRecords = loadGrowth(k); // [{month:'2024-11',height:120,weight:23},...]
-    if(growthRecords.length < 2){
+    const growth = getGrowthAnalytics(k);
+    if(growth.count < 2){
       el.innerHTML = `<div class="correlation-empty">📊 至少需要 2 次成长记录才能显示关联图<br>继续坚持打卡，积累更多数据吧！</div>`;
       return;
     }
-
-    // 按时间从旧到新排列
-    const sorted = [...growthRecords].reverse();
 
     // 统计每月全完成天数（calendar 中 true 的天数）
     const cal = S[k].calendar || {};
@@ -2976,8 +3001,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-    const months = sorted.map(r => r.month);
-    const heights = sorted.map(r => r.height);
+    const months = growth.months;
+    const heights = growth.heights;
     const doneCounts = months.map(m => monthDoneMap[m] || 0);
     const maxDone = Math.max(...doneCounts, 1);
     const minH = Math.min(...heights);
@@ -3144,22 +3169,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const k = currentKid;
     const scene = document.getElementById('beanstalk-tree');
     const cloudEl = document.getElementById('beanstalk-cloud');
-    const records = loadGrowth(k);
+    const growth = getGrowthAnalytics(k);
 
-    if (records.length === 0) {
+    if (growth.count === 0) {
       scene.innerHTML = `<div class="parent-growth-empty">📏 还没有成长记录<br>建议先在首页录入第一次身高体重。</div>`;
       if(cloudEl) cloudEl.style.display='none';
       return;
     }
 
-    const ordered = [...records].reverse(); // 旧 -> 新
-    const first = ordered[0];
-    const latest = ordered[ordered.length - 1];
-    const months = Math.max(ordered.length - 1, 1);
-    const totalHeightGain = (latest.height - first.height).toFixed(1);
-    const totalWeightChange = (latest.weight - first.weight).toFixed(1);
-    const avgHeightPerMonth = ((latest.height - first.height) / months).toFixed(2);
-    const avgWeightPerMonth = ((latest.weight - first.weight) / months).toFixed(2);
+    const ordered = growth.ordered;
+    const latest = growth.latest;
+    const totalHeightGain = growth.totalHeightGain.toFixed(1);
+    const totalWeightChange = growth.totalWeightChange.toFixed(1);
+    const avgHeightPerMonth = growth.avgHeightPerMonth.toFixed(2);
+    const avgWeightPerMonth = growth.avgWeightPerMonth.toFixed(2);
 
     const statsHtml = `
       <div class="parent-growth-grid">
