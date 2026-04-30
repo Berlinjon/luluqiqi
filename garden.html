@@ -4227,17 +4227,60 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function closeToast(id){document.getElementById(id).classList.remove('show');}
+  const TOAST_META = {
+    success: { overlayId:'toastSuccess', titleId:'toastSuccessName', subId:'toastSuccessSub', buttonId:'closeSuccess', defaultLabel:'开心！', timer:null, action:null, onTimeout:null, token:0 },
+    error: { overlayId:'toastEncourage', titleId:'toastEncourageName', subId:'toastEncourageSub', buttonId:'closeEncourage', defaultLabel:'加油！', timer:null, action:null, onTimeout:null, token:0 }
+  };
+
+  function getToastMetaById(id){
+    return id === 'toastEncourage' ? TOAST_META.error : TOAST_META.success;
+  }
+
+  function resetToastState(meta){
+    if(meta.timer){
+      clearTimeout(meta.timer);
+      meta.timer = null;
+    }
+    meta.action = null;
+    meta.onTimeout = null;
+    meta.token += 1;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = meta.defaultLabel;
+  }
+
+  function closeToast(id){
+    const meta = getToastMetaById(id);
+    resetToastState(meta);
+    document.getElementById(id).classList.remove('show');
+  }
+
   function showToast(type, title, desc, allowHtml=false){
-    const isError = type === 'error';
-    const overlayId = isError ? 'toastEncourage' : 'toastSuccess';
-    const titleId = isError ? 'toastEncourageName' : 'toastSuccessName';
-    const subId = isError ? 'toastEncourageSub' : 'toastSuccessSub';
-    document.getElementById(titleId).textContent = title;
-    const subEl = document.getElementById(subId);
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    resetToastState(meta);
+    document.getElementById(meta.titleId).textContent = title;
+    const subEl = document.getElementById(meta.subId);
     if(allowHtml) subEl.innerHTML = desc;
     else subEl.textContent = desc;
-    document.getElementById(overlayId).classList.add('show');
+    document.getElementById(meta.overlayId).classList.add('show');
+  }
+
+  function showToastAction(type, title, desc, options={}){
+    const { allowHtml=false, actionLabel='撤销', timeoutMs=5000, onAction=null, onTimeout=null } = options;
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    showToast(type, title, desc, allowHtml);
+    meta.action = typeof onAction === 'function' ? onAction : null;
+    meta.onTimeout = typeof onTimeout === 'function' ? onTimeout : null;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = actionLabel;
+    const currentToken = meta.token;
+    if(timeoutMs > 0){
+      meta.timer = setTimeout(()=>{
+        if(meta.token !== currentToken) return;
+        const timeoutCb = meta.onTimeout;
+        closeToast(meta.overlayId);
+        if(timeoutCb) timeoutCb();
+      }, timeoutMs);
+    }
   }
   function focusDialogField(el){
     if(!el || typeof el.focus !== 'function') return;
@@ -4342,8 +4385,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();closeToast('toastSuccess');};
-  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();closeToast('toastEncourage');};
+  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();const action=TOAST_META.success.action;closeToast('toastSuccess');if(action)action();};
+  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();const action=TOAST_META.error.action;closeToast('toastEncourage');if(action)action();};
   document.getElementById('toastSuccess').onclick=()=>closeToast('toastSuccess');
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
@@ -4444,6 +4487,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
   function currentMonthLabel(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+  function refreshGrowthViews(k){
+    renderGrowthTable(k);
+    checkGrowthReminder();
+    markProgressDirty('beanstalk','correlation');
+    if(currentNav==='progress') renderMap(false);
+  }
 
   function renderGrowthTable(k){
     const records=loadGrowth(k);const tbody=document.getElementById(`${k}-growthTable`);const latestEl=document.getElementById(`${k}-growthLatest`);if(!tbody)return;
@@ -4451,7 +4500,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(records.length===0){tbody.innerHTML=`<tr><td colspan="6" style="color:#bbb;padding:12px 0;">还没有记录，快来量一量吧 📏</td></tr>`;return;}
     const dHtml=val=>{if(val===null)return`<span class="growth-same">—</span>`;const n=parseFloat(val);if(n>0)return`<span class="growth-up">+${val}</span>`;if(n<0)return`<span style="color:#42a5f5;">${val}</span>`;return`<span class="growth-same">0</span>`;};
     tbody.innerHTML=records.map((r,i)=>{const prev=records[i+1];const dH=prev?(r.height-prev.height).toFixed(1):null;const dW=prev?(r.weight-prev.weight).toFixed(1):null;return`<tr><td>${r.month}</td><td>${r.height}</td><td>${r.weight}</td><td>${dHtml(dH)}</td><td>${dHtml(dW)}</td><td><button class="growth-del-btn" data-kid="${k}" data-idx="${i}">🗑️</button></td></tr>`;}).join('');
-    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);recs.splice(idx,1);saveGrowth(kid,recs);renderGrowthTable(kid);markProgressDirty('beanstalk','correlation');if(currentNav==='progress')renderMap(false);};});
+    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx,10);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);const removed=recs[idx];if(!removed)return;recs.splice(idx,1);saveGrowth(kid,recs);refreshGrowthViews(kid);showToastAction('success','已删除记录',`${removed.month} 的成长记录已删除`,{actionLabel:'撤销删除',timeoutMs:5000,onAction:()=>{const current=loadGrowth(kid);const restoreIdx=Math.min(idx,current.length);current.splice(restoreIdx,0,removed);saveGrowth(kid,current);refreshGrowthViews(kid);showToast('success','已撤销','成长记录已经恢复。');}});};});
   }
 
   KIDS.forEach(k=>{
@@ -4476,14 +4525,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if(records.length>24)records.pop();
       }
       saveGrowth(k,records);
-      renderGrowthTable(k);
-      checkGrowthReminder();
-      markProgressDirty('beanstalk','correlation');
+      refreshGrowthViews(k);
       hInput.value='';
       wInput.value='';
       hInput.focus();
       showToast('success','记录已保存','成长档案已经更新好了。');
-      if(currentNav==='progress') renderMap(false);
     });
     renderGrowthTable(k);
   });
