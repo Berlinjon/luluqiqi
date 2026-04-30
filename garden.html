@@ -1469,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const KIDS = ['lulu','qiqi','mimi'];
   const V = 'v6';
   const PWD_KEY = 'app_pwd_v6';
-  const STORAGE_SCHEMA_VERSION = 2;
+  const STORAGE_SCHEMA_VERSION = 3;
   const STORAGE_SCHEMA_KEY = 'garden_storage_schema_v1';
 
   function skVer(k,t,v=V){return `tab_${k}_${t}_${v}`;}
@@ -1531,6 +1531,9 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
         nextVersion = 2;
+      }
+      if(nextVersion < 3){
+        nextVersion = 3;
       }
       localStorage.setItem(STORAGE_SCHEMA_KEY, String(nextVersion));
     }catch(e){
@@ -2692,6 +2695,22 @@ document.addEventListener('DOMContentLoaded', function() {
   try{ const saved=JSON.parse(localStorage.getItem(STORE_KEY)); if(saved&&saved.length) STORE_ITEMS=saved; }catch(e){}
 
   function saveStoreItems(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(STORE_ITEMS)); }catch(e){} }
+
+  function isKidBackupKey(key){
+    return KIDS.some(k => key.startsWith(`tab_${k}`) || key === `growth_${k}_v1` || key === `redeem_${k}_v1`);
+  }
+
+  function isStaticBackupKey(key){
+    return key === 'kidNames_v6' || key === 'kidEmojis_v1' || key === 'studyLevels_v1' || key === STORE_KEY;
+  }
+
+  function shouldIncludeInBackup(key){
+    return !!key && (isKidBackupKey(key) || isStaticBackupKey(key));
+  }
+
+  function shouldRestoreBackupKey(key){
+    return shouldIncludeInBackup(key);
+  }
 
   function openStoreEdit(){
     const list=document.getElementById('storeEditList');
@@ -4394,7 +4413,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('exportDataBtn').onclick=e=>{
     e.preventDefault();
     const data={};
-    for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(shouldIncludeInBackup(key)) data[key]=localStorage.getItem(key);
+    }
     data['kidNames_v6']=JSON.stringify(KID_NAMES);
     data['kidEmojis_v1']=JSON.stringify(KID_EMOJIS);
     data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
@@ -4412,11 +4434,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     document.getElementById('backupDisplay').style.display='block';
+    showToast('success','备份已导出','本次备份已包含成长记录、兑换记录和自定义奖励。');
     try{localStorage.setItem('last_backup_date',todayStr());}catch(e2){}
     const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
   };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')||key==='kidNames_v6'||key==='kidEmojis_v1'||key==='studyLevels_v1'){localStorage.setItem(key,data[key]);count++;}}if(count>0){localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}let count=0;for(const key in data){if(shouldRestoreBackupKey(key)){localStorage.setItem(key,data[key]);count++;}}if(count>0){localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
