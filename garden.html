@@ -2712,6 +2712,37 @@ document.addEventListener('DOMContentLoaded', function() {
     return shouldIncludeInBackup(key);
   }
 
+  function collectBackupData(){
+    const data={};
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(shouldIncludeInBackup(key)) data[key]=localStorage.getItem(key);
+    }
+    data['kidNames_v6']=JSON.stringify(KID_NAMES);
+    data['kidEmojis_v1']=JSON.stringify(KID_EMOJIS);
+    data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
+    data['__backup_app_version__']=V;
+    data['__backup_schema_version__']=String(STORAGE_SCHEMA_VERSION);
+    return data;
+  }
+
+  function downloadBackupFile(data, prefix='每日花园备份'){
+    const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));
+    const d=new Date();
+    const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}${String(d.getSeconds()).padStart(2,'0')}`;
+    const fname=`${prefix}_${stamp}.txt`;
+    const blob=new Blob([backupStr],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return backupStr;
+  }
+
   function openStoreEdit(){
     const list=document.getElementById('storeEditList');
     list.innerHTML=STORE_ITEMS.map((item,idx)=>`
@@ -4122,7 +4153,57 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  async function doReset(k){const ok=await showPwdOverlay('🔒 重置今日打卡','请输入家长密码后继续');if(!ok)return;const confirmRes=await showAppDialog({title:'确认重置',desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',confirmText:'确认重置',cancelText:'先不重置'});if(!confirmRes.confirmed)return;const earned=S[k].habits.filter(v=>v===true).length;const studyBonus=isStudyDoneToday(k)?1:0;S[k].score=Math.max(0,S[k].score-earned-studyBonus);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;if(S[k].calendar)S[k].calendar[todayStr()]=false;saveKidCalendar(k);saveTvState(k);saveKidState(k);saveKidScore(k);try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}recordDailySnapshot(k);markProgressDirty('map','mindmap','report');renderStudy(k);renderKid(k);showToast('success','已重置','今天的打卡记录已经清空啦。');}
+  function refreshAfterResetChange(k){
+    recordDailySnapshot(k);
+    markProgressDirty('map','mindmap','report');
+    renderStudy(k);
+    renderKid(k);
+    renderLists();
+  }
+
+  async function doReset(k){
+    const ok=await showPwdOverlay('🔒 重置今日打卡','请输入家长密码后继续');
+    if(!ok)return;
+    const confirmRes=await showAppDialog({title:'确认重置',desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',confirmText:'确认重置',cancelText:'先不重置'});
+    if(!confirmRes.confirmed)return;
+    const today=todayStr();
+    const before={
+      score:S[k].score,
+      habits:Array.isArray(S[k].habits)?S[k].habits.slice():Array(TOTAL_HABITS).fill(null),
+      tvRewardGiven:!!S[k].tvRewardGiven,
+      calendar:S[k].calendar?{...S[k].calendar}:{},
+      studyDone:isStudyDoneToday(k)
+    };
+    const earned=S[k].habits.filter(v=>v===true).length;
+    const studyBonus=before.studyDone?1:0;
+    S[k].score=Math.max(0,S[k].score-earned-studyBonus);
+    S[k].habits=Array(TOTAL_HABITS).fill(null);
+    S[k].tvRewardGiven=false;
+    if(!S[k].calendar) S[k].calendar={};
+    S[k].calendar[today]=false;
+    saveKidCalendar(k);
+    saveTvState(k);
+    saveKidState(k);
+    saveKidScore(k);
+    try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}
+    refreshAfterResetChange(k);
+    showToastAction('success','已重置','今天的打卡记录已经清空啦。',{actionLabel:'撤销重置',timeoutMs:5000,onAction:()=>{
+      S[k].score=before.score;
+      S[k].habits=before.habits.slice();
+      S[k].tvRewardGiven=before.tvRewardGiven;
+      S[k].calendar={...before.calendar};
+      saveKidCalendar(k);
+      saveTvState(k);
+      saveKidState(k);
+      saveKidScore(k);
+      try{
+        if(before.studyDone) localStorage.setItem(getStudyDoneKey(k), today);
+        else localStorage.removeItem(getStudyDoneKey(k));
+      }catch(e){}
+      refreshAfterResetChange(k);
+      showToast('success','已撤销','今天的打卡记录已经恢复。');
+    }});
+  }
 
   let panelEventsBound = false;
   const bankTapState = {};
@@ -4227,17 +4308,60 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function closeToast(id){document.getElementById(id).classList.remove('show');}
+  const TOAST_META = {
+    success: { overlayId:'toastSuccess', titleId:'toastSuccessName', subId:'toastSuccessSub', buttonId:'closeSuccess', defaultLabel:'开心！', timer:null, action:null, onTimeout:null, token:0 },
+    error: { overlayId:'toastEncourage', titleId:'toastEncourageName', subId:'toastEncourageSub', buttonId:'closeEncourage', defaultLabel:'加油！', timer:null, action:null, onTimeout:null, token:0 }
+  };
+
+  function getToastMetaById(id){
+    return id === 'toastEncourage' ? TOAST_META.error : TOAST_META.success;
+  }
+
+  function resetToastState(meta){
+    if(meta.timer){
+      clearTimeout(meta.timer);
+      meta.timer = null;
+    }
+    meta.action = null;
+    meta.onTimeout = null;
+    meta.token += 1;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = meta.defaultLabel;
+  }
+
+  function closeToast(id){
+    const meta = getToastMetaById(id);
+    resetToastState(meta);
+    document.getElementById(id).classList.remove('show');
+  }
+
   function showToast(type, title, desc, allowHtml=false){
-    const isError = type === 'error';
-    const overlayId = isError ? 'toastEncourage' : 'toastSuccess';
-    const titleId = isError ? 'toastEncourageName' : 'toastSuccessName';
-    const subId = isError ? 'toastEncourageSub' : 'toastSuccessSub';
-    document.getElementById(titleId).textContent = title;
-    const subEl = document.getElementById(subId);
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    resetToastState(meta);
+    document.getElementById(meta.titleId).textContent = title;
+    const subEl = document.getElementById(meta.subId);
     if(allowHtml) subEl.innerHTML = desc;
     else subEl.textContent = desc;
-    document.getElementById(overlayId).classList.add('show');
+    document.getElementById(meta.overlayId).classList.add('show');
+  }
+
+  function showToastAction(type, title, desc, options={}){
+    const { allowHtml=false, actionLabel='撤销', timeoutMs=5000, onAction=null, onTimeout=null } = options;
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    showToast(type, title, desc, allowHtml);
+    meta.action = typeof onAction === 'function' ? onAction : null;
+    meta.onTimeout = typeof onTimeout === 'function' ? onTimeout : null;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = actionLabel;
+    const currentToken = meta.token;
+    if(timeoutMs > 0){
+      meta.timer = setTimeout(()=>{
+        if(meta.token !== currentToken) return;
+        const timeoutCb = meta.onTimeout;
+        closeToast(meta.overlayId);
+        if(timeoutCb) timeoutCb();
+      }, timeoutMs);
+    }
   }
   function focusDialogField(el){
     if(!el || typeof el.focus !== 'function') return;
@@ -4342,8 +4466,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();closeToast('toastSuccess');};
-  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();closeToast('toastEncourage');};
+  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();const action=TOAST_META.success.action;closeToast('toastSuccess');if(action)action();};
+  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();const action=TOAST_META.error.action;closeToast('toastEncourage');if(action)action();};
   document.getElementById('toastSuccess').onclick=()=>closeToast('toastSuccess');
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
@@ -4412,38 +4536,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('exportDataBtn').onclick=e=>{
     e.preventDefault();
-    const data={};
-    for(let i=0;i<localStorage.length;i++){
-      const key=localStorage.key(i);
-      if(shouldIncludeInBackup(key)) data[key]=localStorage.getItem(key);
-    }
-    data['kidNames_v6']=JSON.stringify(KID_NAMES);
-    data['kidEmojis_v1']=JSON.stringify(KID_EMOJIS);
-    data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
-    data['__backup_app_version__']=V;
-    data['__backup_schema_version__']=String(STORAGE_SCHEMA_VERSION);
-    const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));
-    // 创建下载文件
-    const d=new Date();
-    const fname=`每日花园备份_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
-    const blob=new Blob([backupStr],{type:'text/plain;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=fname;
-    document.body.appendChild(a);a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const data=collectBackupData();
+    downloadBackupFile(data);
     document.getElementById('backupDisplay').style.display='block';
     showToast('success','备份已导出','本次备份已包含成长记录、兑换记录和自定义奖励。');
     try{localStorage.setItem('last_backup_date',todayStr());}catch(e2){}
     const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
   };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}let count=0;for(const key in data){if(shouldRestoreBackupKey(key)){localStorage.setItem(key,data[key]);count++;}}if(count>0){localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
   function currentMonthLabel(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+  function refreshGrowthViews(k){
+    renderGrowthTable(k);
+    checkGrowthReminder();
+    markProgressDirty('beanstalk','correlation');
+    if(currentNav==='progress') renderMap(false);
+  }
 
   function renderGrowthTable(k){
     const records=loadGrowth(k);const tbody=document.getElementById(`${k}-growthTable`);const latestEl=document.getElementById(`${k}-growthLatest`);if(!tbody)return;
@@ -4451,7 +4562,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(records.length===0){tbody.innerHTML=`<tr><td colspan="6" style="color:#bbb;padding:12px 0;">还没有记录，快来量一量吧 📏</td></tr>`;return;}
     const dHtml=val=>{if(val===null)return`<span class="growth-same">—</span>`;const n=parseFloat(val);if(n>0)return`<span class="growth-up">+${val}</span>`;if(n<0)return`<span style="color:#42a5f5;">${val}</span>`;return`<span class="growth-same">0</span>`;};
     tbody.innerHTML=records.map((r,i)=>{const prev=records[i+1];const dH=prev?(r.height-prev.height).toFixed(1):null;const dW=prev?(r.weight-prev.weight).toFixed(1):null;return`<tr><td>${r.month}</td><td>${r.height}</td><td>${r.weight}</td><td>${dHtml(dH)}</td><td>${dHtml(dW)}</td><td><button class="growth-del-btn" data-kid="${k}" data-idx="${i}">🗑️</button></td></tr>`;}).join('');
-    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);recs.splice(idx,1);saveGrowth(kid,recs);renderGrowthTable(kid);markProgressDirty('beanstalk','correlation');if(currentNav==='progress')renderMap(false);};});
+    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx,10);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);const removed=recs[idx];if(!removed)return;recs.splice(idx,1);saveGrowth(kid,recs);refreshGrowthViews(kid);showToastAction('success','已删除记录',`${removed.month} 的成长记录已删除`,{actionLabel:'撤销删除',timeoutMs:5000,onAction:()=>{const current=loadGrowth(kid);const restoreIdx=Math.min(idx,current.length);current.splice(restoreIdx,0,removed);saveGrowth(kid,current);refreshGrowthViews(kid);showToast('success','已撤销','成长记录已经恢复。');}});};});
   }
 
   KIDS.forEach(k=>{
@@ -4476,14 +4587,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if(records.length>24)records.pop();
       }
       saveGrowth(k,records);
-      renderGrowthTable(k);
-      checkGrowthReminder();
-      markProgressDirty('beanstalk','correlation');
+      refreshGrowthViews(k);
       hInput.value='';
       wInput.value='';
       hInput.focus();
       showToast('success','记录已保存','成长档案已经更新好了。');
-      if(currentNav==='progress') renderMap(false);
     });
     renderGrowthTable(k);
   });
