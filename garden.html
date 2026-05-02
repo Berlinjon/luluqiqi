@@ -2704,12 +2704,41 @@ document.addEventListener('DOMContentLoaded', function() {
     return key === 'kidNames_v6' || key === 'kidEmojis_v1' || key === 'studyLevels_v1' || key === STORE_KEY;
   }
 
+  function escapeHtml(value){
+    return String(value ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function escapeAttr(value){
+    return escapeHtml(value).replace(/`/g,'&#96;');
+  }
+
   function shouldIncludeInBackup(key){
     return !!key && (isKidBackupKey(key) || isStaticBackupKey(key));
   }
 
   function shouldRestoreBackupKey(key){
     return shouldIncludeInBackup(key);
+  }
+
+  function buildBackupInspectionHtml(data, count, backupAppVer, backupSchemaVer){
+    const keys = Object.keys(data || {});
+    const hasGrowth = KIDS.some(k => keys.includes(`growth_${k}_v1`));
+    const hasRedeem = KIDS.some(k => keys.includes(`redeem_${k}_v1`));
+    const hasStore = keys.includes(STORE_KEY);
+    const kidConfigCount = KIDS.filter(k => keys.some(key => key.startsWith(`tab_${k}`))).length;
+    return [
+      `识别到 <b style="color:var(--warm-green);">${count}</b> 条可恢复数据。`,
+      `备份版本：<b>${escapeHtml(backupAppVer || '未知')}</b> ｜ schema：<b>${escapeHtml(backupSchemaVer || 0)}</b>`,
+      `孩子配置：${kidConfigCount > 0 ? `已识别 ${kidConfigCount} 组` : '未识别到'}`,
+      `成长记录：${hasGrowth ? '已包含' : '未包含'}`,
+      `兑换记录：${hasRedeem ? '已包含' : '未包含'}`,
+      `自定义奖励：${hasStore ? '已包含' : '未包含'}`
+    ].join('<br>');
   }
 
   function collectBackupData(){
@@ -2747,8 +2776,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const list=document.getElementById('storeEditList');
     list.innerHTML=STORE_ITEMS.map((item,idx)=>`
       <div class="store-edit-item-row">
-        <input class="store-edit-icon-input" id="sedit-icon-${idx}" value="${item.icon}" maxlength="2">
-        <input class="store-edit-text-input" id="sedit-name-${idx}" value="${item.name}" placeholder="奖励名称">
+        <input class="store-edit-icon-input" id="sedit-icon-${idx}" value="${escapeAttr(item.icon)}" maxlength="2">
+        <input class="store-edit-text-input" id="sedit-name-${idx}" value="${escapeAttr(item.name)}" placeholder="奖励名称">
         <input class="store-edit-price-input" id="sedit-price-${idx}" type="number" value="${item.price}" min="1">
         <span class="store-edit-type-tag ${item.type}">${item.type==='money'?'💰元':'⭐星'}</span>
       </div>`).join('');
@@ -2805,9 +2834,9 @@ document.addEventListener('DOMContentLoaded', function() {
           : `<div class="store-progress-wrap"><div class="store-progress-bg"><div class="store-progress-fill" style="width:${pct}%"></div></div><div class="store-progress-label">还差 ${diffText} 解锁 (${pct}%)</div></div>`;
         const btnText = canAfford ? `${priceText} 兑换` : `🔒 还差 ${diffText} 解锁`;
         html += `<div class="store-item ${itemClass}" onclick="window.buyStoreItem('${item.id}')">
-          <div class="store-icon">${item.icon}</div>
-          <div class="store-name">${item.name}</div>
-          <div class="store-desc">${item.desc}</div>
+          <div class="store-icon">${escapeHtml(item.icon)}</div>
+          <div class="store-name">${escapeHtml(item.name)}</div>
+          <div class="store-desc">${escapeHtml(item.desc)}</div>
           ${progressHtml}
           <button class="store-btn ${btnClass}">${btnText}</button>
         </div>`;
@@ -2922,8 +2951,8 @@ document.addEventListener('DOMContentLoaded', function() {
       html += `<div class="history-item">
         <div class="history-month">${r.date}</div>
         <div class="history-stats">
-          <div class="history-score" style="font-size:1.2rem;">${r.icon}</div>
-          <div style="flex:1;font-size:0.82rem;font-weight:800;color:var(--on-surface);">${r.name}</div>
+          <div class="history-score" style="font-size:1.2rem;">${escapeHtml(r.icon)}</div>
+          <div style="flex:1;font-size:0.82rem;font-weight:800;color:var(--on-surface);">${escapeHtml(r.name)}</div>
           <div class="history-money" style="background:#fce4ec;color:#c62828;">${priceStr}</div>
         </div>
       </div>`;
@@ -2953,7 +2982,7 @@ document.addEventListener('DOMContentLoaded', function() {
       renderRedeemHistory(k);
       try{launchConfetti();launchConfetti();playSuccessKid(currentKid,true);}catch(e){}
       document.getElementById('toastSuccessName').textContent = `兑换成功！`;
-      document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${item.icon} ${item.name}</b>！<br>快去找爸爸妈妈兑现吧！`;
+      document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${escapeHtml(item.icon)} ${escapeHtml(item.name)}</b>！<br>快去找爸爸妈妈兑现吧！`;
       document.getElementById('toastSuccess').classList.add('show');
     });
   };
@@ -3653,11 +3682,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return sa-sb;
       });
       indices.forEach((i,pos)=>{
-        const streak=S[k].streaks[i]||0;const streakHtml=streak>0?`<div class="streak-tag">🔥 ${streak}天</div>`:'';
-        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${pos*0.04}s"><span class="habit-emoji">${S[k].currentHabits[i].emoji}</span><div class="habit-label-wrap"><div class="habit-label">${S[k].currentHabits[i].text}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}" data-action="habit-check" data-kid="${k}" data-id="${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}" data-action="habit-cross" data-kid="${k}" data-id="${i}">✖️</button></div></div>`;
+      const streak=S[k].streaks[i]||0;const streakHtml=streak>0?`<div class="streak-tag">🔥 ${streak}天</div>`:'';
+        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${pos*0.04}s"><span class="habit-emoji">${escapeHtml(S[k].currentHabits[i].emoji)}</span><div class="habit-label-wrap"><div class="habit-label">${escapeHtml(S[k].currentHabits[i].text)}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}" data-action="habit-check" data-kid="${k}" data-id="${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}" data-action="habit-cross" data-kid="${k}" data-id="${i}">✖️</button></div></div>`;
       });
       const sl=document.getElementById(`${k}-superList`);sl.innerHTML='';
-      for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}" data-action="super-check" data-kid="${k}" data-id="${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${S[k].currentSupers[j].text}</span><span class="super-pts">🏅 成就</span></div>`;}
+      for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}" data-action="super-check" data-kid="${k}" data-id="${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${escapeHtml(S[k].currentSupers[j].text)}</span><span class="super-pts">🏅 成就</span></div>`;}
     });
     bindEvents();
   }
@@ -3772,7 +3801,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showMilestoneBoom._timer = setTimeout(()=>{
       overlay.classList.add('hiding');
       // 恢复标题
-      if(titleEl) titleEl.innerHTML = `<span class="celeb-name" id="celebName">${KID_NAMES[k]||k}</span><br>今天全部完成啦！🏆`;
+      if(titleEl) titleEl.innerHTML = `<span class="celeb-name" id="celebName">${escapeHtml(KID_NAMES[k]||k)}</span><br>今天全部完成啦！🏆`;
       setTimeout(()=>{ overlay.classList.remove('show','hiding'); }, 500);
     }, 4000);
   }
@@ -4100,7 +4129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         vib(levelUp ? [20,50,30,60,40] : VIB_SUPER);
         try{ if(levelUp){ launchConfetti();launchConfetti();launchConfetti(); } else { launchConfetti(); } }catch(e){}
         try{playSuccessKid(k,levelUp);}catch(e){}
-        const superName=(S[k].currentSupers?.[j]?.text)||'本月挑战';
+        const superName=escapeHtml((S[k].currentSupers?.[j]?.text)||'本月挑战');
         document.getElementById('toastSuccessName').textContent=levelUp?'勋章晋级！':'挑战完成！';
         document.getElementById('toastSuccessSub').innerHTML=
           `🏆 ${superName}<br>当前称号：${getBadgeTitle(afterTier)}（${afterTier}/${BADGE_ROADMAP_LEVELS.length}）<br>累计勋章：${afterTotal} 枚`;
@@ -4487,9 +4516,9 @@ document.addEventListener('DOMContentLoaded', function() {
     KIDS.forEach(k=>{
       const cap=k.charAt(0).toUpperCase()+k.slice(1);
       const hl=document.getElementById(`edit${cap}List`);hl.innerHTML='';
-      S[k].currentHabits.forEach((h,i)=>{hl.innerHTML+=`<div class="edit-row"><input class="edit-emoji" id="edit-${k}-emoji-${i}" value="${h.emoji}"><input class="edit-text" id="edit-${k}-text-${i}" value="${h.text}"></div>`;});
+      S[k].currentHabits.forEach((h,i)=>{hl.innerHTML+=`<div class="edit-row"><input class="edit-emoji" id="edit-${k}-emoji-${i}" value="${escapeAttr(h.emoji)}"><input class="edit-text" id="edit-${k}-text-${i}" value="${escapeAttr(h.text)}"></div>`;});
       const sl=document.getElementById(`edit${cap}SuperList`);sl.innerHTML='';
-      S[k].currentSupers.forEach((s,j)=>{sl.innerHTML+=`<div class="edit-row"><input class="edit-text" id="edit-${k}-super-${j}" value="${s.text}" style="width:100%"></div>`;});
+      S[k].currentSupers.forEach((s,j)=>{sl.innerHTML+=`<div class="edit-row"><input class="edit-text" id="edit-${k}-super-${j}" value="${escapeAttr(s.text)}" style="width:100%"></div>`;});
     });
     document.getElementById('editOverlay').classList.add('show');
   }
@@ -4544,7 +4573,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
   };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始识别',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${escapeHtml(backupAppVer)}<br>当前版本：${escapeHtml(V)}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){const inspectRes=await showAppDialog({title:'识别到的备份内容',desc:buildBackupInspectionHtml(data,count,backupAppVer,backupSchemaVer),confirmText:'确认导入',cancelText:'取消',inputType:'none'});if(!inspectRes.confirmed)return;downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
