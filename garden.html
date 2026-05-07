@@ -154,7 +154,7 @@ body.kid-mimi {
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 body{
   min-height:100dvh;
   background:var(--cream);
@@ -1055,11 +1055,11 @@ nav{
   padding:6px 16px;border-radius:var(--radius-sm);border:none;
   background:transparent;color:var(--text-light);cursor:pointer;
   font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;
-  font-family:'Noto Sans SC',sans-serif;transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+  line-height:1.05;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;transition:all 0.2s;-webkit-tap-highlight-color:transparent;
 }
-.nav-btn .material-symbols-outlined{font-size:1.4rem;}
+.nav-btn .nav-icon{display:block;font-size:1.18rem;line-height:1;}
 .nav-btn.active{color:var(--warm-green);}
-.nav-btn.active .material-symbols-outlined{font-variation-settings:'FILL' 1;}
+.nav-btn.active .nav-icon{transform:translateY(-1px);}
 
 /* ── Toasts & Overlays ── */
 .toast-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:100;align-items:center;justify-content:center;background:rgba(44,31,0,0.3);backdrop-filter:blur(4px); }
@@ -1245,11 +1245,11 @@ nav{
 </main>
 
 <nav>
-  <button class="nav-btn active" id="navHome"><span class="material-symbols-outlined">home</span>今日</button>
-  <button class="nav-btn" id="navProgress"><span class="material-symbols-outlined">map</span>进度</button>
-  <button class="nav-btn" id="navRewards"><span class="material-symbols-outlined">storefront</span>奖励</button>
-  <button class="nav-btn" id="navSettings"><span class="material-symbols-outlined">settings</span>设置</button>
-  <button class="nav-btn" id="navModeToggle"><span class="material-symbols-outlined">child_care</span>孩子</button>
+  <button class="nav-btn active" id="navHome"><span class="nav-icon" aria-hidden="true">🏠</span>今日</button>
+  <button class="nav-btn" id="navProgress"><span class="nav-icon" aria-hidden="true">🗺️</span>进度</button>
+  <button class="nav-btn" id="navRewards"><span class="nav-icon" aria-hidden="true">🎁</span>奖励</button>
+  <button class="nav-btn" id="navSettings"><span class="nav-icon" aria-hidden="true">⚙️</span>设置</button>
+  <button class="nav-btn" id="navModeToggle"><span class="nav-icon" aria-hidden="true">🧒</span>孩子</button>
 </nav>
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
@@ -3409,12 +3409,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if(banner) banner.style.display = isKidMode ? 'flex' : 'none';
     const btn = document.getElementById('navModeToggle');
     if(btn){
-      btn.querySelector('.material-symbols-outlined').textContent = isKidMode ? 'supervisor_account' : 'child_care';
-      btn.querySelector('.material-symbols-outlined').nextSibling
-        && (btn.childNodes[1].textContent = isKidMode ? '家长' : '孩子');
       btn.innerHTML = isKidMode
-        ? `<span class="material-symbols-outlined">supervisor_account</span>家长`
-        : `<span class="material-symbols-outlined">child_care</span>孩子`;
+        ? `<span class="nav-icon" aria-hidden="true">🧑</span>家长`
+        : `<span class="nav-icon" aria-hidden="true">🧒</span>孩子`;
     }
     // 孩子模式下切到今日页
     if(isKidMode && currentNav !== 'home' && currentNav !== 'progress'){
@@ -3445,9 +3442,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function openHabitEdit(k, id){
     const h = S[k].currentHabits[id];
     if(!h) return;
-    habitEditTarget = {k, id};
+    habitEditTarget = {k, id, type:'habit'};
+    document.querySelector('#habitEditOverlay .habit-edit-title').textContent = '✏️ 快速编辑习惯';
+    document.querySelector('#habitEditOverlay .habit-edit-row').style.display = 'flex';
+    document.getElementById('habitEditEmoji').style.display = '';
+    document.getElementById('habitEditText').placeholder = '习惯名称';
     document.getElementById('habitEditEmoji').value = h.emoji || '✨';
     document.getElementById('habitEditText').value = h.text || '';
+    document.getElementById('habitEditOverlay').classList.add('show');
+    setTimeout(()=>document.getElementById('habitEditText').focus(), 150);
+  }
+
+  function openSuperEdit(k, id){
+    const s = S[k].currentSupers[id];
+    if(!s) return;
+    habitEditTarget = {k, id, type:'super'};
+    document.querySelector('#habitEditOverlay .habit-edit-title').textContent = '✏️ 快速编辑挑战';
+    document.querySelector('#habitEditOverlay .habit-edit-row').style.display = 'block';
+    document.getElementById('habitEditEmoji').style.display = 'none';
+    document.getElementById('habitEditText').placeholder = '挑战名称';
+    document.getElementById('habitEditEmoji').value = '';
+    document.getElementById('habitEditText').value = s.text || '';
     document.getElementById('habitEditOverlay').classList.add('show');
     setTimeout(()=>document.getElementById('habitEditText').focus(), 150);
   }
@@ -3455,16 +3470,29 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('habitEditSaveBtn').onclick = async e => {
     e.preventDefault();
     if(!habitEditTarget) return;
-    const ok = await showPwdOverlay('🔒 修改习惯','请输入家长密码');
+    const draftEmoji = document.getElementById('habitEditEmoji').value.trim() || '✨';
+    const draftText  = document.getElementById('habitEditText').value.trim() || (habitEditTarget.type === 'super' ? '未命名挑战' : '未命名');
+    const target = { ...habitEditTarget };
+    const ok = await showPwdOverlay(target.type === 'super' ? '🔒 修改挑战' : '🔒 修改习惯','请输入家长密码');
     if(!ok) return;
-    const {k, id} = habitEditTarget;
-    const emoji = document.getElementById('habitEditEmoji').value.trim() || '✨';
-    const text  = document.getElementById('habitEditText').value.trim() || '未命名';
-    S[k].currentHabits[id] = { emoji, text };
-    try{ localStorage.setItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits)); }catch(e2){}
+    const {k, id, type} = target;
+    const saveOk = type === 'super'
+      ? (() => {
+          S[k].currentSupers[id] = { text:draftText };
+          return safeSetItem(sk(k,'scfg'), JSON.stringify(S[k].currentSupers), `save_scfg_quick_${k}`);
+        })()
+      : (() => {
+          S[k].currentHabits[id] = { emoji:draftEmoji, text:draftText };
+          return safeSetItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits), `save_hcfg_quick_${k}`);
+        })();
+    if(!saveOk){
+      showToast('error','保存失败','本地保存没有成功，请稍后重试。');
+      return;
+    }
     document.getElementById('habitEditOverlay').classList.remove('show');
     renderLists(); renderKid(k);
     habitEditTarget = null;
+    showToast('success',type === 'super' ? '挑战已保存' : '习惯已保存',type === 'super' ? '刚才编辑的超级挑战已经更新好了。' : '刚才编辑的打卡项目已经更新好了。');
   };
   document.getElementById('habitEditCancelBtn').onclick = () => {
     document.getElementById('habitEditOverlay').classList.remove('show');
@@ -4316,12 +4344,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     panelRoot.addEventListener('touchstart', e => {
       const card = e.target.closest('.habit-item');
-      if(!card || e.target.closest('.habit-btn')) return;
-      const { kid, id } = card.dataset;
+      const superCard = e.target.closest('.super-item');
+      if(card && !e.target.closest('.habit-btn')){
+        const { kid, id } = card.dataset;
+        clearLongPressTimer();
+        longPressTimer = setTimeout(()=>{
+          vib([20,30,20]);
+          openHabitEdit(kid, Number(id));
+        }, 500);
+        return;
+      }
+      if(!superCard) return;
+      const { kid, id } = superCard.dataset;
       clearLongPressTimer();
       longPressTimer = setTimeout(()=>{
         vib([20,30,20]);
-        openHabitEdit(kid, Number(id));
+        openSuperEdit(kid, Number(id));
       }, 500);
     }, { passive: true });
     panelRoot.addEventListener('touchend', clearLongPressTimer, { passive: true });
@@ -4329,9 +4367,15 @@ document.addEventListener('DOMContentLoaded', function() {
     panelRoot.addEventListener('touchcancel', clearLongPressTimer, { passive: true });
     panelRoot.addEventListener('contextmenu', e => {
       const card = e.target.closest('.habit-item');
-      if(!card) return;
+      if(card){
+        e.preventDefault();
+        openHabitEdit(card.dataset.kid, Number(card.dataset.id));
+        return;
+      }
+      const superCard = e.target.closest('.super-item');
+      if(!superCard) return;
       e.preventDefault();
-      openHabitEdit(card.dataset.kid, Number(card.dataset.id));
+      openSuperEdit(superCard.dataset.kid, Number(superCard.dataset.id));
     });
   }
 
