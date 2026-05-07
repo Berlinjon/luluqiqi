@@ -813,14 +813,24 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .heatmap-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 16px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(44,31,0,0.07);}
 .heatmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;color:var(--on-surface);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .heatmap-sub{font-size:0.72rem;color:var(--text-mid);font-weight:600;margin-bottom:12px;}
+.heatmap-grid{display:flex;align-items:flex-start;gap:6px;}
+.heatmap-weekdays{display:flex;flex-direction:column;gap:3px;padding-top:16px;flex-shrink:0;}
+.heatmap-weekday{width:18px;height:16px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:var(--text-light);}
 .heatmap-months{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px;}
-.heatmap-month-col{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
-.heatmap-month-label{font-size:0.62rem;font-weight:900;color:var(--text-light);text-align:center;margin-bottom:2px;height:12px;}
+.heatmap-month-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.heatmap-month-col.month-start{margin-left:10px;padding-left:10px;border-left:2px solid rgba(247,181,0,0.18);}
+.heatmap-month-col.month-start:first-child{margin-left:0;padding-left:0;border-left:none;}
+.heatmap-month-label{font-size:0.66rem;font-weight:900;color:var(--text-mid);text-align:center;margin-bottom:3px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.heatmap-month-label.has-label{background:var(--gold-light);border:1px solid rgba(247,181,0,0.35);border-radius:999px;color:#a07000;}
 .heatmap-week{display:flex;flex-direction:column;gap:2px;}
-.heatmap-day{width:13px;height:13px;border-radius:3px;background:var(--cream-dark);}
+.heatmap-day{width:16px;height:16px;border-radius:4px;background:var(--cream-dark);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .heatmap-day.done{background:var(--warm-green);opacity:0.9;}
 .heatmap-day.today{outline:2px solid var(--gold);outline-offset:1px;}
 .heatmap-day.future{background:transparent;}
+.heatmap-day.partial{background:#9ccc65;opacity:0.85;}
+.heatmap-day-anchor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.5rem;font-weight:900;color:rgba(44,31,0,0.72);line-height:1;pointer-events:none;}
+.heatmap-day.done .heatmap-day-anchor,
+.heatmap-day.partial .heatmap-day-anchor{color:rgba(255,255,255,0.92);}
 .heatmap-legend{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:0.68rem;color:var(--text-light);font-weight:700;}
 .heatmap-legend-box{width:11px;height:11px;border-radius:2px;}
 #progress-view { display:none; animation: slideUp 0.35s both; padding-bottom: 40px;}
@@ -1628,9 +1638,20 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="stats-card" id="${k}-statsCard"></div>
         <div class="heatmap-card" style="margin-bottom:10px;">
           <div class="heatmap-title">🗓️ 打卡热力图</div>
-          <div class="heatmap-sub">过去90天全部完成记录</div>
-          <div class="heatmap-months" id="${k}-heatmap"></div>
-          <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+          <div class="heatmap-sub">近3个月视图，横向看周，纵向看星期；点格子可查看具体日期</div>
+          <div class="heatmap-grid">
+            <div class="heatmap-weekdays" aria-hidden="true">
+              <div class="heatmap-weekday">日</div>
+              <div class="heatmap-weekday">一</div>
+              <div class="heatmap-weekday">二</div>
+              <div class="heatmap-weekday">三</div>
+              <div class="heatmap-weekday">四</div>
+              <div class="heatmap-weekday">五</div>
+              <div class="heatmap-weekday">六</div>
+            </div>
+            <div class="heatmap-months" id="${k}-heatmap"></div>
+          </div>
+          <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:#9ccc65;margin-left:6px;"></div>部分完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
         </div>
         <div class="growth-remind" id="${k}-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
         <div class="growth-card" id="${k}-growthCard">
@@ -3582,49 +3603,72 @@ document.addEventListener('DOMContentLoaded', function() {
     const today=new Date();
     const todayStr2=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
 
-    // 生成过去90天，按周分组
-    const days=[];
-    for(let i=89;i>=0;i--){
-      const d=new Date(today);
-      d.setDate(today.getDate()-i);
-      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      days.push({ds, dow:d.getDay(), date:d, month:d.getMonth(), day:d.getDate()});
+    const monthNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const months=[];
+    for(let offset=2;offset>=0;offset--){
+      const monthDate=new Date(today.getFullYear(), today.getMonth()-offset, 1);
+      const year=monthDate.getFullYear();
+      const month=monthDate.getMonth();
+      const monthStart=new Date(year, month, 1);
+      const monthEnd=new Date(year, month + 1, 0);
+      const lastVisibleDate=offset===0 && month===today.getMonth() && year===today.getFullYear() ? today : monthEnd;
+      const weeks=[];
+      let week=Array(7).fill(null);
+
+      for(let day=1; day<=lastVisibleDate.getDate(); day++){
+        const current=new Date(year, month, day);
+        const ds=current.getFullYear()+'-'+String(current.getMonth()+1).padStart(2,'0')+'-'+String(current.getDate()).padStart(2,'0');
+        week[current.getDay()]={ds, dow:current.getDay(), date:current, month, day};
+        if(current.getDay()===6 || day===lastVisibleDate.getDate()){
+          weeks.push(week);
+          week=Array(7).fill(null);
+        }
+      }
+
+      months.push({
+        label: monthNames[month],
+        weeks
+      });
     }
 
-    // 按周列分组（每7天一列）
-    const weeks=[];
-    let week=[];
-    // 从第一天的星期几开始填充
-    const firstDow=days[0].dow;
-    for(let p=0;p<firstDow;p++) week.push(null); // 前置空格
-    days.forEach(d=>{
-      week.push(d);
-      if(week.length===7){weeks.push(week);week=[];}
-    });
-    if(week.length>0){while(week.length<7)week.push(null);weeks.push(week);}
-
-    // 按月分组显示月份标签
     let html='';
-    let lastMonth=-1;
-    weeks.forEach(w=>{
-      // 找本周第一个有效日期的月份
-      const firstValid=w.find(d=>d!==null);
-      const monthLabel=firstValid&&firstValid.day<=7&&firstValid.month!==lastMonth
-        ?['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][firstValid.month]
-        :'';
-      if(firstValid&&firstValid.day<=7) lastMonth=firstValid?.month??lastMonth;
-
-      html+=`<div class="heatmap-month-col">`;
-      html+=`<div class="heatmap-month-label">${monthLabel}</div>`;
-      w.forEach(d=>{
-        if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
-        const done=cal[d.ds]===true;
-        const isToday=d.ds===todayStr2;
-        html+=`<div class="heatmap-day${done?' done':''}${isToday?' today':''}" title="${d.ds}"></div>`;
+    months.forEach((monthBlock, monthIndex)=>{
+      monthBlock.weeks.forEach((weekData, weekIndex)=>{
+        const isFirstCol=weekIndex===0;
+        html+=`<div class="heatmap-month-col${isFirstCol?' month-start':''}">`;
+        html+=`<div class="heatmap-month-label${isFirstCol?' has-label':''}">${isFirstCol?monthBlock.label:''}</div>`;
+        weekData.forEach(d=>{
+          if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
+          const value=cal[d.ds];
+          const done=value===true;
+          const partial=typeof value==='number' && value>0 && value!==true;
+          const isToday=d.ds===todayStr2;
+          const isAnchor=d.day===1 || d.day===8 || d.day===15 || d.day===22 || d.day===29;
+          const anchorHtml=isAnchor?`<span class="heatmap-day-anchor">${d.day}</span>`:'';
+          html+=`<div class="heatmap-day${done?' done':''}${partial?' partial':''}${isToday?' today':''}" data-kid="${k}" data-date="${d.ds}" title="${d.ds}">${anchorHtml}</div>`;
+        });
+        html+=`</div>`;
       });
-      html+=`</div>`;
     });
     el.innerHTML=html;
+    el.onclick=async evt=>{
+      const dayEl=evt.target.closest('.heatmap-day[data-date]');
+      if(!dayEl) return;
+      const dateStr=dayEl.dataset.date;
+      const value=cal[dateStr];
+      const desc=value===true
+        ? `📅 ${dateStr}<br>完成情况：<b style="color:var(--warm-green);">全部完成 10/10</b>`
+        : (typeof value==='number' && value>0
+          ? `📅 ${dateStr}<br>完成情况：<b style="color:#7cb342;">完成 ${value}/${TOTAL_TASKS}</b>`
+          : `📅 ${dateStr}<br>完成情况：<b style="color:var(--text-mid);">当天没有完成记录</b>`);
+      await showAppDialog({
+        title:'打卡详情',
+        desc,
+        confirmText:'知道了',
+        cancelText:'关闭',
+        inputType:'none'
+      });
+    };
   }
 
   function renderHistoryTimeline(k){
