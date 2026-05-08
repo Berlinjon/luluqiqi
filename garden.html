@@ -1111,6 +1111,12 @@ nav{
 .edit-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150;align-items:center;justify-content:center;background:rgba(44,31,0,0.35);backdrop-filter:blur(6px); }
 .edit-overlay.show{display:flex;animation:fadeIn 0.2s ease;}
 
+#pwdOverlay,
+#storeConfirmOverlay,
+#appDialogOverlay{
+  z-index:500;
+}
+
 /* 统一修复：隐藏状态下弹层不拦截点击，避免“看不见的遮罩层”导致顶部/底部按钮失效 */
 .toast-overlay,
 .easter-overlay,
