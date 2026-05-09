@@ -264,8 +264,15 @@ header{
 .selector-option[data-kid="qiqi"].active{border-color:var(--qiqi);background:var(--qiqi-light);}
 .selector-option[data-kid="mimi"].active{border-color:var(--mimi);background:var(--mimi-light);}
 #charSelector.compact{
-  padding:5px 12px 7px;
-  background:rgba(255,248,237,0.78);
+  position:fixed;
+  top:calc(72px + env(safe-area-inset-top));
+  left:50%;
+  transform:translateX(-50%);
+  width:min(calc(100% - 24px), 560px);
+  padding:6px 0 0;
+  background:transparent;
+  box-shadow:none;
+  z-index:46;
 }
 #charSelector.compact .selector-toggle{
   padding:7px 10px;
@@ -345,7 +352,7 @@ body.is-old-iphone .kid-identity-bar{top:128px;padding:9px 12px;}
 
 .kid-floating-badge{
   position:fixed;top:132px;left:14px;z-index:42;
-  display:none;align-items:center;gap:8px;
+  display:none !important;align-items:center;gap:8px;
   padding:6px 10px;border-radius:14px;
   background:rgba(255,255,255,0.82);
   border:1.5px solid rgba(247,181,0,0.12);
@@ -372,6 +379,10 @@ body.kid-lulu .kid-floating-label{color:#b44f74;}
 body.kid-qiqi .kid-floating-label{color:#2f7da0;}
 body.kid-mimi .kid-floating-label{color:#7256b6;}
 body.is-old-iphone .kid-floating-badge{top:124px;left:12px;padding:6px 9px;}
+body.is-old-iphone #charSelector.compact{
+  top:calc(68px + env(safe-area-inset-top));
+  width:min(calc(100% - 20px), 560px);
+}
 
 /* ── Section Title ── */
 .section-title{
@@ -3637,7 +3648,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateSelectorCompactState(){
     const selector=document.getElementById('charSelector');
     if(!selector) return;
-    const shouldCompact = currentNav === 'home' && window.scrollY > 140 && !selector.classList.contains('open');
+    const shouldCompact = currentNav === 'home' && window.scrollY > 56 && !selector.classList.contains('open');
     selector.classList.toggle('compact', shouldCompact);
   }
 
