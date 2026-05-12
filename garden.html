@@ -349,36 +349,116 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
   font-size:1rem;font-weight:900;color:var(--on-surface);line-height:1.1;
 }
 body.is-old-iphone .kid-identity-bar{top:128px;padding:9px 12px;}
-
-.kid-floating-badge{
-  position:fixed;top:132px;left:14px;z-index:42;
-  display:none !important;align-items:center;gap:8px;
-  padding:6px 10px;border-radius:14px;
+.kid-home-group{
+  margin:0 0 18px;
+  padding:14px 14px 12px;
+  border-radius:20px;
+  border:1.5px solid rgba(44,31,0,0.07);
+  box-shadow:var(--shadow-sm);
+}
+.kid-home-group.tasks{
+  background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,248,237,0.94));
+}
+.kid-home-group.feedback{
+  background:linear-gradient(180deg,#f6fbf1,rgba(255,255,255,0.96));
+  border-color:rgba(114,168,52,0.14);
+}
+.kid-home-group.review{
+  background:linear-gradient(180deg,#fffdf7,rgba(255,255,255,0.97));
+  border-color:rgba(232,168,0,0.14);
+}
+.kid-home-group-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  margin-bottom:12px;
+}
+.kid-home-group-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:1rem;font-weight:900;color:var(--on-surface);line-height:1.1;
+}
+.kid-home-group-sub{
+  margin-top:3px;
+  font-size:0.72rem;font-weight:700;color:var(--text-mid);line-height:1.45;
+}
+.kid-home-group-tag{
+  flex-shrink:0;
+  border-radius:999px;
+  padding:4px 10px;
+  font-size:0.66rem;font-weight:900;letter-spacing:0.35px;
+  text-transform:uppercase;
+}
+.kid-home-group-copy-kid{display:none;}
+.kid-home-group.tasks .kid-home-group-tag{
+  background:#fff0d0;color:#a07000;
+}
+.kid-home-group.feedback .kid-home-group-tag{
+  background:#e8f5e9;color:#2e7d32;
+}
+.kid-home-group.review .kid-home-group-tag{
+  background:#fff8dc;color:#8d6e00;
+}
+.kid-home-group .section-title:first-of-type{margin-top:0;}
+.yesterday-review-card{
+  margin:0 0 14px;
+  padding:14px 14px 12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff8e8,rgba(255,255,255,0.98));
+  border:1.5px solid rgba(247,181,0,0.26);
+  box-shadow:var(--shadow-sm);
+}
+.yesterday-review-card.hidden{display:none;}
+.yesterday-review-top{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.yesterday-review-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.95rem;font-weight:900;color:#8d6e00;
+}
+.yesterday-review-summary{
+  margin-top:4px;
+  font-size:0.82rem;font-weight:700;color:var(--on-surface);line-height:1.5;
+}
+.yesterday-review-meta{
+  margin-top:8px;
+  font-size:0.72rem;font-weight:700;color:var(--text-mid);line-height:1.45;
+}
+.yesterday-review-actions{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.yesterday-review-btn{
+  border:none;border-radius:999px;padding:7px 12px;
+  font-size:0.72rem;font-weight:900;font-family:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.yesterday-review-btn.toggle{
+  background:#fff3cd;color:#8d6e00;
+}
+.yesterday-review-btn.dismiss{
+  background:transparent;color:#a1887f;padding:4px 6px;font-size:0.88rem;
+}
+.yesterday-review-detail{
+  margin-top:10px;padding-top:10px;border-top:1px dashed rgba(247,181,0,0.28);
+  display:none;
+}
+.yesterday-review-card.open .yesterday-review-detail{display:block;}
+.yesterday-review-grid{
+  display:grid;gap:8px;
+}
+.yesterday-review-item{
   background:rgba(255,255,255,0.82);
-  border:1.5px solid rgba(247,181,0,0.12);
-  box-shadow:0 8px 20px rgba(44,31,0,0.08);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  pointer-events:none;
+  border-radius:14px;
+  padding:10px 12px;
 }
-.kid-floating-badge.show{display:flex;}
-.kid-floating-emoji{
-  width:26px;height:26px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.92rem;background:#fff;flex-shrink:0;
+.yesterday-review-item-label{
+  font-size:0.68rem;font-weight:900;color:var(--text-mid);letter-spacing:0.3px;text-transform:uppercase;
 }
-.kid-floating-text{min-width:0;}
-.kid-floating-label{font-size:0.54rem;font-weight:900;color:var(--text-mid);letter-spacing:0.3px;text-transform:uppercase;line-height:1;}
-.kid-floating-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:0.8rem;font-weight:900;color:var(--on-surface);line-height:1.1;margin-top:1px;}
-body.kid-lulu .kid-floating-badge{background:rgba(253,232,240,0.84);border-color:rgba(242,168,196,0.72);}
-body.kid-qiqi .kid-floating-badge{background:rgba(228,245,254,0.84);border-color:rgba(143,207,234,0.72);}
-body.kid-mimi .kid-floating-badge{background:rgba(240,233,255,0.84);border-color:rgba(201,182,242,0.72);}
-body.kid-lulu .kid-floating-emoji{background:#fff6fa;}
-body.kid-qiqi .kid-floating-emoji{background:#f4fbff;}
-body.kid-mimi .kid-floating-emoji{background:#faf7ff;}
-body.kid-lulu .kid-floating-label{color:#b44f74;}
-body.kid-qiqi .kid-floating-label{color:#2f7da0;}
-body.kid-mimi .kid-floating-label{color:#7256b6;}
-body.is-old-iphone .kid-floating-badge{top:124px;left:12px;padding:6px 9px;}
+.yesterday-review-item-text{
+  margin-top:4px;
+  font-size:0.8rem;font-weight:700;color:var(--on-surface);line-height:1.5;
+}
+.yesterday-review-encourage{
+  margin-top:8px;
+  font-size:0.78rem;font-weight:800;color:#5d8a24;
+}
 body.is-old-iphone #charSelector.compact{
   top:calc(68px + env(safe-area-inset-top));
   width:min(calc(100% - 20px), 560px);
@@ -1155,7 +1235,6 @@ body.is-old-iphone #charSelector.compact{
 body.kid-mode .section-title:not(.kid-visible),
 body.kid-mode .wallet-card,
 body.kid-mode .stats-card,
-body.kid-mode .heatmap-card,
 body.kid-mode .growth-card,
 body.kid-mode .growth-remind,
 body.kid-mode .reset-btn,
@@ -1168,6 +1247,19 @@ body.kid-mode .beanstalk-wrapper,
 body.kid-mode .correlation-wrapper,
 body.kid-mode .report-wrapper{
   display:none !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-copy-default{
+  display:none !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-copy-kid{
+  display:inline !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-head{
+  margin-bottom:10px;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-tag{
+  background:#e8f5e9;
+  color:#2e7d32;
 }
 /* 孩子模式进度页只显示地图 */
 body.kid-mode #navModeToggle{ color:#e53935; }
@@ -1404,13 +1496,6 @@ body.is-old-iphone .map-flower-count{
 <main style="padding-top:8px;">
   <div class="kid-mode-banner" id="kidModeBanner" style="display:none;">
     👧 孩子模式 — 家长功能已隐藏
-  </div>
-  <div class="kid-floating-badge" id="kidFloatingBadge" aria-hidden="true">
-    <div class="kid-floating-emoji"><span class="dyn-emoji" data-kid="current">👧</span></div>
-    <div class="kid-floating-text">
-      <div class="kid-floating-label">当前正在查看</div>
-      <div class="kid-floating-name"><span class="dyn-name" data-kid="current">Lulu</span></div>
-    </div>
   </div>
   <!-- 今日摘要条 -->
 
@@ -1725,7 +1810,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const KIDS = ['lulu','qiqi','mimi'];
   const V = 'v6';
   const PWD_KEY = 'app_pwd_v6';
-  const STORAGE_SCHEMA_VERSION = 3;
+  const STORAGE_SCHEMA_VERSION = 4;
   const STORAGE_SCHEMA_KEY = 'garden_storage_schema_v1';
 
   function skVer(k,t,v=V){return `tab_${k}_${t}_${v}`;}
@@ -1747,14 +1832,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const supers = JSON.parse(localStorage.getItem(skVer(k,'supers')) || '[]');
       const score = parseInt(localStorage.getItem(skVer(k,'score')) || '0', 10) || 0;
       const studyDone = localStorage.getItem(skVer(k,'studyDone')) === todayStr();
+      const habitConfig = getStoredHabitConfig(k);
+      const superConfig = getStoredSuperConfig(k);
       const normalizedHabits = Array.isArray(habits) ? habits.map(v => v === true) : [];
       const hasUsefulState = normalizedHabits.some(Boolean) || studyDone || (Array.isArray(supers) && supers.some(Boolean)) || score > 0;
       if(!hasUsefulState) return null;
       return {
         date: todayStr(),
         habits: normalizedHabits,
+        habitsState: Array.isArray(habits) ? habits.map(v => v === true ? true : v === false ? false : null) : [],
+        habitTexts: buildSnapshotHabitTexts(habitConfig),
         habitsDone: normalizedHabits.filter(Boolean).length,
         studyDone,
+        supersState: Array.isArray(supers) ? supers.map(Boolean) : [],
+        superTexts: buildSnapshotSuperTexts(superConfig),
         supersDone: Array.isArray(supers) ? supers.filter(Boolean).length : 0,
         score
       };
@@ -1790,6 +1881,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if(nextVersion < 3){
         nextVersion = 3;
+      }
+      if(nextVersion < 4){
+        nextVersion = 4;
       }
       localStorage.setItem(STORAGE_SCHEMA_KEY, String(nextVersion));
     }catch(e){
@@ -1862,66 +1956,94 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
         </div>
-
-        <div class="section-title">✅ 今日好习惯</div>
-        <div class="habits-grid" id="${k}-habitsList"></div>
-        <div class="all-done-banner" id="${k}-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
-
-        <div class="section-title">🏆 超级挑战</div>
-        <div class="super-card"><div class="super-title"><span id="${k}-superBadgeSummary">🏅 本月成就 0/3</span><span id="${k}-superBadgeTotal" style="font-size:0.82rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:3px 10px;">🏅 已获得 0 枚</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div id="${k}-superBadgeHint" style="margin:-6px 0 12px;font-size:0.74rem;font-weight:800;color:#8d6e00;background:#fff8dc;border-radius:12px;padding:8px 10px;">继续挑战就能解锁更多勋章</div><div class="super-list" id="${k}-superList"></div><div class="badge-roadmap" id="${k}-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="${k}-badgeDetailToggle" data-action="toggle-badge-detail" data-kid="${k}">📂 查看详情</button><div class="weekly-review-card" id="${k}-weeklyReview"></div>
-
-        <div class="section-title">🌟 成长能量</div>
-        <div class="tv-card">
-          <div class="tv-card-header"><div class="tv-count-badge" id="${k}-tv-count-badge">0/10</div></div>
-          <div class="tv-track"><div class="tv-fill" id="${k}-tv-fill" style="width:0%"></div></div>
-          <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="${k}-tvTime">0</span> 点</div><button class="tv-spend-btn" id="${k}-spendTvBtn" data-action="spend-tv" data-kid="${k}">兑换活动</button></div>
-        </div>
-        <div class="activity-menu-card" id="${k}-activityMenu"></div>
-        <div class="kid-score-hint" id="${k}-kidScoreHint">⭐ 今天 +0 星星</div>
-
-        <div class="section-title">🏦 积分银行</div>
-        <div class="wallet-card">
-          <div class="wallet-history-title" id="${k}-bankTitle" data-action="bonus-score" data-kid="${k}">🏦 <span class="dyn-name" data-kid="${k}">${defaultName}</span> 的积分银行</div>
-          <div class="wallet-stats">
-            <div class="wallet-stat"><div class="wallet-stat-label">本月积分</div><div class="wallet-stat-val" id="${k}-monthScore">0</div></div>
-            <div class="wallet-stat"><div class="wallet-stat-label">本月兑换</div><div class="wallet-stat-val">¥<span id="${k}-monthMoney">0.0</span></div></div>
-          </div>
-          <div class="wallet-row">
-            <div><div class="wallet-balance-label">👛 零钱包结余</div><div class="wallet-balance">¥<span id="${k}-wallet">0.00</span></div></div>
-            <div class="wallet-actions"><button class="wallet-btn spend" id="${k}-spendBtn" data-action="wallet-spend" data-kid="${k}">💸 扣除</button><button class="wallet-btn deposit" id="${k}-depositBtn" data-action="wallet-deposit" data-kid="${k}">💰 存入</button></div>
-          </div>
-          <div class="wallet-history" id="${k}-historyTimeline"></div>
-          <div id="${k}-redeemHistory"></div>
-        </div>
-        <div class="section-title">📊 完成率统计</div>
-        <div class="stats-card" id="${k}-statsCard"></div>
-        <div class="heatmap-card" style="margin-bottom:10px;">
-          <div class="heatmap-title">🗓️ 打卡热力图</div>
-          <div class="heatmap-sub">近3个月视图，横向看周，纵向看星期；点格子可查看具体日期</div>
-          <div class="heatmap-grid">
-            <div class="heatmap-weekdays" aria-hidden="true">
-              <div class="heatmap-weekday">日</div>
-              <div class="heatmap-weekday">一</div>
-              <div class="heatmap-weekday">二</div>
-              <div class="heatmap-weekday">三</div>
-              <div class="heatmap-weekday">四</div>
-              <div class="heatmap-weekday">五</div>
-              <div class="heatmap-weekday">六</div>
+        <div class="kid-home-group tasks">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title">今日任务区</div>
+              <div class="kid-home-group-sub">先完成今天的学习、习惯和挑战，最常用的操作都集中在这里。</div>
             </div>
-            <div class="heatmap-months" id="${k}-heatmap"></div>
+            <div class="kid-home-group-tag">Today</div>
           </div>
-          <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:#9ccc65;margin-left:6px;"></div>部分完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+          <div id="${k}-yesterdayReview"></div>
+          <div class="section-title">✅ 今日好习惯</div>
+          <div class="habits-grid" id="${k}-habitsList"></div>
+          <div class="all-done-banner" id="${k}-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
+
+          <div class="section-title">🏆 超级挑战</div>
+          <div class="super-card"><div class="super-title"><span id="${k}-superBadgeSummary">🏅 本月成就 0/3</span><span id="${k}-superBadgeTotal" style="font-size:0.82rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:3px 10px;">🏅 已获得 0 枚</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div id="${k}-superBadgeHint" style="margin:-6px 0 12px;font-size:0.74rem;font-weight:800;color:#8d6e00;background:#fff8dc;border-radius:12px;padding:8px 10px;">继续挑战就能解锁更多勋章</div><div class="super-list" id="${k}-superList"></div><div class="badge-roadmap" id="${k}-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="${k}-badgeDetailToggle" data-action="toggle-badge-detail" data-kid="${k}">📂 查看详情</button><div class="weekly-review-card" id="${k}-weeklyReview"></div>
         </div>
-        <div class="growth-remind" id="${k}-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
-        <div class="growth-card" id="${k}-growthCard">
-          <div class="growth-header" id="${k}-growthHeader">
-            <div class="growth-header-left"><div class="growth-icon">📏</div><div><div class="growth-title"><span class="dyn-name" data-kid="${k}">${defaultName}</span> 的成长档案</div><div class="growth-latest" id="${k}-growthLatest">点击展开录入</div></div></div>
-            <span class="growth-arrow" id="${k}-growthArrow">▼</span>
+
+        <div class="kid-home-group feedback">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title">成长反馈区</div>
+              <div class="kid-home-group-sub">这里集中看今天收获了多少成长卡、积分和兑换进度。</div>
+            </div>
+            <div class="kid-home-group-tag">Reward</div>
           </div>
-          <div class="growth-body" id="${k}-growthBody"><div class="growth-body-inner">
-            <div class="growth-add-row"><input class="growth-input" id="${k}-heightInput" type="number" step="0.1" placeholder="身高 cm"><input class="growth-input" id="${k}-weightInput" type="number" step="0.1" placeholder="体重 kg"><button class="growth-save-btn" id="${k}-growthSaveBtn">📝 记录</button></div>
-            <table class="growth-table"><thead><tr><th>月份</th><th>身高</th><th>体重</th><th>身高↑</th><th>体重↑</th></tr></thead><tbody id="${k}-growthTable"></tbody></table>
-          </div></div>
+          <div class="section-title">🌟 成长能量</div>
+          <div class="tv-card">
+            <div class="tv-card-header"><div class="tv-count-badge" id="${k}-tv-count-badge">0/10</div></div>
+            <div class="tv-track"><div class="tv-fill" id="${k}-tv-fill" style="width:0%"></div></div>
+            <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="${k}-tvTime">0</span> 点</div><button class="tv-spend-btn" id="${k}-spendTvBtn" data-action="spend-tv" data-kid="${k}">兑换活动</button></div>
+          </div>
+          <div class="activity-menu-card" id="${k}-activityMenu"></div>
+          <div class="kid-score-hint" id="${k}-kidScoreHint">⭐ 今天 +0 星星</div>
+
+          <div class="section-title">🏦 积分银行</div>
+          <div class="wallet-card">
+            <div class="wallet-history-title" id="${k}-bankTitle" data-action="bonus-score" data-kid="${k}">🏦 <span class="dyn-name" data-kid="${k}">${defaultName}</span> 的积分银行</div>
+            <div class="wallet-stats">
+              <div class="wallet-stat"><div class="wallet-stat-label">本月积分</div><div class="wallet-stat-val" id="${k}-monthScore">0</div></div>
+              <div class="wallet-stat"><div class="wallet-stat-label">本月兑换</div><div class="wallet-stat-val">¥<span id="${k}-monthMoney">0.0</span></div></div>
+            </div>
+            <div class="wallet-row">
+              <div><div class="wallet-balance-label">👛 零钱包结余</div><div class="wallet-balance">¥<span id="${k}-wallet">0.00</span></div></div>
+              <div class="wallet-actions"><button class="wallet-btn spend" id="${k}-spendBtn" data-action="wallet-spend" data-kid="${k}">💸 扣除</button><button class="wallet-btn deposit" id="${k}-depositBtn" data-action="wallet-deposit" data-kid="${k}">💰 存入</button></div>
+            </div>
+            <div class="wallet-history" id="${k}-historyTimeline"></div>
+            <div id="${k}-redeemHistory"></div>
+          </div>
+        </div>
+
+        <div class="kid-home-group review">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title"><span class="kid-home-group-copy-default">成长回顾区</span><span class="kid-home-group-copy-kid">我的打卡足迹</span></div>
+              <div class="kid-home-group-sub"><span class="kid-home-group-copy-default">放在后面看趋势和记录，避免把今天的打卡动作埋住。</span><span class="kid-home-group-copy-kid">看看最近这段时间坚持打卡的足迹吧。</span></div>
+            </div>
+            <div class="kid-home-group-tag"><span class="kid-home-group-copy-default">Review</span><span class="kid-home-group-copy-kid">Footprint</span></div>
+          </div>
+          <div class="section-title">📊 完成率统计</div>
+          <div class="stats-card" id="${k}-statsCard"></div>
+          <div class="heatmap-card" style="margin-bottom:10px;">
+            <div class="heatmap-title">🗓️ 打卡热力图</div>
+            <div class="heatmap-sub">近3个月视图，横向看周，纵向看星期；点格子可查看具体日期</div>
+            <div class="heatmap-grid">
+              <div class="heatmap-weekdays" aria-hidden="true">
+                <div class="heatmap-weekday">日</div>
+                <div class="heatmap-weekday">一</div>
+                <div class="heatmap-weekday">二</div>
+                <div class="heatmap-weekday">三</div>
+                <div class="heatmap-weekday">四</div>
+                <div class="heatmap-weekday">五</div>
+                <div class="heatmap-weekday">六</div>
+              </div>
+              <div class="heatmap-months" id="${k}-heatmap"></div>
+            </div>
+            <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:#9ccc65;margin-left:6px;"></div>部分完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+          </div>
+          <div class="growth-remind" id="${k}-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
+          <div class="growth-card" id="${k}-growthCard">
+            <div class="growth-header" id="${k}-growthHeader">
+              <div class="growth-header-left"><div class="growth-icon">📏</div><div><div class="growth-title"><span class="dyn-name" data-kid="${k}">${defaultName}</span> 的成长档案</div><div class="growth-latest" id="${k}-growthLatest">点击展开录入</div></div></div>
+              <span class="growth-arrow" id="${k}-growthArrow">▼</span>
+            </div>
+            <div class="growth-body" id="${k}-growthBody"><div class="growth-body-inner">
+              <div class="growth-add-row"><input class="growth-input" id="${k}-heightInput" type="number" step="0.1" placeholder="身高 cm"><input class="growth-input" id="${k}-weightInput" type="number" step="0.1" placeholder="体重 kg"><button class="growth-save-btn" id="${k}-growthSaveBtn">📝 记录</button></div>
+              <table class="growth-table"><thead><tr><th>月份</th><th>身高</th><th>体重</th><th>身高↑</th><th>体重↑</th></tr></thead><tbody id="${k}-growthTable"></tbody></table>
+            </div></div>
+          </div>
         </div>
         <div class="gap"></div><button class="reset-btn" id="${k}-resetBtn" data-action="reset-kid" data-kid="${k}">🔄 重置今日打卡</button><div class="gap"></div>
       </div>`;
@@ -2642,9 +2764,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newCount = getStudyCount(k) + 1;
     saveStudyCount(k, newCount);
     saveKidScore(k);
-    updateBankUI(k);
-    renderStudyButtons(k);
-    renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     try{ playSuccessKid(k,false); }catch(e){}
     try{ launchConfetti(); }catch(e){}
     document.getElementById('toastSuccessName').textContent = '太棒了！';
@@ -2872,26 +2992,179 @@ document.addEventListener('DOMContentLoaded', function() {
   function saveKidHistory(k){safeSetItem(sk(k,'hist'),JSON.stringify(S[k].monthHistory),`save_hist_${k}`);}
   function saveKidCalendar(k){safeSetItem(sk(k,'cal'),JSON.stringify(S[k].calendar),`save_cal_${k}`);}
   function saveKidDailySnapshots(k){safeSetItem(sk(k,'dailySnapshots'),JSON.stringify(S[k].dailySnapshots||{}),`save_daily_snapshots_${k}`);}
+  const yesterdayReviewOpen = {};
 
   function trimDailySnapshots(snapshotMap){
     const entries = Object.entries(snapshotMap || {}).sort((a,b)=>b[0].localeCompare(a[0]));
     return Object.fromEntries(entries.slice(0, 400));
   }
 
-  function buildDailySnapshot(k){
+  function dateOffsetStr(offsetDays){
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  function yesterdayStr(){
+    return dateOffsetStr(-1);
+  }
+
+  function getYesterdayReviewDismissKey(k){
+    return sk(k,'yesterdayReviewDismissed');
+  }
+
+  function getStoredHabitConfig(k){
+    try{
+      return safeJsonParse(safeGetItem(sk(k,'hcfg'),'',`load_snapshot_hcfg_${k}`), defaultHabits[k], `parse_snapshot_hcfg_${k}`) || defaultHabits[k] || [];
+    }catch(_){
+      return defaultHabits[k] || [];
+    }
+  }
+
+  function getStoredSuperConfig(k){
+    try{
+      return safeJsonParse(safeGetItem(sk(k,'scfg'),'',`load_snapshot_scfg_${k}`), defaultSupers[k], `parse_snapshot_scfg_${k}`) || defaultSupers[k] || [];
+    }catch(_){
+      return defaultSupers[k] || [];
+    }
+  }
+
+  function buildSnapshotHabitTexts(items){
+    return (items || []).map(item => item && item.text ? item.text : '习惯任务');
+  }
+
+  function buildSnapshotSuperTexts(items){
+    return (items || []).map(item => item && item.text ? item.text : '挑战任务');
+  }
+
+  function buildDailySnapshot(k, snapshotDate=todayStr()){
+    const habitsState = (S[k].habits || []).map(v => v === true ? true : v === false ? false : null);
+    const supersState = (S[k].supers || []).map(Boolean);
+    const studyDoneOnDate = safeGetItem(getStudyDoneKey(k), '', `load_snapshot_study_done_${k}`) === snapshotDate;
     return {
-      date: todayStr(),
-      habits: (S[k].habits || []).map(v => v === true),
-      habitsDone: (S[k].habits || []).filter(v => v === true).length,
-      studyDone: isStudyDoneToday(k),
-      supersDone: (S[k].supers || []).filter(Boolean).length,
+      date: snapshotDate,
+      habits: habitsState.map(v => v === true),
+      habitsState,
+      habitTexts: buildSnapshotHabitTexts(S[k].currentHabits || getStoredHabitConfig(k)),
+      habitsDone: habitsState.filter(v => v === true).length,
+      studyDone: studyDoneOnDate,
+      supersState,
+      superTexts: buildSnapshotSuperTexts(S[k].currentSupers || getStoredSuperConfig(k)),
+      supersDone: supersState.filter(Boolean).length,
       score: S[k].score || 0
     };
   }
 
-  function recordDailySnapshot(k){
+  function buildYesterdayReviewModel(k){
+    const snapshotDate = yesterdayStr();
+    const snapshot = (S[k].dailySnapshots || {})[snapshotDate];
+    if(!snapshot) return null;
+
+    const habitTexts = Array.isArray(snapshot.habitTexts) && snapshot.habitTexts.length
+      ? snapshot.habitTexts
+      : buildSnapshotHabitTexts(S[k].currentHabits || getStoredHabitConfig(k));
+    const habitStates = Array.isArray(snapshot.habitsState) && snapshot.habitsState.length
+      ? snapshot.habitsState
+      : (Array.isArray(snapshot.habits) ? snapshot.habits.map(v => v === true ? true : false) : []);
+    const superTexts = Array.isArray(snapshot.superTexts) && snapshot.superTexts.length
+      ? snapshot.superTexts
+      : buildSnapshotSuperTexts(S[k].currentSupers || getStoredSuperConfig(k));
+    const superStates = Array.isArray(snapshot.supersState) && snapshot.supersState.length
+      ? snapshot.supersState.map(Boolean)
+      : [];
+    const completedHabits = habitTexts.filter((_, idx) => habitStates[idx] === true);
+    const missingHabits = habitTexts.filter((_, idx) => habitStates[idx] !== true);
+    const missingStudy = !snapshot.studyDone;
+    const doneSupers = superTexts.filter((_, idx) => superStates[idx] === true);
+    const missingSupers = superTexts.filter((_, idx) => superStates[idx] === false);
+    const totalMissing = missingHabits.length + (missingStudy ? 1 : 0);
+    if(totalMissing <= 0) return null;
+
+    return {
+      snapshotDate,
+      hasDetail: !!(snapshot.habitsState || snapshot.habitTexts || snapshot.supersState || snapshot.superTexts),
+      habitsDone: snapshot.habitsDone || 0,
+      completedHabits,
+      missingHabits,
+      missingStudy,
+      doneSupers,
+      missingSupers
+    };
+  }
+
+  function buildYesterdayReviewSummary(model){
+    if(!model) return '';
+    if(!model.hasDetail) return '昨天有一些任务没有完成，今天继续加油。';
+    if(model.missingStudy && model.missingHabits.length === 0) return '昨天学习还没完成，今天先把学习拿下吧。';
+    if(model.missingHabits.length === 1 && !model.missingStudy) return `昨天差一点点就全完成了，还差「${model.missingHabits[0]}」。`;
+    if(model.missingHabits.length > 0 && model.missingHabits.length <= 2){
+      return `昨天还差 ${model.missingHabits.length + (model.missingStudy ? 1 : 0)} 项小任务：${model.missingHabits.join('、')}${model.missingStudy ? '、今日学习' : ''}。`;
+    }
+    return `昨天还差 ${model.missingHabits.length + (model.missingStudy ? 1 : 0)} 项小任务，今天继续把它们补上吧。`;
+  }
+
+  function renderYesterdayReview(k){
+    const root = document.getElementById(`${k}-yesterdayReview`);
+    if(!root) return;
+    const model = buildYesterdayReviewModel(k);
+    const dismissedDate = safeGetItem(getYesterdayReviewDismissKey(k), '', `load_yesterday_review_dismiss_${k}`);
+    if(!model || dismissedDate === model.snapshotDate){
+      root.innerHTML = '';
+      return;
+    }
+    const open = !!yesterdayReviewOpen[k];
+    const detailToggleText = open ? '收起' : '查看详情';
+    const missingHabitText = model.hasDetail
+      ? (model.missingHabits.length ? model.missingHabits.join('、') : '没有漏掉日常习惯')
+      : '这一天的旧记录没有保存逐项明细';
+    const completedHabitText = model.hasDetail
+      ? (model.completedHabits.length ? model.completedHabits.join('、') : '昨天暂时没有完成日常习惯')
+      : '旧记录暂时无法列出已完成项目';
+    const superText = model.doneSupers.length || model.missingSupers.length
+      ? `已完成：${model.doneSupers.length ? model.doneSupers.join('、') : '暂无'}｜未完成：${model.missingSupers.length ? model.missingSupers.join('、') : '暂无'}`
+      : '昨天没有保存到挑战明细，后续新记录会显示得更完整。';
+
+    root.innerHTML = `
+      <div class="yesterday-review-card${open ? ' open' : ''}">
+        <div class="yesterday-review-top">
+          <div>
+            <div class="yesterday-review-title">🌤 昨日小回顾</div>
+            <div class="yesterday-review-summary">${escapeHtml(buildYesterdayReviewSummary(model))}</div>
+            <div class="yesterday-review-meta">昨天完成了 ${model.habitsDone + (model.missingStudy ? 0 : 1)} / ${TOTAL_TASKS} 项任务</div>
+          </div>
+          <div class="yesterday-review-actions">
+            <button class="yesterday-review-btn toggle" data-action="toggle-yesterday-review" data-kid="${k}">${detailToggleText}</button>
+            <button class="yesterday-review-btn dismiss" data-action="dismiss-yesterday-review" data-kid="${k}" aria-label="关闭昨日回顾">✕</button>
+          </div>
+        </div>
+        <div class="yesterday-review-detail">
+          <div class="yesterday-review-grid">
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日学习</div>
+              <div class="yesterday-review-item-text">${model.missingStudy ? '昨天学习还没完成' : '昨天学习已完成'}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日未完成</div>
+              <div class="yesterday-review-item-text">${escapeHtml(missingHabitText)}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日已完成</div>
+              <div class="yesterday-review-item-text">${escapeHtml(completedHabitText)}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日挑战</div>
+              <div class="yesterday-review-item-text">${escapeHtml(superText)}</div>
+            </div>
+          </div>
+          <div class="yesterday-review-encourage">今天把这些小任务补上，就会更棒啦 🌱</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function recordDailySnapshot(k, snapshotDate=todayStr()){
     if(!S[k].dailySnapshots) S[k].dailySnapshots = {};
-    S[k].dailySnapshots[todayStr()] = buildDailySnapshot(k);
+    S[k].dailySnapshots[snapshotDate] = buildDailySnapshot(k, snapshotDate);
     S[k].dailySnapshots = trimDailySnapshots(S[k].dailySnapshots);
     saveKidDailySnapshots(k);
   }
@@ -3253,7 +3526,6 @@ document.addEventListener('DOMContentLoaded', function() {
       else { S[k].score -= item.price; saveKidScore(k); }
       addRedeemRecord(k, item);
       updateBankUI(k); renderRewards();
-      renderRedeemHistory(k);
       try{launchConfetti();launchConfetti();playSuccessKid(currentKid,true);}catch(e){}
       document.getElementById('toastSuccessName').textContent = `兑换成功！`;
       document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${escapeHtml(item.icon)} ${escapeHtml(item.name)}</b>！<br>快去找爸爸妈妈兑现吧！`;
@@ -3635,16 +3907,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── Nav & Switcher Logic ──
   const badgeDetailOpen = {lulu:false, qiqi:false, mimi:false};
 
-  function updateFloatingKidBadge(){
-    const badge=document.getElementById('kidFloatingBadge');
-    if(!badge) return;
-    const nameEl=badge.querySelector('.kid-floating-name .dyn-name');
-    const emojiEl=badge.querySelector('.kid-floating-emoji .dyn-emoji');
-    if(nameEl) nameEl.textContent = KID_NAMES[currentKid] || currentKid;
-    if(emojiEl) emojiEl.textContent = KID_EMOJIS[currentKid] || '👧';
-    badge.classList.remove('show');
-  }
-
   function updateSelectorCompactState(){
     const selector=document.getElementById('charSelector');
     if(!selector) return;
@@ -3662,7 +3924,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (view === 'home') {
       panels.forEach(p => p.classList.toggle('active', p.id === currentKid + '-panel'));
-      renderKid(currentKid);
+      renderHomeView(currentKid, 'tasks', 'feedback', 'review');
     } else if (view === 'rewards') {
       panels.forEach(p => p.classList.remove('active'));
       document.getElementById('rewards-view').style.display = 'block';
@@ -3673,7 +3935,6 @@ document.addEventListener('DOMContentLoaded', function() {
       renderMap(true);
     }
     renderDailySummary(currentKid);
-    updateFloatingKidBadge();
     updateSelectorCompactState();
   }
 
@@ -3682,8 +3943,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.className=`kid-${k}`;
     if (currentNav === 'home') {
       KIDS.forEach(kid => document.getElementById(`${kid}-panel`).classList.toggle('active', kid===k));
-      renderKid(k);
-      renderStudy(k);
+      renderHomeView(k, 'tasks', 'feedback', 'review');
     } else if (currentNav === 'rewards') {
       renderRewards();
     } else if (currentNav === 'progress') {
@@ -3692,7 +3952,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectorEl=document.getElementById('charSelector');
     if(selectorEl)selectorEl.classList.remove('open');
     updateSelectorUI(k);
-    updateFloatingKidBadge();
     updateSelectorCompactState();
   }
 
@@ -3714,7 +3973,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if(isKidMode && currentNav !== 'home' && currentNav !== 'progress'){
       switchNav('home');
     }
-    updateFloatingKidBadge();
     updateSelectorCompactState();
   }
 
@@ -3790,7 +4048,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
     document.getElementById('habitEditOverlay').classList.remove('show');
-    renderLists(); renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     habitEditTarget = null;
     showToast('success',type === 'super' ? '挑战已保存' : '习惯已保存',type === 'super' ? '刚才编辑的超级挑战已经更新好了。' : '刚才编辑的打卡项目已经更新好了。');
   };
@@ -4018,13 +4276,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const mmEl=document.getElementById(`${k}-monthMoney`);if(mmEl)mmEl.textContent=money.toFixed(1);
     const wEl=document.getElementById(`${k}-wallet`);if(wEl)wEl.textContent=S[k].wallet.toFixed(2);
     renderHistoryTimeline(k);
-    renderStatsCard(k);
-    renderHeatmap(k);
     renderRedeemHistory(k);
   }
 
-  function renderLists(){
-    KIDS.forEach(k=>{
+  function normalizeKidTargets(targetKids=KIDS){
+    if(Array.isArray(targetKids)) return targetKids;
+    return [targetKids];
+  }
+
+  function renderLists(targetKids=KIDS){
+    normalizeKidTargets(targetKids).forEach(k=>{
       const hl=document.getElementById(`${k}-habitsList`);hl.innerHTML='';
       // 构建索引数组，未完成置顶，已完成/已叉沉底
       const indices=Array.from({length:TOTAL_HABITS},(_,i)=>i);
@@ -4041,6 +4302,48 @@ document.addEventListener('DOMContentLoaded', function() {
       for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}" data-action="super-check" data-kid="${k}" data-id="${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${escapeHtml(S[k].currentSupers[j].text)}</span><span class="super-pts">🏅 成就</span></div>`;}
     });
     bindEvents();
+  }
+
+  function renderHomeSection(k, section){
+    if(section === 'tasks'){
+      renderLists(k);
+      renderStudy(k);
+      renderKid(k);
+      renderYesterdayReview(k);
+      return;
+    }
+    if(section === 'feedback'){
+      renderKid(k);
+      return;
+    }
+    if(section === 'review'){
+      renderStatsCard(k);
+      renderHeatmap(k);
+      renderGrowthTable(k);
+      return;
+    }
+    if(section === 'wallet'){
+      updateBankUI(k);
+      return;
+    }
+    if(section === 'growth'){
+      renderGrowthTable(k);
+      checkGrowthReminder();
+      return;
+    }
+    if(section === 'selector'){
+      updateSelectorUI(k);
+    }
+  }
+
+  function renderHomeView(k, ...sections){
+    const unique = [...new Set((sections.length ? sections : ['tasks','feedback','review']).flat())];
+    unique.forEach(section => renderHomeSection(k, section));
+  }
+
+  function renderAllHomeViews(...sections){
+    const unique = [...new Set((sections.length ? sections : ['tasks','feedback','review']).flat())];
+    KIDS.forEach(k => renderHomeView(k, ...unique));
   }
 
   function updateSelectorUI(k=currentKid){
@@ -4410,10 +4713,10 @@ document.addEventListener('DOMContentLoaded', function() {
     recordDailySnapshot(k);
     markProgressDirty('map','mindmap','report');
 
-    renderLists(); renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
 
     if(totalCount===TOTAL_TASKS && !S[k].tvRewardGiven){
-      S[k].tvTime += 1; S[k].tvRewardGiven = true; saveTvState(k); renderKid(k);
+      S[k].tvTime += 1; S[k].tvRewardGiven = true; saveTvState(k); renderHomeView(k, 'feedback');
     }
     if(totalCount===TOTAL_TASKS && currentKid===k){
       showAllDoneBoom(k);
@@ -4449,7 +4752,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(S[k].calendar && S[k].calendar[todayStr()]) { S[k].calendar[todayStr()] = false; saveKidCalendar(k); }
     recordDailySnapshot(k);
     markProgressDirty('map','mindmap','report');
-    renderLists();renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     try{playCross();}catch(e){}
     document.getElementById('toastEncourageName').textContent=`继续努力！`;document.getElementById('toastEncourageSub').textContent='没关系，明天再加油！💕';document.getElementById('toastEncourage').classList.add('show');
   }
@@ -4476,7 +4779,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveKidSupers(k);
         recordDailySnapshot(k);
         markProgressDirty('mindmap','report');
-        renderKid(k);
+        renderHomeView(k, 'tasks', 'feedback');
         const afterTotal=S[k].badgeTotal||0;
         const afterTier=getCurrentBadgeTier(k).tier;
         const levelUp=afterTier>beforeTier || afterTotal>beforeTotal;
@@ -4531,7 +4834,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(!selected) return;
         S[k].tvTime=parseFloat((S[k].tvTime-selected.cost).toFixed(2));
         saveTvState(k);
-        renderKid(k);
+        renderHomeView(k, 'feedback');
         showToast('success','兑换成功',`已兑换：${selected.name}，剩余成长卡 ${S[k].tvTime} 点`);
       });
     });
@@ -4539,9 +4842,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function refreshAfterResetChange(k){
     recordDailySnapshot(k);
     markProgressDirty('map','mindmap','report');
-    renderStudy(k);
-    renderKid(k);
-    renderLists();
+    renderHomeView(k, 'tasks', 'feedback');
   }
 
   async function doReset(k){
@@ -4662,8 +4963,19 @@ document.addEventListener('DOMContentLoaded', function() {
       if(action === 'spend-tv') return doSpendTv(kid);
       if(action === 'toggle-badge-detail'){
         badgeDetailOpen[kid] = !badgeDetailOpen[kid];
-        renderKid(kid);
+        renderHomeView(kid, 'tasks');
         if(currentNav === 'progress' && badgeDetailOpen[kid]){ markProgressDirty('mindmap'); renderMap(false); }
+        return;
+      }
+      if(action === 'toggle-yesterday-review'){
+        yesterdayReviewOpen[kid] = !yesterdayReviewOpen[kid];
+        renderYesterdayReview(kid);
+        return;
+      }
+      if(action === 'dismiss-yesterday-review'){
+        const snapshotDate = yesterdayStr();
+        safeSetItem(getYesterdayReviewDismissKey(kid), snapshotDate, `save_yesterday_review_dismiss_${kid}`);
+        renderYesterdayReview(kid);
         return;
       }
       if(action === 'bonus-score') return handleBankBonus(kid);
@@ -4871,7 +5183,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
   document.querySelector('#toastEncourage .toast-box').onclick=e=>e.stopPropagation();
-  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');renderLists();KIDS.forEach(kid=>renderKid(kid));};
+  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');renderAllHomeViews('tasks','feedback');};
 
   function openEditModal(){
     document.getElementById('edit-name-lulu').value = KID_NAMES.lulu || 'Lulu';
@@ -4934,9 +5246,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 立刻刷新选择器当前孩子的 emoji 和庆祝弹窗角色
     const celebEl = document.getElementById('celebCharacter');
     if(celebEl) celebEl.textContent = KID_EMOJIS[currentKid] || '👧';
+    renderAllHomeViews('tasks','feedback');
     updateSelectorUI(currentKid);
-    KIDS.forEach(k=>renderStudy(k));
-    renderLists();KIDS.forEach(k=>renderKid(k));
     closeEditModal();
     showToast('success','设置已保存','名字、头像和习惯内容都更新好了。');
   };
@@ -4960,7 +5271,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
   function currentMonthLabel(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
   function refreshGrowthViews(k){
-    renderGrowthTable(k);
+    renderHomeView(k, 'review');
     checkGrowthReminder();
     markProgressDirty('beanstalk','correlation');
     if(currentNav==='progress') renderMap(false);
@@ -5023,9 +5334,10 @@ document.addEventListener('DOMContentLoaded', function() {
     try{
       let progressNeedsRefresh = false;
       KIDS.forEach(k=>{
-        if(localStorage.getItem(sk(k,'date'))!==todayStr()){
+        const storedDate = localStorage.getItem(sk(k,'date')) || todayStr();
+        if(storedDate!==todayStr()){
           progressNeedsRefresh = true;
-          recordDailySnapshot(k);
+          recordDailySnapshot(k, storedDate);
           for(let i=0;i<TOTAL_HABITS;i++){if(S[k].habits[i]!==true)S[k].streaks[i]=0;}
           saveKidStreaks(k);
           S[k].habits=Array(TOTAL_HABITS).fill(null);
@@ -5033,17 +5345,17 @@ document.addEventListener('DOMContentLoaded', function() {
           saveTvState(k);
           saveKidState(k);
           try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}
-          renderLists();renderKid(k);renderStudy(k);
+          renderHomeView(k, 'tasks', 'feedback');
         }
         if(localStorage.getItem(sk(k,'month'))!==monthStr()){
           progressNeedsRefresh = true;
           const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;const lastMonth=localStorage.getItem(sk(k,'month'))||'';const earned=parseFloat((lastScore/10).toFixed(2));
           if(lastMonth&&lastScore>0){S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});if(S[k].monthHistory.length>12)S[k].monthHistory=S[k].monthHistory.slice(0,12);saveKidHistory(k);}
-          S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); recordDailySnapshot(k); renderKid(k);
+          S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); recordDailySnapshot(k); renderHomeView(k, 'tasks', 'feedback', 'review');
         }
         if(localStorage.getItem(sk(k,'week'))!==getMondayStr()){
           progressNeedsRefresh = true;
-          S[k].tvTime=0;saveTvState(k);localStorage.setItem(sk(k,'week'),getMondayStr());renderKid(k);
+          S[k].tvTime=0;saveTvState(k);localStorage.setItem(sk(k,'week'),getMondayStr());renderHomeView(k, 'feedback');
         }
       });
       if(progressNeedsRefresh){
@@ -5148,7 +5460,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }catch(e){}
   }
 
-  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); updateSelectorUI(currentKid); renderDate(); checkGrowthReminder(); checkBackupReminder(); setInterval(checkDateReset,60000);
+  loadAll(); renderAllHomeViews('tasks','feedback','review'); updateSelectorUI(currentKid); renderDate(); checkDateReset(); checkGrowthReminder(); checkBackupReminder(); setInterval(checkDateReset,60000);
 
   // ── 首次使用引导 ──────────────────────────────────────────────────────────
   (function(){
