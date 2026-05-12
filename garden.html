@@ -1037,11 +1037,21 @@ body.is-old-iphone #charSelector.compact{
 .heatmap-month-col.month-start:first-child{margin-left:0;padding-left:0;border-left:none;}
 .heatmap-month-label{font-size:0.66rem;font-weight:900;color:var(--text-mid);text-align:center;margin-bottom:3px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
 .heatmap-month-label.has-label{background:var(--gold-light);border:1px solid rgba(247,181,0,0.35);border-radius:999px;color:#a07000;}
+.heatmap-month-label.current-month{
+  background:linear-gradient(135deg,#ffe082,#ffd54f);
+  border-color:rgba(255,179,0,0.55);
+  color:#7a5200;
+  box-shadow:0 4px 10px rgba(255,179,0,0.18);
+}
 .heatmap-week{display:flex;flex-direction:column;gap:2px;}
 .heatmap-day{width:16px;height:16px;border-radius:4px;background:var(--cream-dark);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .heatmap-day.done{background:var(--warm-green);opacity:0.9;}
 .heatmap-day.today{outline:2px solid var(--gold);outline-offset:1px;}
-.heatmap-day.future{background:transparent;}
+.heatmap-day.future{
+  background:rgba(255,248,237,0.75);
+  border:1px dashed rgba(176,141,87,0.35);
+}
+.heatmap-day.future .heatmap-day-anchor{color:rgba(120,96,58,0.58);}
 .heatmap-day.partial{background:#9ccc65;opacity:0.85;}
 .heatmap-day-anchor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.5rem;font-weight:900;color:rgba(44,31,0,0.72);line-height:1;pointer-events:none;}
 .heatmap-day.done .heatmap-day-anchor,
@@ -1311,9 +1321,32 @@ nav{
 .easter-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column; }
 .easter-overlay.show{display:flex;animation:fadeIn 0.3s ease;}
 .easter-content{ background:#fff;border-radius:var(--radius-xl);padding:32px 28px;text-align:center;max-width:320px;width:90%;animation:popIn 0.5s cubic-bezier(.36,1.56,.64,1) both; }
-.easter-img{width:160px;height:160px;border-radius:var(--radius-lg);object-fit:cover;margin-bottom:16px;}
+.easter-media-wrap{
+  width:170px;height:170px;margin:0 auto 16px;border-radius:var(--radius-lg);
+  overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#fff8dc,#fff0f6);
+  box-shadow:0 10px 24px rgba(44,31,0,0.14);
+}
+.easter-video,
+.easter-img{
+  width:100%;height:100%;border-radius:var(--radius-lg);object-fit:cover;display:none;
+}
+.easter-img.static{
+  animation:easterPulse 1.8s ease-in-out infinite;
+}
 .easter-fallback{font-size:4rem;margin-bottom:16px;display:none;animation:starRow 1s ease-in-out infinite;}
 .easter-text{font-weight:900;font-size:1.1rem;color:var(--on-surface);}
+.easter-sub{margin-top:6px;font-size:0.78rem;color:var(--text-mid);font-weight:700;line-height:1.5;}
+.easter-sound-btn{
+  margin-top:12px;padding:9px 16px;border:none;border-radius:999px;
+  background:linear-gradient(135deg,#ffb300,#ff8f00);color:#fff;
+  font-size:0.82rem;font-weight:900;font-family:inherit;cursor:pointer;
+  box-shadow:0 6px 16px rgba(255,143,0,0.26);
+}
+@keyframes easterPulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.04);}
+}
 
 /* ── Edit Overlay ── */
 .edit-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150;align-items:center;justify-content:center;background:rgba(44,31,0,0.35);backdrop-filter:blur(6px); }
@@ -1554,7 +1587,7 @@ body.is-old-iphone .map-flower-count{
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
-<div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline muted loop preload="auto"></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 <div class="onboard-overlay" id="onboardOverlay">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
@@ -2018,7 +2051,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="stats-card" id="${k}-statsCard"></div>
           <div class="heatmap-card" style="margin-bottom:10px;">
             <div class="heatmap-title">🗓️ 打卡热力图</div>
-            <div class="heatmap-sub">近3个月视图，横向看周，纵向看星期；点格子可查看具体日期</div>
+            <div class="heatmap-sub">以当月完整视图为主，横向看周，纵向看星期；点格子可查看具体日期</div>
             <div class="heatmap-grid">
               <div class="heatmap-weekdays" aria-hidden="true">
                 <div class="heatmap-weekday">日</div>
@@ -3346,7 +3379,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   window.openStoreEditWithPwd = async function(){
-    const ok = await showPwdOverlay('🔒 编辑奖励商品','请输入家长密码后继续');
+    const ok = await showPresetPwd('editStore');
     if(!ok) return;
     openStoreEdit();
   };
@@ -3420,6 +3453,126 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('pwdCancelBtn').onclick = () => cleanup(false);
       inputEl.onkeydown = e => { if(e.key==='Enter') document.getElementById('pwdConfirmBtn').click(); };
     });
+  }
+
+  const UI_TEXT = {
+    pwd: {
+      resetToday: { title:'🔒 重置今日打卡', desc:'请输入家长密码后继续' },
+      walletSpend: { title:'🔒 消费扣除验证', desc:'请输入家长密码后继续' },
+      walletDeposit: { title:'🔒 存入零钱包验证', desc:'请输入家长密码后继续' },
+      switchParentMode: { title:'🔒 切换家长模式', desc:'请输入家长密码' },
+      quickEditHabit: { title:'🔒 修改习惯', desc:'请输入家长密码' },
+      quickEditSuper: { title:'🔒 修改挑战', desc:'请输入家长密码' },
+      settingsEntry: { title:'🔒 家长验证', desc:'请输入家长密码进入设置' },
+      editStore: { title:'🔒 编辑奖励商品', desc:'请输入家长密码后继续' },
+      importData: { title:'🔒 导入数据验证', desc:'导入会覆盖当前数据，请先验证家长密码' },
+      growthDelete: { title:'🔒 删除成长记录', desc:'请输入家长密码后继续' }
+    },
+    dialog: {
+      confirmReset: {
+        title:'确认重置',
+        desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',
+        confirmText:'确认重置',
+        cancelText:'先不重置'
+      },
+      bankBonus: {
+        title:'家长特权',
+        desc:'请输入要补充的积分，负数表示扣除。',
+        confirmText:'保存积分',
+        inputType:'number',
+        inputValue:'0',
+        inputPlaceholder:'请输入整数',
+        validator:value=>/^-?\d+$/.test((value||'').trim())? '' : '请输入整数，可使用负数'
+      },
+      walletAction: ({ isSpend, currentBalance }) => ({
+        title:isSpend ? '零钱包扣除' : '零钱包存入',
+        desc:`当前余额：<b>¥${currentBalance}</b><br>请输入本次${isSpend ? '消费' : '存入'}金额（元）`,
+        confirmText:isSpend ? '确认扣除' : '确认存入',
+        inputType:'number',
+        inputPlaceholder:'例如 5.20'
+      }),
+      importInput: {
+        title:'导入备份',
+        desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',
+        confirmText:'开始识别',
+        inputType:'textarea',
+        inputPlaceholder:'请粘贴完整备份代码'
+      }
+    },
+    toast: {
+      modeChanged: ({ isKidMode }) => ({
+        title:isKidMode ? '已进入孩子模式' : '已切回家长模式',
+        desc:isKidMode ? '家长功能已隐藏，页面现在更适合孩子自己操作。' : '家长功能已恢复，可以继续查看设置、奖励和银行。'
+      }),
+      quickEditSaved: ({ type }) => ({
+        title:type === 'super' ? '挑战已保存' : '习惯已保存',
+        desc:type === 'super' ? '刚才编辑的超级挑战已经更新好了。' : '刚才编辑的打卡项目已经更新好了。'
+      }),
+      quickEditSaveFailed: {
+        title:'保存失败',
+        desc:'本地保存没有成功，请稍后重试。'
+      },
+      resetDone: {
+        title:'已重置',
+        desc:'今天的打卡记录已经清空啦。'
+      },
+      resetUndone: {
+        title:'已撤销',
+        desc:'今天的打卡记录已经恢复。'
+      },
+      bonusUpdated: ({ score }) => ({
+        title:'积分已更新',
+        desc:`当前积分：${score} 分`
+      }),
+      walletUpdated: ({ isSpend, amount, balance }) => ({
+        title:isSpend ? '扣除成功' : '存入成功',
+        desc:isSpend ? `已扣除 ¥${amount}，剩余 ¥${balance}` : `已存入 ¥${amount}，当前余额 ¥${balance}`
+      }),
+      settingsSaved: {
+        title:'设置已保存',
+        desc:'名字、头像和习惯内容都更新好了。'
+      },
+      backupExported: {
+        title:'备份已导出',
+        desc:'本次备份已包含成长记录、兑换记录和自定义奖励。'
+      },
+      growthSaved: {
+        title:'记录已保存',
+        desc:'成长档案已经更新好了。'
+      },
+      growthDeleted: ({ month }) => ({
+        title:'已删除记录',
+        desc:`${month} 的成长记录已删除`
+      }),
+      growthRestored: {
+        title:'已撤销',
+        desc:'成长记录已经恢复。'
+      }
+    }
+  };
+
+  function resolveUiEntry(entry, params={}){
+    return typeof entry === 'function' ? entry(params) : { ...entry };
+  }
+
+  function showPresetPwd(key){
+    const cfg = resolveUiEntry(UI_TEXT.pwd[key] || {});
+    return showPwdOverlay(cfg.title, cfg.desc);
+  }
+
+  function showPresetDialog(key, params={}){
+    const cfg = resolveUiEntry(UI_TEXT.dialog[key] || {}, params);
+    return showAppDialog({ ...cfg, ...params });
+  }
+
+  function showPresetToast(type, key, params={}){
+    const cfg = resolveUiEntry((UI_TEXT.toast || {})[key] || {}, params);
+    return showToast(type, cfg.title || '', cfg.desc || '', !!cfg.allowHtml);
+  }
+
+  function showPresetToastAction(type, key, params={}, options={}){
+    const cfg = resolveUiEntry((UI_TEXT.toast || {})[key] || {}, params);
+    return showToastAction(type, cfg.title || '', cfg.desc || '', { ...options, allowHtml: !!cfg.allowHtml });
   }
 
   // ── 密码修改 ──────────────────────────────────────────────────────────────
@@ -3979,7 +4132,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const handleModeToggle = async () => {
     if(isKidMode){
       // 切回家长模式需要密码
-      const ok = await showPwdOverlay('🔒 切换家长模式', '请输入家长密码');
+      const ok = await showPresetPwd('switchParentMode');
       if(!ok) return;
       isKidMode = false;
     } else {
@@ -3987,7 +4140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     try{ localStorage.setItem('kidMode', isKidMode ? '1' : '0'); }catch(e){}
     applyKidMode();
-    showToast('success', isKidMode ? '已进入孩子模式' : '已切回家长模式', isKidMode ? '家长功能已隐藏，页面现在更适合孩子自己操作。' : '家长功能已恢复，可以继续查看设置、奖励和银行。');
+      showPresetToast('success','modeChanged',{ isKidMode });
   };
 
   // 初始化时应用模式
@@ -4031,7 +4184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const draftEmoji = document.getElementById('habitEditEmoji').value.trim() || '✨';
     const draftText  = document.getElementById('habitEditText').value.trim() || (habitEditTarget.type === 'super' ? '未命名挑战' : '未命名');
     const target = { ...habitEditTarget };
-    const ok = await showPwdOverlay(target.type === 'super' ? '🔒 修改挑战' : '🔒 修改习惯','请输入家长密码');
+    const ok = await showPresetPwd(target.type === 'super' ? 'quickEditSuper' : 'quickEditHabit');
     if(!ok) return;
     const {k, id, type} = target;
     const saveOk = type === 'super'
@@ -4044,13 +4197,13 @@ document.addEventListener('DOMContentLoaded', function() {
           return safeSetItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits), `save_hcfg_quick_${k}`);
         })();
     if(!saveOk){
-      showToast('error','保存失败','本地保存没有成功，请稍后重试。');
+      showPresetToast('error','quickEditSaveFailed');
       return;
     }
     document.getElementById('habitEditOverlay').classList.remove('show');
     renderHomeView(k, 'tasks', 'feedback');
     habitEditTarget = null;
-    showToast('success',type === 'super' ? '挑战已保存' : '习惯已保存',type === 'super' ? '刚才编辑的超级挑战已经更新好了。' : '刚才编辑的打卡项目已经更新好了。');
+    showPresetToast('success','quickEditSaved',{ type });
   };
   document.getElementById('habitEditCancelBtn').onclick = () => {
     document.getElementById('habitEditOverlay').classList.remove('show');
@@ -4080,7 +4233,7 @@ document.addEventListener('DOMContentLoaded', function() {
   bindTap(document.getElementById('navProgress'), () => switchNav('progress'));
   bindTap(document.getElementById('navRewards'), () => switchNav('rewards'));
   bindTap(document.getElementById('navSettings'), async () => {
-    const ok = await showPwdOverlay('🔒 家长验证', '请输入家长密码进入设置');
+    const ok = await showPresetPwd('settingsEntry');
     if (ok) openEditModal();
   });
   bindTap(document.getElementById('navModeToggle'), handleModeToggle);
@@ -4151,14 +4304,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const month=monthDate.getMonth();
       const monthStart=new Date(year, month, 1);
       const monthEnd=new Date(year, month + 1, 0);
-      const lastVisibleDate=offset===0 && month===today.getMonth() && year===today.getFullYear() ? today : monthEnd;
+      const isCurrentMonth = month===today.getMonth() && year===today.getFullYear();
+      const lastVisibleDate=monthEnd;
       const weeks=[];
       let week=Array(7).fill(null);
 
       for(let day=1; day<=lastVisibleDate.getDate(); day++){
         const current=new Date(year, month, day);
         const ds=current.getFullYear()+'-'+String(current.getMonth()+1).padStart(2,'0')+'-'+String(current.getDate()).padStart(2,'0');
-        week[current.getDay()]={ds, dow:current.getDay(), date:current, month, day};
+        week[current.getDay()]={ds, dow:current.getDay(), date:current, month, day, isFuture:isCurrentMonth && day>today.getDate()};
         if(current.getDay()===6 || day===lastVisibleDate.getDate()){
           weeks.push(week);
           week=Array(7).fill(null);
@@ -4167,6 +4321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       months.push({
         label: monthNames[month],
+        isCurrentMonth,
         weeks
       });
     }
@@ -4176,16 +4331,17 @@ document.addEventListener('DOMContentLoaded', function() {
       monthBlock.weeks.forEach((weekData, weekIndex)=>{
         const isFirstCol=weekIndex===0;
         html+=`<div class="heatmap-month-col${isFirstCol?' month-start':''}">`;
-        html+=`<div class="heatmap-month-label${isFirstCol?' has-label':''}">${isFirstCol?monthBlock.label:''}</div>`;
+        html+=`<div class="heatmap-month-label${isFirstCol?' has-label':''}${isFirstCol&&monthBlock.isCurrentMonth?' current-month':''}">${isFirstCol?monthBlock.label:''}</div>`;
         weekData.forEach(d=>{
           if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
           const value=cal[d.ds];
           const done=value===true;
           const partial=typeof value==='number' && value>0 && value!==true;
           const isToday=d.ds===todayStr2;
-          const isAnchor=d.day===1 || d.day===8 || d.day===15 || d.day===22 || d.day===29;
+          const isFuture=!!d.isFuture;
+          const isAnchor=isFuture || d.day===1 || d.day===8 || d.day===15 || d.day===22 || d.day===29;
           const anchorHtml=isAnchor?`<span class="heatmap-day-anchor">${d.day}</span>`:'';
-          html+=`<div class="heatmap-day${done?' done':''}${partial?' partial':''}${isToday?' today':''}" data-kid="${k}" data-date="${d.ds}" title="${d.ds}">${anchorHtml}</div>`;
+          html+=`<div class="heatmap-day${done?' done':''}${partial?' partial':''}${isToday?' today':''}${isFuture?' future':''}"${isFuture?'':' data-kid="'+k+'" data-date="'+d.ds+'"'} title="${d.ds}">${anchorHtml}</div>`;
         });
         html+=`</div>`;
       });
@@ -4407,6 +4563,123 @@ document.addEventListener('DOMContentLoaded', function() {
         o.start(t);o.stop(t+0.4);
       });
     }catch(e){}
+  }
+
+  const EASTER_MEDIA = {
+    lulu: {
+      title: '🎉 连续 7 天达成！Lulu 的专属奖励！'
+    },
+    qiqi: {
+      title: '🎉 连续 7 天达成！Qiqi 的专属奖励！'
+    },
+    mimi: {
+      title: '🎉 连续 7 天达成！Mimi 的专属奖励！'
+    }
+  };
+  const EASTER_MEDIA_BASES = ['lulu-caidan','qiqi-caidan','mimi-caidan'];
+  let currentEasterKid = 'lulu';
+
+  function resetEasterMediaState(){
+    const videoEl = document.getElementById('easterEggVideo');
+    const imgEl = document.getElementById('easterEggImg');
+    const fallbackEl = document.getElementById('easterEggFallback');
+    if(videoEl){
+      try{ videoEl.pause(); }catch(_){}
+      videoEl.removeAttribute('src');
+      try{ videoEl.load(); }catch(_){}
+      videoEl.style.display = 'none';
+    }
+    if(imgEl){
+      imgEl.removeAttribute('src');
+      imgEl.classList.remove('static');
+      imgEl.style.display = 'none';
+    }
+    if(fallbackEl) fallbackEl.style.display = 'none';
+  }
+
+  function playEasterCelebrationSound(k=currentEasterKid){
+    try{ playCelebMusic(); }catch(_){}
+    try{ playSuccessKid(k,true); }catch(_){}
+  }
+
+  function resolveEasterCandidates(k){
+    const config = EASTER_MEDIA[k] || EASTER_MEDIA.qiqi;
+    const base = EASTER_MEDIA_BASES[Math.floor(Math.random()*EASTER_MEDIA_BASES.length)] || 'lulu-caidan';
+    return [
+      { type:'video', src:`${base}.mp4` },
+      { type:'video', src:`${base}.mov` },
+      { type:'video', src:`${base}.webm` },
+      { type:'image', src:`${base}.gif` },
+      { type:'image', src:`${base}.jpg` },
+      { type:'image', src:`${base}.png` }
+    ];
+  }
+
+  function loadEasterRewardMedia(k){
+    const videoEl = document.getElementById('easterEggVideo');
+    const imgEl = document.getElementById('easterEggImg');
+    const fallbackEl = document.getElementById('easterEggFallback');
+    const candidates = resolveEasterCandidates(k);
+    resetEasterMediaState();
+
+    return new Promise(resolve => {
+      let index = 0;
+      const tryNext = () => {
+        if(index >= candidates.length){
+          if(fallbackEl) fallbackEl.style.display = 'block';
+          resolve({ type:'fallback' });
+          return;
+        }
+        const candidate = candidates[index++];
+        if(candidate.type === 'video' && videoEl){
+          videoEl.oncanplay = () => {
+            videoEl.style.display = 'block';
+            if(fallbackEl) fallbackEl.style.display = 'none';
+            videoEl.play().catch(()=>{});
+            resolve(candidate);
+          };
+          videoEl.onerror = () => tryNext();
+          videoEl.src = candidate.src;
+          try{ videoEl.load(); }catch(_){}
+          return;
+        }
+        if(candidate.type === 'image' && imgEl){
+          imgEl.onload = () => {
+            imgEl.style.display = 'block';
+            imgEl.classList.toggle('static', !candidate.src.endsWith('.gif'));
+            if(fallbackEl) fallbackEl.style.display = 'none';
+            resolve(candidate);
+          };
+          imgEl.onerror = () => tryNext();
+          imgEl.src = candidate.src;
+          return;
+        }
+        tryNext();
+      };
+      tryNext();
+    });
+  }
+
+  function showEasterReward(k){
+    const overlay = document.getElementById('easterEgg');
+    const titleEl = document.getElementById('easterEggTitle');
+    const subEl = document.getElementById('easterEggSub');
+    const config = EASTER_MEDIA[k] || EASTER_MEDIA.qiqi;
+    currentEasterKid = k;
+    if(titleEl) titleEl.textContent = config.title;
+    if(subEl) subEl.textContent = '优先播放同名短视频或动图，没有的话会自动回退到静态图片。';
+    loadEasterRewardMedia(k).then(media=>{
+      if(subEl){
+        subEl.textContent = media.type === 'video'
+          ? '这次已经升级成会动的短视频奖励啦！'
+          : media.type === 'image' && String(media.src || '').endsWith('.gif')
+            ? '这次已经升级成会动的 GIF 奖励啦！'
+            : '当前还没有找到动图/视频素材，先显示图片版本。';
+      }
+    });
+    overlay.classList.add('show');
+    try{launchConfetti();launchConfetti();}catch(_){}
+    playEasterCelebrationSound(k);
   }
 
   // ── 里程碑庆祝（30天/60天）──────────────────────────────────────────────
@@ -4726,14 +4999,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 触发盲盒条件：当前累计恰好到达第7天
     if(S[k].streaks[id] === 7){
       setTimeout(()=>{
-        const imgEl=document.getElementById('easterEggImg');
-        const src=k==='lulu'?'lulu-caidan.jpg':'qiqi-caidan.jpg';
-        imgEl.onerror=()=>{imgEl.style.display='none';document.getElementById('easterEggFallback').style.display='block';};
-        imgEl.onload=()=>{imgEl.style.display='block';document.getElementById('easterEggFallback').style.display='none';};
-        imgEl.src=src;
-        document.getElementById('easterEgg').classList.add('show');
-        try{launchConfetti();launchConfetti();}catch(e){}
-        try{playSuccessKid(k,true);}catch(e){}
+        showEasterReward(k);
       }, 700);
     } else {
       try{launchConfetti();}catch(e){}
@@ -4846,9 +5112,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function doReset(k){
-    const ok=await showPwdOverlay('🔒 重置今日打卡','请输入家长密码后继续');
+    const ok=await showPresetPwd('resetToday');
     if(!ok)return;
-    const confirmRes=await showAppDialog({title:'确认重置',desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',confirmText:'确认重置',cancelText:'先不重置'});
+    const confirmRes=await showPresetDialog('confirmReset');
     if(!confirmRes.confirmed)return;
     const today=todayStr();
     const before={
@@ -4871,7 +5137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     saveKidScore(k);
     try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}
     refreshAfterResetChange(k);
-    showToastAction('success','已重置','今天的打卡记录已经清空啦。',{actionLabel:'撤销重置',timeoutMs:5000,onAction:()=>{
+    showPresetToastAction('success','resetDone',{}, {actionLabel:'撤销重置',timeoutMs:5000,onAction:()=>{
       S[k].score=before.score;
       S[k].habits=before.habits.slice();
       S[k].tvRewardGiven=before.tvRewardGiven;
@@ -4885,7 +5151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else localStorage.removeItem(getStudyDoneKey(k));
       }catch(e){}
       refreshAfterResetChange(k);
-      showToast('success','已撤销','今天的打卡记录已经恢复。');
+      showPresetToast('success','resetUndone');
     }});
   }
 
@@ -4903,46 +5169,31 @@ document.addEventListener('DOMContentLoaded', function() {
     state.timer = setTimeout(()=>{ state.count = 0; }, 800);
     if(state.count < 5) return;
     state.count = 0;
-    const result = await showAppDialog({
-      title:'家长特权',
-      desc:'请输入要补充的积分，负数表示扣除。',
-      confirmText:'保存积分',
-      inputType:'number',
-      inputValue:'0',
-      inputPlaceholder:'请输入整数',
-      validator:value=>/^-?\\d+$/.test((value||'').trim())? '' : '请输入整数，可使用负数'
-    });
+    const result = await showPresetDialog('bankBonus');
     if(!result.confirmed) return;
     const pts = parseInt(result.value, 10);
     S[k].score = Math.max(0, S[k].score + pts);
     saveKidScore(k);
     updateBankUI(k);
-    showToast('success','积分已更新',`当前积分：${S[k].score} 分`);
+    showPresetToast('success','bonusUpdated',{ score:S[k].score });
   }
   async function handleWalletAction(k, type){
     const isSpend = type === 'wallet-spend';
-    const ok = await showPwdOverlay(isSpend ? '🔒 消费扣除验证' : '🔒 存入零钱包验证','请输入家长密码后继续');
+    const ok = await showPresetPwd(isSpend ? 'walletSpend' : 'walletDeposit');
     if(!ok) return;
     const cur = S[k].wallet.toFixed(2);
-    const result = await showAppDialog({
-      title:isSpend ? '零钱包扣除' : '零钱包存入',
-      desc:`当前余额：<b>¥${cur}</b><br>请输入本次${isSpend ? '消费' : '存入'}金额（元）`,
-      confirmText:isSpend ? '确认扣除' : '确认存入',
-      inputType:'number',
-      inputPlaceholder:'例如 5.20',
-      validator:value=>{
-        const amount = parseFloat(value);
-        if(Number.isNaN(amount) || amount <= 0) return '请输入大于 0 的有效金额';
-        if(isSpend && amount > S[k].wallet) return `余额不足，当前仅有 ¥${cur}`;
-        return '';
-      }
-    });
+    const result = await showPresetDialog('walletAction', { isSpend, currentBalance: cur, validator:value=>{
+      const amount = parseFloat(value);
+      if(Number.isNaN(amount) || amount <= 0) return '请输入大于 0 的有效金额';
+      if(isSpend && amount > S[k].wallet) return `余额不足，当前仅有 ¥${cur}`;
+      return '';
+    }});
     if(!result.confirmed) return;
     const amount = parseFloat(result.value);
     S[k].wallet = parseFloat((S[k].wallet + (isSpend ? -amount : amount)).toFixed(2));
     saveKidWallet(k);
     updateBankUI(k);
-    showToast('success',isSpend ? '扣除成功' : '存入成功',isSpend ? `已扣除 ¥${amount.toFixed(2)}，剩余 ¥${S[k].wallet.toFixed(2)}` : `已存入 ¥${amount.toFixed(2)}，当前余额 ¥${S[k].wallet.toFixed(2)}`);
+    showPresetToast('success','walletUpdated',{ isSpend, amount: amount.toFixed(2), balance: S[k].wallet.toFixed(2) });
   }
   function bindEvents(){
     if(panelEventsBound) return;
@@ -5183,7 +5434,8 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
   document.querySelector('#toastEncourage .toast-box').onclick=e=>e.stopPropagation();
-  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');renderAllHomeViews('tasks','feedback');};
+  document.getElementById('easterSoundBtn').onclick=e=>{e.preventDefault();playEasterCelebrationSound();};
+  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');resetEasterMediaState();renderAllHomeViews('tasks','feedback');};
 
   function openEditModal(){
     document.getElementById('edit-name-lulu').value = KID_NAMES.lulu || 'Lulu';
@@ -5249,7 +5501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderAllHomeViews('tasks','feedback');
     updateSelectorUI(currentKid);
     closeEditModal();
-    showToast('success','设置已保存','名字、头像和习惯内容都更新好了。');
+    showPresetToast('success','settingsSaved');
   };
   document.getElementById('cancelEditBtn').onclick=e=>{e.preventDefault();closeEditModal();};
   document.getElementById('editOverlay').onclick=()=>closeEditModal();
@@ -5260,12 +5512,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const data=collectBackupData();
     downloadBackupFile(data);
     document.getElementById('backupDisplay').style.display='block';
-    showToast('success','备份已导出','本次备份已包含成长记录、兑换记录和自定义奖励。');
+    showPresetToast('success','backupExported');
     try{localStorage.setItem('last_backup_date',todayStr());}catch(e2){}
     const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
   };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();closeEditModal();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok){reopenEditModalSoon();return;}const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始识别',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim()){reopenEditModalSoon();return;}try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${escapeHtml(backupAppVer)}<br>当前版本：${escapeHtml(V)}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed){reopenEditModalSoon();return;}}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed){reopenEditModalSoon();return;}}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){const inspectRes=await showAppDialog({title:'识别到的备份内容',desc:buildBackupInspectionHtml(data,count,backupAppVer,backupSchemaVer),confirmText:'确认导入',cancelText:'取消',inputType:'none'});if(!inspectRes.confirmed){reopenEditModalSoon();return;}downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`);setTimeout(()=>location.reload(),700);}else{showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');reopenEditModalSoon();}}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');reopenEditModalSoon();}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();closeEditModal();const ok=await showPresetPwd('importData');if(!ok){reopenEditModalSoon();return;}const inputRes=await showPresetDialog('importInput');if(!inputRes.confirmed||!inputRes.value.trim()){reopenEditModalSoon();return;}try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${escapeHtml(backupAppVer)}<br>当前版本：${escapeHtml(V)}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed){reopenEditModalSoon();return;}}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed){reopenEditModalSoon();return;}}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){const inspectRes=await showAppDialog({title:'识别到的备份内容',desc:buildBackupInspectionHtml(data,count,backupAppVer,backupSchemaVer),confirmText:'确认导入',cancelText:'取消',inputType:'none'});if(!inspectRes.confirmed){reopenEditModalSoon();return;}downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`);setTimeout(()=>location.reload(),700);}else{showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');reopenEditModalSoon();}}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');reopenEditModalSoon();}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
@@ -5283,7 +5535,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(records.length===0){tbody.innerHTML=`<tr><td colspan="6" style="color:#bbb;padding:12px 0;">还没有记录，快来量一量吧 📏</td></tr>`;return;}
     const dHtml=val=>{if(val===null)return`<span class="growth-same">—</span>`;const n=parseFloat(val);if(n>0)return`<span class="growth-up">+${val}</span>`;if(n<0)return`<span style="color:#42a5f5;">${val}</span>`;return`<span class="growth-same">0</span>`;};
     tbody.innerHTML=records.map((r,i)=>{const prev=records[i+1];const dH=prev?(r.height-prev.height).toFixed(1):null;const dW=prev?(r.weight-prev.weight).toFixed(1):null;return`<tr><td>${r.month}</td><td>${r.height}</td><td>${r.weight}</td><td>${dHtml(dH)}</td><td>${dHtml(dW)}</td><td><button class="growth-del-btn" data-kid="${k}" data-idx="${i}">🗑️</button></td></tr>`;}).join('');
-    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx,10);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);const removed=recs[idx];if(!removed)return;recs.splice(idx,1);saveGrowth(kid,recs);refreshGrowthViews(kid);showToastAction('success','已删除记录',`${removed.month} 的成长记录已删除`,{actionLabel:'撤销删除',timeoutMs:5000,onAction:()=>{const current=loadGrowth(kid);const restoreIdx=Math.min(idx,current.length);current.splice(restoreIdx,0,removed);saveGrowth(kid,current);refreshGrowthViews(kid);showToast('success','已撤销','成长记录已经恢复。');}});};});
+    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx,10);const ok=await showPresetPwd('growthDelete');if(!ok)return;const recs=loadGrowth(kid);const removed=recs[idx];if(!removed)return;recs.splice(idx,1);saveGrowth(kid,recs);refreshGrowthViews(kid);showPresetToastAction('success','growthDeleted',{ month: removed.month },{actionLabel:'撤销删除',timeoutMs:5000,onAction:()=>{const current=loadGrowth(kid);const restoreIdx=Math.min(idx,current.length);current.splice(restoreIdx,0,removed);saveGrowth(kid,current);refreshGrowthViews(kid);showPresetToast('success','growthRestored');}});};});
   }
 
   KIDS.forEach(k=>{
@@ -5312,7 +5564,7 @@ document.addEventListener('DOMContentLoaded', function() {
       hInput.value='';
       wInput.value='';
       hInput.focus();
-      showToast('success','记录已保存','成长档案已经更新好了。');
+      showPresetToast('success','growthSaved');
     });
     renderGrowthTable(k);
   });
