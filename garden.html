@@ -546,6 +546,44 @@ body.is-old-iphone #charSelector.compact{
 .hero-info{flex:1;}
 .hero-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.5rem;color:var(--on-surface);line-height:1.1;}
 .hero-sub{font-size:0.85rem;color:var(--text-mid);font-weight:500;margin-top:4px;}
+.hero-status-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+.hero-status-item{
+  background:var(--card-soft-fill);
+  border:1.5px solid var(--card-border);
+  border-radius:18px;
+  padding:10px 8px;
+  text-align:center;
+}
+.hero-status-label{
+  font-size:0.66rem;
+  font-weight:900;
+  color:var(--text-mid);
+  letter-spacing:0.3px;
+  text-transform:uppercase;
+}
+.hero-status-value{
+  margin-top:5px;
+  font-size:0.84rem;
+  font-weight:900;
+  color:var(--on-surface);
+  line-height:1.2;
+}
+.hero-tip{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:18px;
+  background:linear-gradient(135deg,var(--warm-green-light),rgba(255,255,255,0.92));
+  border:1.5px solid rgba(132,200,64,0.22);
+  font-size:0.78rem;
+  font-weight:800;
+  color:var(--on-surface);
+  line-height:1.5;
+}
 
 /* ── Unified Card System ── */
 .study-face,
@@ -2137,33 +2175,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="kid-identity-name"><span class="dyn-name" data-kid="${k}">${defaultName}</span></div>
           </div>
         </div>
-        <div class="section-title">📘 今日学习</div>
-        <div class="study-flip-wrap" id="${k}-studyBtn">
-          <div class="study-flip-inner" id="${k}-flip-inner">
-            <div class="study-face">
-              <div class="study-front-content">
-                <div class="study-word" id="${k}-study-word">cat</div>
-                <div class="study-phonetic" id="${k}-study-phonetic">/kæt/</div>
-                <div class="study-flip-hint">👆 点击翻看意思</div>
-              </div>
-            </div>
-            <div class="study-face study-face-back">
-              <div class="study-back-content">
-                <div class="study-header">
-                  <span class="study-label" style="color:${accent};">📘 英文学习 · <span id="${k}-study-level">L1</span></span>
-                  <div class="study-speak" id="${k}-study-speak" style="background:${accent};" title="朗读单词">🔊</div>
-                </div>
-                <div class="study-meaning" id="${k}-study-meaning">猫｜一只可爱的小猫</div>
-                <div class="study-phrase-text" id="${k}-study-phrase">a cute cat</div>
-                <div class="study-actions">
-                  <button class="study-btn got-it" id="${k}-study-gotit">✅ 我会了 +1分</button>
-                  <button class="study-btn again" id="${k}-study-again">🔄 再看看</button>
-                </div>
-                <div id="${k}-studyProgress"></div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="kid-home-group tasks">
           <div class="kid-home-group-head">
             <div>
@@ -2173,9 +2184,68 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="kid-home-group-tag">Today</div>
           </div>
           <div id="${k}-yesterdayReview"></div>
+          <div class="hero-card" id="${k}-heroCard">
+            <div class="hero-info">
+              <div class="hero-name"><span class="dyn-name" data-kid="${k}">${defaultName}</span></div>
+              <div class="hero-sub" id="${k}-heroSub">今天还没开始哦，加油！</div>
+              <div class="hero-status-grid">
+                <div class="hero-status-item">
+                  <div class="hero-status-label">📘 学习</div>
+                  <div class="hero-status-value" id="${k}-overviewStudy">待完成</div>
+                </div>
+                <div class="hero-status-item">
+                  <div class="hero-status-label">✅ 习惯</div>
+                  <div class="hero-status-value" id="${k}-overviewHabitRemain">还差 9 项</div>
+                </div>
+                <div class="hero-status-item">
+                  <div class="hero-status-label">🏅 挑战</div>
+                  <div class="hero-status-value" id="${k}-overviewSuper">0 / 3</div>
+                </div>
+              </div>
+              <div class="hero-tip" id="${k}-overviewTip">先从今天的好习惯开始吧。</div>
+            </div>
+            <div class="hero-ring-wrap">
+              <svg class="hero-ring" viewBox="0 0 88 88" aria-hidden="true">
+                <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(176,144,96,0.16)" stroke-width="8"></circle>
+                <circle cx="44" cy="44" r="36" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 44 44)" id="${k}-ring"></circle>
+              </svg>
+              <div class="hero-ring-inner">
+                <div class="hero-pct" id="${k}-pct">0%</div>
+                <div class="hero-pct-label">今日完成</div>
+              </div>
+            </div>
+          </div>
           <div class="section-title">✅ 今日好习惯</div>
           <div class="habits-grid" id="${k}-habitsList"></div>
           <div class="all-done-banner" id="${k}-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
+
+          <div class="section-title">📘 今日学习</div>
+          <div class="study-flip-wrap" id="${k}-studyBtn">
+            <div class="study-flip-inner" id="${k}-flip-inner">
+              <div class="study-face">
+                <div class="study-front-content">
+                  <div class="study-word" id="${k}-study-word">cat</div>
+                  <div class="study-phonetic" id="${k}-study-phonetic">/kæt/</div>
+                  <div class="study-flip-hint">👆 点击翻看意思</div>
+                </div>
+              </div>
+              <div class="study-face study-face-back">
+                <div class="study-back-content">
+                  <div class="study-header">
+                    <span class="study-label" style="color:${accent};">📘 英文学习 · <span id="${k}-study-level">L1</span></span>
+                    <div class="study-speak" id="${k}-study-speak" style="background:${accent};" title="朗读单词">🔊</div>
+                  </div>
+                  <div class="study-meaning" id="${k}-study-meaning">猫｜一只可爱的小猫</div>
+                  <div class="study-phrase-text" id="${k}-study-phrase">a cute cat</div>
+                  <div class="study-actions">
+                    <button class="study-btn got-it" id="${k}-study-gotit">✅ 我会了 +1分</button>
+                    <button class="study-btn again" id="${k}-study-again">🔄 再看看</button>
+                  </div>
+                  <div id="${k}-studyProgress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div class="section-title">🏆 超级挑战</div>
           <div class="super-card"><div class="super-title"><span id="${k}-superBadgeSummary">🏅 本月成就 0/3</span><span id="${k}-superBadgeTotal" style="font-size:0.82rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:3px 10px;">🏅 已获得 0 枚</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div id="${k}-superBadgeHint" style="margin:-6px 0 12px;font-size:0.74rem;font-weight:800;color:#8d6e00;background:#fff8dc;border-radius:12px;padding:8px 10px;">继续挑战就能解锁更多勋章</div><div class="super-list" id="${k}-superList"></div><div class="badge-roadmap" id="${k}-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="${k}-badgeDetailToggle" data-action="toggle-badge-detail" data-kid="${k}">📂 查看详情</button><div class="weekly-review-card" id="${k}-weeklyReview"></div>
@@ -5298,9 +5368,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const studyDone = isStudyDoneToday(k) ? 1 : 0;
     const totalCount = count + studyDone;
     const pct=Math.round((totalCount/TOTAL_TASKS)*100);
+    const remainingHabits = TOTAL_HABITS - count;
+    const challengeDone = (S[k].supers||[]).filter(Boolean).length;
     const ringEl=document.getElementById(`${k}-ring`);if(ringEl)ringEl.style.strokeDashoffset=226-(226*totalCount/TOTAL_TASKS);
     const pctEl=document.getElementById(`${k}-pct`);if(pctEl)pctEl.textContent=pct+'%';
     const subEl=document.getElementById(`${k}-heroSub`);if(subEl)subEl.textContent=totalCount===0?'今天还没开始哦，加油！':totalCount===TOTAL_TASKS?'🎉 今日全部完成！超棒的！':`已完成 ${totalCount} / ${TOTAL_TASKS} 个任务 💪`;
+    const overviewStudyEl=document.getElementById(`${k}-overviewStudy`);if(overviewStudyEl)overviewStudyEl.textContent=studyDone?'已完成':'待完成';
+    const overviewHabitEl=document.getElementById(`${k}-overviewHabitRemain`);if(overviewHabitEl)overviewHabitEl.textContent=remainingHabits===0?'已完成':'还差 ' + remainingHabits + ' 项';
+    const overviewSuperEl=document.getElementById(`${k}-overviewSuper`);if(overviewSuperEl)overviewSuperEl.textContent=`${challengeDone} / ${TOTAL_SUPERS}`;
+    const overviewTipEl=document.getElementById(`${k}-overviewTip`);
+    if(overviewTipEl){
+      let tip='先从今天的好习惯开始吧。';
+      if(!studyDone) tip='先把今天的学习完成，开个好头吧。';
+      else if(remainingHabits > 0) tip=`还差 ${remainingHabits} 项习惯，继续打卡吧。`;
+      else if(challengeDone < TOTAL_SUPERS) tip='日常任务完成啦，可以冲一项超级挑战。';
+      else tip='今天任务全部点亮了，去看看成长反馈吧。';
+      overviewTipEl.textContent = tip;
+    }
 
     if(currentKid===k){
       const maxStreak=Math.max(...(S[k].streaks||[0]));
@@ -5315,7 +5399,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(kidHint) kidHint.textContent = `⭐ 今天 +${totalCount} 星星`;
     for(let j=0;j<TOTAL_SUPERS;j++){const sb=document.getElementById(`${k}-superCheck-${j}`);if(!sb)continue;if(S[k].supers[j]){sb.classList.add('checked');sb.innerHTML='✔';}else{sb.classList.remove('checked');sb.innerHTML='';}}
     syncMonthlyBadgeProgress(k);
-    const badgeDone=(S[k].supers||[]).filter(Boolean).length;
+    const badgeDone=challengeDone;
     const badgeInfo=getCurrentBadgeTier(k);
     const badgeSummary=document.getElementById(`${k}-superBadgeSummary`);
     if(badgeSummary) badgeSummary.textContent = `🏅 当前等级：${getBadgeTitle(badgeInfo.tier)}`;
