@@ -1802,7 +1802,7 @@ body.is-old-iphone .map-flower-count{
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
-<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline muted loop preload="auto"></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-status pending" id="easterEggStatus">⏳ 正在尝试视频</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline webkit-playsinline loop preload="metadata"></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-status pending" id="easterEggStatus">⏳ 正在尝试视频</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 <div class="onboard-overlay" id="onboardOverlay">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
@@ -5120,15 +5120,35 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   const EASTER_MEDIA_BASES = ['lulu-caidan','qiqi-caidan','mimi-caidan'];
   let currentEasterKid = 'lulu';
+  let currentEasterMedia = null;
+  let currentEasterNeedsManualSound = false;
+
+  function updateEasterSoundButton(media=currentEasterMedia){
+    const btn = document.getElementById('easterSoundBtn');
+    if(!btn) return;
+    btn.textContent = currentEasterNeedsManualSound && media && media.type === 'video'
+      ? '🔊 点一下播放视频声音'
+      : '🔊 再播一次庆祝音乐';
+  }
 
   function resetEasterMediaState(){
     const videoEl = document.getElementById('easterEggVideo');
     const imgEl = document.getElementById('easterEggImg');
     const fallbackEl = document.getElementById('easterEggFallback');
     const statusEl = document.getElementById('easterEggStatus');
+    currentEasterMedia = null;
+    currentEasterNeedsManualSound = false;
     if(videoEl){
       try{ videoEl.pause(); }catch(_){}
+      videoEl.oncanplay = null;
+      videoEl.onloadeddata = null;
+      videoEl.onerror = null;
+      videoEl.onended = null;
+      videoEl.muted = false;
+      videoEl.volume = 1;
+      videoEl.removeAttribute('poster');
       videoEl.removeAttribute('src');
+      try{ videoEl.currentTime = 0; }catch(_){}
       try{ videoEl.load(); }catch(_){}
       videoEl.style.display = 'none';
     }
@@ -5142,6 +5162,7 @@ document.addEventListener('DOMContentLoaded', function() {
       statusEl.className = 'easter-status pending';
       statusEl.textContent = '⏳ 正在尝试视频';
     }
+    updateEasterSoundButton(null);
   }
 
   function playEasterCelebrationSound(k=currentEasterKid){
@@ -5167,7 +5188,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileName = src ? src.split('/').pop() : '';
     if(media.type === 'video'){
       statusEl.className = 'easter-status video';
-      statusEl.textContent = `▶ 视频播放中${fileName ? ` · ${fileName}` : ''}`;
+      statusEl.textContent = currentEasterNeedsManualSound
+        ? `▶ 视频已显示${fileName ? ` · ${fileName}` : ''} · 等你点一下开声`
+        : `▶ 视频播放中${fileName ? ` · ${fileName}` : ''}`;
       return;
     }
     if(media.type === 'image' && src.endsWith('.gif')){
@@ -5196,13 +5219,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const candidate = candidates[index++];
         if(candidate.type === 'video' && videoEl){
-          videoEl.oncanplay = () => {
+          const posterSrc = candidate.src.replace(/\.(mp4|webm)$/i, '.jpg');
+          let settled = false;
+          const resolveOnce = media => {
+            if(settled) return;
+            settled = true;
+            resolve(media);
+          };
+          const failToNext = () => {
+            if(settled) return;
+            settled = true;
+            tryNext();
+          };
+          videoEl.preload = 'metadata';
+          videoEl.playsInline = true;
+          videoEl.setAttribute('playsinline','');
+          videoEl.setAttribute('webkit-playsinline','');
+          videoEl.loop = true;
+          videoEl.controls = false;
+          videoEl.muted = false;
+          videoEl.volume = 1;
+          videoEl.poster = posterSrc;
+          videoEl.onloadeddata = () => {
             videoEl.style.display = 'block';
             if(fallbackEl) fallbackEl.style.display = 'none';
-            videoEl.play().catch(()=>{});
-            resolve({ ...candidate, reason:'video_ok' });
           };
-          videoEl.onerror = () => tryNext();
+          videoEl.oncanplay = async () => {
+            if(settled) return;
+            videoEl.style.display = 'block';
+            if(fallbackEl) fallbackEl.style.display = 'none';
+            try{ videoEl.currentTime = 0.001; }catch(_){}
+            try{
+              await videoEl.play();
+              currentEasterNeedsManualSound = false;
+              resolveOnce({ ...candidate, reason:'video_ok' });
+            }catch(_){
+              try{
+                videoEl.muted = true;
+                await videoEl.play();
+                currentEasterNeedsManualSound = true;
+                resolveOnce({ ...candidate, reason:'video_muted_fallback' });
+              }catch(_2){
+                failToNext();
+              }
+            }
+          };
+          videoEl.onerror = () => failToNext();
           videoEl.src = candidate.src;
           try{ videoEl.load(); }catch(_){}
           return;
@@ -5233,10 +5295,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if(titleEl) titleEl.textContent = config.title;
     if(subEl) subEl.textContent = '优先播放同名短视频或动图，没有的话会自动回退到静态图片。';
     loadEasterRewardMedia(k).then(media=>{
+      currentEasterMedia = media;
       updateEasterStatus(media);
+      updateEasterSoundButton(media);
       if(subEl){
         subEl.textContent = media.type === 'video'
-          ? '这次已经升级成会动的短视频奖励啦！'
+          ? currentEasterNeedsManualSound
+            ? '这次已经切到会动的视频啦；苹果旧机可能会拦自动开声，点一下按钮就能开声音。'
+            : '这次已经升级成会动有声的短视频奖励啦！'
           : media.type === 'image' && String(media.src || '').endsWith('.gif')
             ? '这次已经升级成会动的 GIF 奖励啦！'
             : '当前浏览器没有成功播放视频，已经自动回退到图片版本。';
@@ -5577,9 +5643,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 触发盲盒条件：当前累计恰好到达第7天
     if(S[k].streaks[id] === 7){
-      setTimeout(()=>{
-        showEasterReward(k);
-      }, 700);
+      showEasterReward(k);
     } else {
       try{launchConfetti();}catch(e){}
       try{playSuccessKid(k,totalCount===TOTAL_TASKS);}catch(e){}
@@ -5994,7 +6058,23 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
   document.querySelector('#toastEncourage .toast-box').onclick=e=>e.stopPropagation();
-  document.getElementById('easterSoundBtn').onclick=e=>{e.preventDefault();playEasterCelebrationSound();};
+  document.getElementById('easterSoundBtn').onclick=async e=>{
+    e.preventDefault();
+    const videoEl = document.getElementById('easterEggVideo');
+    if(currentEasterNeedsManualSound && currentEasterMedia && currentEasterMedia.type === 'video' && videoEl && videoEl.src){
+      try{
+        videoEl.muted = false;
+        videoEl.volume = 1;
+        try{ videoEl.currentTime = 0; }catch(_){}
+        await videoEl.play();
+        currentEasterNeedsManualSound = false;
+        updateEasterStatus(currentEasterMedia);
+        updateEasterSoundButton(currentEasterMedia);
+        return;
+      }catch(_){}
+    }
+    playEasterCelebrationSound();
+  };
   document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');resetEasterMediaState();renderAllHomeViews('tasks','feedback');};
 
   function openEditModal(){
