@@ -1802,7 +1802,7 @@ body.is-old-iphone .map-flower-count{
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
-<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline webkit-playsinline loop preload="metadata"></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-status pending" id="easterEggStatus">⏳ 正在尝试视频</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline webkit-playsinline loop preload="auto" autoplay></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-status pending" id="easterEggStatus">⏳ 正在尝试视频</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 <div class="onboard-overlay" id="onboardOverlay">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
@@ -5231,7 +5231,18 @@ document.addEventListener('DOMContentLoaded', function() {
             settled = true;
             tryNext();
           };
-          videoEl.preload = 'metadata';
+          const playbackTimeout = setTimeout(() => {
+            if(settled) return;
+            if(videoEl && !videoEl.paused){
+              currentEasterNeedsManualSound = !!videoEl.muted;
+              resolveOnce({ ...candidate, reason:videoEl.muted ? 'video_muted_timeout' : 'video_ok_timeout' });
+              return;
+            }
+            failToNext();
+          }, 2500);
+          const clearPlaybackTimeout = () => clearTimeout(playbackTimeout);
+          videoEl.preload = 'auto';
+          videoEl.autoplay = true;
           videoEl.playsInline = true;
           videoEl.setAttribute('playsinline','');
           videoEl.setAttribute('webkit-playsinline','');
@@ -5244,29 +5255,32 @@ document.addEventListener('DOMContentLoaded', function() {
             videoEl.style.display = 'block';
             if(fallbackEl) fallbackEl.style.display = 'none';
           };
-          videoEl.oncanplay = async () => {
-            if(settled) return;
-            videoEl.style.display = 'block';
-            if(fallbackEl) fallbackEl.style.display = 'none';
-            try{ videoEl.currentTime = 0.001; }catch(_){}
+          videoEl.onerror = () => {
+            clearPlaybackTimeout();
+            failToNext();
+          };
+          videoEl.src = candidate.src;
+          try{ videoEl.load(); }catch(_){}
+          (async () => {
             try{
               await videoEl.play();
+              clearPlaybackTimeout();
               currentEasterNeedsManualSound = false;
               resolveOnce({ ...candidate, reason:'video_ok' });
             }catch(_){
               try{
                 videoEl.muted = true;
+                videoEl.defaultMuted = true;
                 await videoEl.play();
+                clearPlaybackTimeout();
                 currentEasterNeedsManualSound = true;
                 resolveOnce({ ...candidate, reason:'video_muted_fallback' });
               }catch(_2){
+                clearPlaybackTimeout();
                 failToNext();
               }
             }
-          };
-          videoEl.onerror = () => failToNext();
-          videoEl.src = candidate.src;
-          try{ videoEl.load(); }catch(_){}
+          })();
           return;
         }
         if(candidate.type === 'image' && imgEl){
