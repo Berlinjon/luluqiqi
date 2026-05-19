@@ -1,6 +1,6 @@
-const CACHE_NAME = 'garden-root-shell-v3';
+const CACHE_NAME = 'garden-app-shell-v3';
 const OFFLINE_ASSETS = [
-  './garden-app/index.html',
+  './index.html',
   './manifest.webmanifest',
   './icons/icon-192-v2.png',
   './icons/icon-512-v2.png',
@@ -29,9 +29,9 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(request).then(response => {
         const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put('./garden-app/index.html', copy));
+        caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
         return response;
-      }).catch(() => caches.match('./garden-app/index.html'))
+      }).catch(() => caches.match('./index.html'))
     );
     return;
   }
