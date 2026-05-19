@@ -5173,6 +5173,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function resolveEasterCandidates(k){
     const base = EASTER_MEDIA_BASES[Math.floor(Math.random()*EASTER_MEDIA_BASES.length)] || 'lulu-caidan';
     return [
+      { type:'video', src:`${base}.m4v` },
       { type:'video', src:`${base}.mp4` },
       { type:'video', src:`${base}.webm` },
       { type:'image', src:`${base}.gif` },
@@ -5219,7 +5220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const candidate = candidates[index++];
         if(candidate.type === 'video' && videoEl){
-          const posterSrc = candidate.src.replace(/\.(mp4|webm)$/i, '.jpg');
+          const posterSrc = candidate.src.replace(/\.(m4v|mp4|webm)$/i, '.jpg');
           let settled = false;
           const resolveOnce = media => {
             if(settled) return;
