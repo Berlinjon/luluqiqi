@@ -1,0 +1,22 @@
+{
+  "name": "每日花园",
+  "short_name": "每日花园",
+  "description": "适合家庭使用的轻量习惯打卡花园，支持主屏幕启动和离线打开。",
+  "start_url": "./garden-app/index.html",
+  "scope": "./garden-app/",
+  "display": "standalone",
+  "background_color": "#fff8ed",
+  "theme_color": "#fff8ed",
+  "icons": [
+    {
+      "src": "icons/icon-192-v2.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-v2.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
