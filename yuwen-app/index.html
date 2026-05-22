@@ -1612,6 +1612,15 @@ button:active {
   font-weight: 950;
 }
 
+.exit-game-btn {
+  width: auto;
+  min-width: 96px;
+  padding: 0 14px;
+  grid-auto-flow: column;
+  gap: 6px;
+  font-size: .92rem;
+}
+
 .game-body {
   padding: clamp(16px, 4vw, 28px);
 }
@@ -2926,7 +2935,7 @@ body.app-view-map #kidView {
   <div class="game-card">
     <div class="game-top">
       <h2 id="gameTitle">关卡</h2>
-      <button class="close-btn" id="closeGame" aria-label="关闭">×</button>
+      <button class="close-btn exit-game-btn" id="closeGame" aria-label="退出关卡">退出关卡</button>
     </div>
     <div class="game-body">
       <div class="lesson-guide">
