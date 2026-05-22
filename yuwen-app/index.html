@@ -1,0 +1,4748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f7fbf5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="语文小探险">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/apple-touch-icon-v2.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../icons/icon-192-v2.png">
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<title>语文小探险</title>
+<style>
+:root {
+  --paper: #f7fbf5;
+  --ink: #18212b;
+  --muted: #62707b;
+  --line: #d8e2dc;
+  --card: #ffffff;
+  --green: #2f855a;
+  --green-soft: #dff4e8;
+  --blue: #2364aa;
+  --blue-soft: #dcecff;
+  --yellow: #f6c85f;
+  --orange: #ef7b45;
+  --red: #d94f4f;
+  --shadow: 0 14px 36px rgba(27, 49, 66, .12);
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--paper); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background:
+    linear-gradient(180deg, rgba(247,251,245,.94), rgba(242,248,246,.98)),
+    radial-gradient(circle at 10% 0%, rgba(246,200,95,.22), transparent 32%),
+    radial-gradient(circle at 94% 18%, rgba(35,100,170,.16), transparent 30%);
+}
+
+body.celebrating {
+  animation: pageCelebrate .6s ease;
+}
+
+button, input { font: inherit; }
+button {
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.app {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 18px 18px 94px;
+  position: relative;
+  z-index: 1;
+}
+
+.decor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.decor-item {
+  position: absolute;
+  opacity: .86;
+  filter: drop-shadow(0 10px 16px rgba(27,49,66,.1));
+}
+
+.decor-item svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.decor-cloud {
+  width: 126px;
+  height: 64px;
+  left: 2vw;
+  top: 108px;
+  animation: driftCloud 13s ease-in-out infinite;
+}
+
+.decor-pencil {
+  width: 102px;
+  height: 102px;
+  right: 4vw;
+  top: 138px;
+  animation: floatMark 4.2s ease-in-out infinite;
+}
+
+.decor-star {
+  width: 74px;
+  height: 74px;
+  right: 9vw;
+  bottom: 96px;
+  animation: twinkleSpin 4.6s ease-in-out infinite;
+}
+
+.decor-leaf {
+  width: 76px;
+  height: 76px;
+  left: 7vw;
+  bottom: 76px;
+  animation: leafSway 5.4s ease-in-out infinite;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 0 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(24,33,43,.08);
+  animation: floatMark 3s ease-in-out infinite;
+}
+
+.brand-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 4vw, 2.35rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.brand-subtitle {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: .95rem;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 5px;
+  background: rgba(255,255,255,.78);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(27,49,66,.08);
+}
+
+.topbar .mode-tabs .tab {
+  display: none;
+}
+
+.sound-btn {
+  min-width: 48px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #fff6dc;
+  color: #7b4b00;
+  font-weight: 950;
+}
+
+.tab {
+  min-width: 92px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--muted);
+  background: transparent;
+  font-weight: 900;
+}
+
+.tab.active {
+  color: #fff;
+  background: var(--ink);
+}
+
+.hero {
+  display: none;
+  margin-top: 8px;
+}
+
+.app-home {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) 300px;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.story-stage {
+  min-height: 210px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background:
+    radial-gradient(circle at 92% 18%, rgba(246,200,95,.72) 0 36px, transparent 37px),
+    linear-gradient(180deg, #dff4ff, #f7fbf5 52%, #dff4e8);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.story-stage::after {
+  content: "";
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  bottom: -38px;
+  height: 110px;
+  border-radius: 50% 50% 0 0;
+  background: rgba(47,133,90,.18);
+}
+
+.hero-mascot {
+  width: 136px;
+  height: 136px;
+  border-radius: 42px;
+  background: #f6c85f;
+  border: 5px solid #18212b;
+  box-shadow: 0 12px 0 rgba(24,33,43,.12);
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 2;
+  animation: mascotWave 2.6s ease-in-out infinite;
+}
+
+.hero-mascot svg {
+  width: 108px;
+  height: 108px;
+}
+
+.speech-panel {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
+}
+
+.speech-panel h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.8vw, 2.35rem);
+  line-height: 1.08;
+}
+
+.speech-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.big-start {
+  width: fit-content;
+  min-height: 54px;
+  padding: 0 22px;
+  border-radius: 12px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 950;
+  box-shadow: 0 8px 0 rgba(123,75,0,.2);
+  animation: startPulse 1.8s ease-in-out infinite;
+}
+
+.quick-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.quick-card {
+  min-height: 64px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 20px rgba(27,49,66,.08);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  color: var(--ink);
+  text-align: left;
+}
+
+.quick-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 950;
+}
+
+.quick-card strong {
+  display: block;
+}
+
+.quick-card span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 750;
+}
+
+.reward-strip {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.reward-badge {
+  min-height: 78px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-weight: 950;
+}
+
+.reward-badge b {
+  display: block;
+  color: #7b4b00;
+  font-size: 1.45rem;
+}
+
+.reward-badge span {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.reward-room {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.reward-room-hero {
+  min-height: 178px;
+  border-radius: var(--radius);
+  padding: 18px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(24,33,43,.92), rgba(35,100,170,.86)),
+    radial-gradient(circle at 80% 20%, rgba(246,200,95,.45), transparent 28%);
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  gap: 12px;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.reward-room-hero h2 {
+  margin: 10px 0 6px;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.reward-room-hero p {
+  margin: 0;
+  color: rgba(255,255,255,.82);
+  font-weight: 800;
+  line-height: 1.65;
+}
+
+.reward-orbit {
+  width: 142px;
+  height: 142px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255,255,255,.48);
+  position: relative;
+  animation: orbitSpin 12s linear infinite;
+}
+
+.reward-orbit span {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff6dc;
+  color: var(--ink);
+  font-weight: 950;
+  box-shadow: 0 12px 24px rgba(0,0,0,.18);
+}
+
+.reward-orbit span:nth-child(1) { left: 48px; top: -20px; }
+.reward-orbit span:nth-child(2) { right: -18px; top: 50px; }
+.reward-orbit span:nth-child(3) { left: 48px; bottom: -20px; }
+.reward-orbit span:nth-child(4) { left: -18px; top: 50px; }
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.unit-badge {
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  border-radius: var(--radius);
+  min-height: 132px;
+  padding: 12px;
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.unit-badge::after {
+  content: "";
+  position: absolute;
+  inset: auto -22px -34px auto;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: var(--badge-glow, rgba(246,200,95,.22));
+}
+
+.unit-badge.locked {
+  filter: grayscale(.25);
+  opacity: .72;
+}
+
+.unit-badge-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #fff6dc;
+  color: #7b4b00;
+  font-weight: 950;
+  font-size: 1.2rem;
+}
+
+.unit-badge strong,
+.treasure-panel strong {
+  display: block;
+  font-weight: 950;
+}
+
+.unit-badge span,
+.treasure-panel span {
+  display: block;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.treasure-panel {
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+}
+
+.treasure-panel.claimed {
+  background: #fff6dc;
+}
+
+.today-meter {
+  margin-top: 10px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(24,33,43,.08);
+  overflow: hidden;
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.today-meter span {
+  display: block;
+  width: var(--today-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--yellow));
+  transition: width .35s ease;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: min(680px, calc(100% - 24px));
+  z-index: 18;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(24,33,43,.1);
+  box-shadow: 0 18px 40px rgba(27,49,66,.18);
+  backdrop-filter: blur(14px);
+}
+
+.bottom-nav button {
+  min-height: 52px;
+  border-radius: 12px;
+  background: #f1f5f3;
+  color: var(--muted);
+  font-weight: 950;
+}
+
+.bottom-nav button.active,
+.bottom-nav button:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.mission {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr minmax(420px, 1.35fr);
+  gap: 14px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.mission::after {
+  display: none;
+}
+
+.mission-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #fff6dc;
+  color: #7b4b00;
+  font-weight: 950;
+  font-size: .86rem;
+}
+
+.mission h2, .panel-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  line-height: 1.16;
+}
+
+.mission h2 {
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+}
+
+.mission p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+  font-weight: 650;
+}
+
+.mission-intro {
+  display: none;
+}
+
+.guide-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #fff8e5, #eef8ff);
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.hero .guide-card {
+  display: none;
+}
+
+.guide-avatar {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f6c85f;
+  border: 4px solid #18212b;
+  box-shadow: 0 8px 0 rgba(24,33,43,.08);
+  animation: guideBounce 2.8s ease-in-out infinite;
+}
+
+.guide-avatar svg {
+  width: 50px;
+  height: 50px;
+}
+
+.guide-card strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.guide-card span {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.55;
+  font-size: .9rem;
+}
+
+.daily-path {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.path-step {
+  min-height: 92px;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: #f8faf9;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  position: relative;
+  overflow: hidden;
+  color: var(--ink);
+  text-align: left;
+}
+
+.path-step::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 50%;
+  background: rgba(246,200,95,.22);
+  transform: scale(.8);
+  animation: stepPulse 3.5s ease-in-out infinite;
+}
+
+.path-step:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(27,49,66,.1);
+  background: #fff;
+}
+
+.step-label {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 950;
+}
+
+.path-step strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.path-step span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .84rem;
+  font-weight: 700;
+}
+
+.path-step.action-card {
+  cursor: pointer;
+}
+
+.path-step.action-card strong::after {
+  content: " →";
+  color: var(--green);
+}
+
+.scene {
+  display: none;
+  min-height: 330px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: linear-gradient(180deg, #dff4ff 0%, #f4fbff 49%, #e2f3d3 50%, #cfe8c2 100%);
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  transform: translateX(-110%);
+  animation: sceneShimmer 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.scene svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 330px;
+}
+
+.scene .scene-float {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sceneFloat 3.6s ease-in-out infinite;
+}
+
+.scene .scene-float.delay {
+  animation-delay: .6s;
+}
+
+.section-grid {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 280px;
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+}
+
+.product-strip {
+  display: none;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.product-card {
+  min-height: 112px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 8px 22px rgba(27,49,66,.07);
+  display: grid;
+  align-content: space-between;
+}
+
+.product-card b {
+  font-size: 1.35rem;
+  color: var(--green);
+}
+
+.product-card span {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+  font-size: .86rem;
+}
+
+.panel {
+  background: rgba(255,255,255,.88);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(27,49,66,.08);
+  padding: 14px;
+}
+
+.panel-title {
+  font-size: 1.08rem;
+  margin-bottom: 12px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.panel-head .panel-title {
+  margin-bottom: 0;
+}
+
+.mini-btn {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 950;
+}
+
+.mini-btn:disabled {
+  cursor: default;
+  opacity: .46;
+}
+
+.unit-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.unit-list {
+  display: grid;
+  gap: 8px;
+}
+
+.unit-btn {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.unit-btn.active {
+  border-color: rgba(47,133,90,.35);
+  background: var(--green-soft);
+  box-shadow: 0 8px 18px rgba(47,133,90,.12);
+}
+
+.unit-index {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 950;
+}
+
+.unit-name {
+  font-weight: 950;
+}
+
+.unit-meta {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  margin-top: 3px;
+  font-weight: 750;
+}
+
+.progress-pill {
+  border-radius: 999px;
+  background: #f1f5f3;
+  color: var(--green);
+  padding: 5px 8px;
+  font-size: .76rem;
+  font-weight: 950;
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lesson-card {
+  min-height: 188px;
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-content: stretch;
+  align-items: stretch;
+  gap: 12px;
+  text-align: left;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 6px 16px rgba(27,49,66,.06);
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  animation: cardIn .26s ease both;
+}
+
+.lesson-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 24px 20px, rgba(255,255,255,.78) 0 7px, transparent 8px),
+    linear-gradient(135deg, var(--card-tint, rgba(246,200,95,.12)), transparent 62%);
+  opacity: .9;
+  pointer-events: none;
+}
+
+.lesson-card::after {
+  content: "";
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  right: -42px;
+  top: -42px;
+  border-radius: 50%;
+  background: var(--card-sun, rgba(246,200,95,.2));
+  pointer-events: none;
+}
+
+.lesson-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(27,49,66,.12);
+  border-color: rgba(47,133,90,.32);
+}
+
+.lesson-card:hover .lesson-art svg {
+  transform: translateY(-4px) rotate(-1deg);
+}
+
+.lesson-card.done {
+  border-color: rgba(47,133,90,.32);
+  background: linear-gradient(180deg, #fff, #f2fbf5);
+}
+
+.lesson-card.done .lesson-art::after {
+  content: "★";
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f6c85f;
+  color: #7b4b00;
+  font-weight: 950;
+  box-shadow: 0 5px 0 rgba(123,75,0,.12);
+}
+
+.lesson-art {
+  position: relative;
+  z-index: 1;
+  min-height: 142px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.34)),
+    var(--art-bg, #fff8e5);
+  border: 1px solid rgba(24,33,43,.08);
+  overflow: hidden;
+}
+
+.lesson-art svg {
+  width: 104px;
+  height: 104px;
+  transition: transform .22s ease;
+  animation: artFloat 3.7s ease-in-out infinite;
+}
+
+.lesson-copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: grid;
+  align-content: space-between;
+  gap: 10px;
+}
+
+.lesson-card:nth-child(2) { animation-delay: .04s; }
+.lesson-card:nth-child(3) { animation-delay: .08s; }
+.lesson-card:nth-child(4) { animation-delay: .12s; }
+
+.lesson-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: start;
+}
+
+.lesson-card h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.22;
+}
+
+.lesson-type {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: .74rem;
+  font-weight: 950;
+}
+
+.lesson-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .86rem;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.lesson-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--green);
+  font-weight: 950;
+  font-size: .86rem;
+}
+
+.story-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7b4b00;
+}
+
+.word-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.word-chip {
+  min-width: 32px;
+  min-height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #f5f7f8;
+  border: 1px solid rgba(24,33,43,.08);
+  font-weight: 950;
+}
+
+.word-chip.with-pinyin {
+  min-width: 42px;
+  padding: 5px 7px 6px;
+  gap: 2px;
+}
+
+.chip-pinyin {
+  display: block;
+  color: var(--blue);
+  font-size: .7rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.chip-hanzi {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.parent-stats {
+  display: grid;
+  gap: 10px;
+}
+
+.report-hero-card {
+  grid-column: span 2;
+  min-height: 208px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 156px;
+  align-items: center;
+  gap: 16px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(24,33,43,.95), rgba(47,133,90,.86)),
+    radial-gradient(circle at 84% 12%, rgba(246,200,95,.42), transparent 28%);
+  overflow: hidden;
+}
+
+.report-hero-copy h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  line-height: 1.12;
+}
+
+.report-hero-copy p {
+  margin: 0;
+  color: rgba(255,255,255,.84);
+  font-weight: 800;
+  line-height: 1.7;
+}
+
+.report-ring {
+  width: 142px;
+  height: 142px;
+  border-radius: 50%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  background:
+    radial-gradient(circle, #fff 0 56%, transparent 57%),
+    conic-gradient(var(--yellow) var(--report-progress, 0%), rgba(255,255,255,.25) 0);
+  color: var(--ink);
+  box-shadow: 0 18px 34px rgba(0,0,0,.16);
+}
+
+.report-ring b {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 950;
+}
+
+.report-ring span {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.report-kpis {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.plan-list,
+.report-list,
+.privacy-list {
+  display: grid;
+  gap: 8px;
+}
+
+.plan-item,
+.report-item,
+.privacy-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.plan-dot {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 950;
+}
+
+.plan-item strong,
+.report-item strong,
+.privacy-item strong {
+  display: block;
+  font-size: .95rem;
+}
+
+.plan-item span,
+.report-item span,
+.privacy-item span {
+  display: block;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 750;
+  margin-top: 2px;
+}
+
+.report-wide {
+  grid-column: span 2;
+}
+
+.unit-progress-list {
+  display: grid;
+  gap: 10px;
+}
+
+.unit-progress-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  padding: 10px;
+}
+
+.unit-progress-meta strong {
+  display: block;
+  font-weight: 950;
+}
+
+.unit-progress-meta span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+}
+
+.progress-track {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(24,33,43,.08);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-track span {
+  display: block;
+  width: var(--unit-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--yellow));
+}
+
+.mistake-trend {
+  min-height: 118px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f7faf8;
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.trend-bar {
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.trend-bar i {
+  display: block;
+  width: 100%;
+  max-width: 24px;
+  min-height: 8px;
+  height: var(--trend-height, 8px);
+  border-radius: 999px 999px 4px 4px;
+  background: linear-gradient(180deg, var(--orange), var(--red));
+}
+
+.trend-bar span {
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 850;
+}
+
+.small-title {
+  margin-top: 14px;
+  font-size: 1.05rem;
+}
+
+.status-chip {
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: #f1f5f3;
+  color: var(--green);
+  font-size: .74rem;
+  font-weight: 950;
+}
+
+.install-card {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(35,100,170,.18);
+  background: linear-gradient(135deg, #eef8ff, #fff8e5);
+  box-shadow: 0 10px 28px rgba(27,49,66,.08);
+}
+
+.install-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.install-card span {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.adventure-map {
+  margin-top: 12px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background:
+    linear-gradient(180deg, rgba(223,244,255,.95), rgba(244,251,255,.9) 48%, rgba(226,243,211,.94) 49%, rgba(207,232,194,.96));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+}
+
+.map-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.map-head strong {
+  display: block;
+  font-size: 1.08rem;
+}
+
+.map-head span {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: .84rem;
+  margin-top: 2px;
+}
+
+.map-stage {
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 22%, rgba(255,255,255,.92) 0 14px, transparent 15px),
+    radial-gradient(circle at 18% 24%, rgba(255,255,255,.8) 0 10px, transparent 11px),
+    radial-gradient(circle at 82% 18%, rgba(246,200,95,.88) 0 28px, transparent 29px);
+  animation: mapSky 8s ease-in-out infinite;
+}
+
+.map-hills {
+  position: absolute;
+  inset: auto 0 0;
+  height: 120px;
+  background:
+    radial-gradient(ellipse at 22% 100%, rgba(47,133,90,.78) 0 38%, transparent 39%),
+    radial-gradient(ellipse at 68% 100%, rgba(103,169,107,.85) 0 44%, transparent 45%);
+  opacity: .9;
+}
+
+.route-svg {
+  position: absolute;
+  inset: 42px 28px 28px;
+  width: calc(100% - 56px);
+  height: calc(100% - 70px);
+  overflow: visible;
+}
+
+.route-base,
+.route-glow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.route-base {
+  stroke: rgba(255,255,255,.78);
+  stroke-width: 18;
+}
+
+.route-glow {
+  stroke: rgba(246,200,95,.9);
+  stroke-width: 7;
+  stroke-dasharray: 14 14;
+  animation: routeMove 1.4s linear infinite;
+}
+
+.map-node {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 76px;
+  min-height: 76px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #18212b;
+  color: var(--ink);
+  box-shadow: 0 9px 0 rgba(24,33,43,.12);
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  font-weight: 950;
+  text-align: center;
+  line-height: 1.1;
+  z-index: 4;
+  animation: nodeFloat 3.2s ease-in-out infinite;
+}
+
+.map-node small {
+  display: block;
+  color: var(--muted);
+  font-size: .66rem;
+  margin-top: 3px;
+  font-weight: 850;
+}
+
+.map-node.done {
+  background: #fff8e5;
+  border-color: #7b4b00;
+  color: #7b4b00;
+}
+
+.map-node.current {
+  background: var(--green-soft);
+  border-color: var(--green);
+  animation: currentNode 1.1s ease-in-out infinite;
+}
+
+.map-node.locked {
+  opacity: .72;
+  filter: saturate(.85);
+}
+
+.map-avatar {
+  position: absolute;
+  left: var(--avatar-x, 16%);
+  top: var(--avatar-y, 56%);
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -115%);
+  z-index: 5;
+  border-radius: 50%;
+  background: #f6c85f;
+  border: 4px solid #18212b;
+  box-shadow: 0 8px 0 rgba(24,33,43,.12);
+  display: grid;
+  place-items: center;
+  animation: guideBounce 2s ease-in-out infinite;
+  transition: left .45s ease, top .45s ease;
+}
+
+.map-avatar svg {
+  width: 42px;
+  height: 42px;
+}
+
+.map-tip {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 6;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.9);
+  color: var(--green);
+  font-size: .82rem;
+  font-weight: 950;
+  box-shadow: 0 6px 16px rgba(27,49,66,.1);
+}
+
+.stat {
+  border-radius: var(--radius);
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 12px;
+}
+
+.stat b {
+  display: block;
+  font-size: 1.55rem;
+  color: var(--green);
+  line-height: 1;
+}
+
+.stat span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: .84rem;
+  font-weight: 800;
+}
+
+.mistake-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 40px;
+}
+
+.game-shell {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(11,21,31,.48);
+  padding: 16px;
+  overflow: auto;
+}
+
+.game-shell.open { display: grid; place-items: center; }
+
+.dialog-shell {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  padding: 16px;
+  background: rgba(11,21,31,.45);
+  overflow: auto;
+}
+
+.dialog-shell.open {
+  display: grid;
+  place-items: center;
+}
+
+.game-card,
+.dialog-card {
+  width: min(760px, 100%);
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 24px 80px rgba(0,0,0,.24);
+  overflow: hidden;
+  border: 1px solid rgba(24,33,43,.12);
+  animation: modalPop .28s cubic-bezier(.2, 1.35, .35, 1);
+}
+
+.dialog-card {
+  width: min(620px, 100%);
+}
+
+.game-top,
+.dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  background: #f7faf8;
+  border-bottom: 1px solid var(--line);
+}
+
+.game-top h2,
+.dialog-top h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.close-btn, .small-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 950;
+}
+
+.game-body {
+  padding: clamp(16px, 4vw, 28px);
+}
+
+.dialog-body {
+  padding: clamp(16px, 4vw, 26px);
+  display: grid;
+  gap: 14px;
+}
+
+.complete-card {
+  text-align: center;
+}
+
+.complete-hero {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #fff8e5, #e7f7ee);
+  border: 1px solid rgba(24,33,43,.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.complete-hero::before,
+.complete-hero::after {
+  content: "★";
+  position: absolute;
+  color: rgba(246,200,95,.55);
+  font-size: 3rem;
+  animation: twinkleSpin 2.8s ease-in-out infinite;
+}
+
+.complete-hero::before {
+  left: 18px;
+  top: 18px;
+}
+
+.complete-hero::after {
+  right: 22px;
+  bottom: 14px;
+  animation-delay: .5s;
+}
+
+.complete-medal {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #f6c85f;
+  border: 6px solid #18212b;
+  box-shadow: 0 10px 0 rgba(123,75,0,.18);
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: 950;
+  color: #7b4b00;
+  animation: correctPop .9s ease infinite;
+}
+
+.complete-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 4vw, 2rem);
+}
+
+.complete-text {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.complete-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.complete-stat {
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.complete-stat b {
+  display: block;
+  color: var(--green);
+  font-size: 1.35rem;
+}
+
+.complete-stat span {
+  display: block;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.review-word {
+  min-height: 140px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: linear-gradient(135deg, #eef8ff, #fff8e5);
+  font-size: clamp(4rem, 16vw, 7rem);
+  font-weight: 950;
+}
+
+.review-headline {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.review-mode {
+  width: fit-content;
+  justify-self: end;
+}
+
+.review-meter {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(24,33,43,.08);
+  overflow: hidden;
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.review-meter span {
+  display: block;
+  width: var(--review-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  transition: width .3s ease;
+}
+
+.review-word small {
+  display: block;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.onboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.onboard-card {
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #fbfdfc;
+}
+
+.onboard-card b {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.onboard-card span {
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.5;
+  font-weight: 750;
+}
+
+.lesson-guide {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #fff8e5;
+  border: 1px solid rgba(123,75,0,.16);
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-guide::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 42px;
+  height: 42px;
+  background: rgba(246,200,95,.28);
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 35%);
+  animation: twinkleSpin 4s ease-in-out infinite;
+}
+
+.lesson-guide .guide-avatar {
+  width: 54px;
+  height: 54px;
+  border-width: 3px;
+}
+
+.lesson-guide strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.lesson-guide span {
+  display: block;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.stage-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stage-tab {
+  padding: 10px 8px;
+  border-radius: 6px;
+  background: #f1f5f3;
+  color: var(--muted);
+  font-weight: 950;
+  transition: transform .18s ease, background .18s ease, color .18s ease;
+}
+
+.stage-tab.active {
+  background: var(--green);
+  color: #fff;
+  animation: activeStep .32s ease;
+}
+
+.question-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(246,200,95,.18), transparent 22%),
+    #fbfdfc;
+  animation: cardIn .24s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.question-title {
+  margin: 0 0 14px;
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  line-height: 1.35;
+}
+
+.big-word {
+  display: grid;
+  place-items: center;
+  min-height: 124px;
+  margin-bottom: 14px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #fff6dc, #e3f4eb);
+  border: 1px solid rgba(24,33,43,.08);
+  font-size: clamp(4rem, 16vw, 7rem);
+  font-weight: 950;
+  animation: wordFloat 2.6s ease-in-out infinite;
+}
+
+.big-word-card {
+  display: grid;
+  gap: 6px;
+  place-items: center;
+}
+
+.big-pinyin {
+  color: var(--blue);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-weight: 950;
+}
+
+.big-hanzi {
+  line-height: .9;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.choice {
+  min-height: 64px;
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid var(--line);
+  font-weight: 950;
+  font-size: 1.05rem;
+  padding: 12px;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+
+.choice:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(27,49,66,.08);
+}
+
+.choice.correct { border-color: var(--green); background: var(--green-soft); animation: correctPop .42s ease; }
+.choice.wrong { border-color: var(--red); background: #ffe9e6; animation: wrongShake .36s ease; }
+
+.read-checklist + .lesson-audio {
+  margin-top: 4px;
+}
+
+.trace-area {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.trace-grid {
+  aspect-ratio: 1;
+  border-radius: var(--radius);
+  border: 2px solid var(--line);
+  background:
+    linear-gradient(90deg, transparent 49.5%, #dce5df 49.5%, #dce5df 50.5%, transparent 50.5%),
+    linear-gradient(0deg, transparent 49.5%, #dce5df 49.5%, #dce5df 50.5%, transparent 50.5%),
+    linear-gradient(45deg, transparent 49.4%, #edf2ef 49.4%, #edf2ef 50.6%, transparent 50.6%),
+    linear-gradient(-45deg, transparent 49.4%, #edf2ef 49.4%, #edf2ef 50.6%, transparent 50.6%),
+    #fff;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.trace-ghost,
+.trace-fill {
+  grid-area: 1 / 1;
+  font-size: 6rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.trace-svg {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.trace-svg path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trace-bg path {
+  stroke: rgba(24,33,43,.14);
+  stroke-width: 8;
+}
+
+.trace-fg path {
+  stroke: rgba(24,33,43,.9);
+  stroke-width: 8;
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.trace-fg path.active {
+  opacity: 1;
+  animation: drawStroke .48s ease forwards;
+}
+
+.trace-fg path.done {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.trace-grid.vector-mode .trace-ghost,
+.trace-grid.vector-mode .trace-fill,
+.trace-grid.vector-mode .trace-cursor {
+  display: none;
+}
+
+.hanzi-writer-target {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.trace-grid.writer-mode .trace-ghost,
+.trace-grid.writer-mode .trace-fill,
+.trace-grid.writer-mode .trace-cursor,
+.trace-grid.writer-mode .trace-svg {
+  display: none;
+}
+
+.trace-ghost {
+  color: rgba(24,33,43,.12);
+}
+
+.trace-fill {
+  color: rgba(24,33,43,.88);
+  clip-path: inset(calc(100% - var(--write-progress, 0%)) 0 0 0);
+  transition: clip-path .42s ease, color .42s ease;
+}
+
+.trace-cursor {
+  position: absolute;
+  left: 50%;
+  top: calc(100% - var(--write-progress, 0%));
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgba(27,49,66,.18);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: top .42s ease, opacity .2s ease;
+}
+
+.trace-grid.writing .trace-cursor {
+  opacity: 1;
+}
+
+.stroke.active {
+  background: var(--green);
+  color: #fff;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.stroke.done {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid rgba(47,133,90,.2);
+}
+
+.stroke-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: start;
+}
+
+.stroke {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 950;
+  animation: strokePop .34s ease both;
+}
+
+.stroke:nth-child(2) { animation-delay: .04s; }
+.stroke:nth-child(3) { animation-delay: .08s; }
+.stroke:nth-child(4) { animation-delay: .12s; }
+.stroke:nth-child(5) { animation-delay: .16s; }
+.stroke:nth-child(6) { animation-delay: .2s; }
+.stroke:nth-child(7) { animation-delay: .24s; }
+.stroke:nth-child(8) { animation-delay: .28s; }
+.stroke:nth-child(9) { animation-delay: .32s; }
+
+.read-box {
+  display: grid;
+  gap: 12px;
+}
+
+.lesson-audio {
+  width: 100%;
+  margin: 12px 0 0;
+  display: block;
+}
+
+.read-line {
+  padding: 14px;
+  border-radius: var(--radius);
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.6;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.read-line.active {
+  border-color: rgba(47,133,90,.42);
+  background: var(--green-soft);
+  transform: translateY(-2px);
+}
+
+.read-checklist {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.read-check {
+  min-height: 54px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-weight: 950;
+}
+
+.read-check.done {
+  background: var(--green-soft);
+  color: var(--green);
+  border-color: rgba(47,133,90,.28);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.primary-btn, .ghost-btn {
+  min-height: 46px;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-weight: 950;
+}
+
+.primary-btn {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 7px 0 rgba(24,33,43,.12);
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+}
+
+.ghost-btn {
+  background: #f1f5f3;
+  color: var(--ink);
+  transition: transform .16s ease, background .16s ease;
+}
+
+.primary-btn:hover, .ghost-btn:hover {
+  transform: translateY(-2px);
+}
+
+.primary-btn:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 9px 0 rgba(24,33,43,.1);
+}
+
+.feedback {
+  min-height: 28px;
+  margin-top: 12px;
+  color: var(--green);
+  font-weight: 950;
+}
+
+.feedback.pop {
+  animation: feedbackPop .42s ease;
+}
+
+.celebration {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  overflow: hidden;
+}
+
+.celebration.show {
+  display: block;
+}
+
+.spark {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--yellow);
+  animation: sparkleFall 1.1s ease-out forwards;
+}
+
+@keyframes floatMark {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-4px) rotate(-2deg); }
+}
+
+@keyframes guideBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-4px) scale(1.03); }
+}
+
+@keyframes sceneShimmer {
+  0%, 60% { transform: translateX(-110%); }
+  100% { transform: translateX(110%); }
+}
+
+@keyframes driftCloud {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(18px); }
+}
+
+@keyframes twinkleSpin {
+  0%, 100% { transform: rotate(0deg) scale(1); opacity: .75; }
+  50% { transform: rotate(10deg) scale(1.08); opacity: 1; }
+}
+
+@keyframes leafSway {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-7px); }
+}
+
+@keyframes stepPulse {
+  0%, 100% { transform: scale(.8); opacity: .42; }
+  50% { transform: scale(1.18); opacity: .82; }
+}
+
+@keyframes sceneFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes artFloat {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes mascotWave {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+@keyframes startPulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.03); }
+}
+
+@keyframes mapSky {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(14px); }
+}
+
+@keyframes routeMove {
+  to { stroke-dashoffset: -28; }
+}
+
+@keyframes nodeFloat {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(-50%, calc(-50% - 5px)); }
+}
+
+@keyframes currentNode {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.07); }
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: translateY(18px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes activeStep {
+  0% { transform: scale(.96); }
+  60% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wordFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes correctPop {
+  0% { transform: scale(.98); }
+  55% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+}
+
+@keyframes strokePop {
+  from { opacity: 0; transform: translateY(8px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes drawStroke {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes feedbackPop {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sparkleFall {
+  0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(.8); }
+  10% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(95vh) rotate(360deg) scale(1); }
+}
+
+@keyframes pageCelebrate {
+  0%, 100% { background-color: transparent; }
+  40% { background-color: rgba(246,200,95,.15); }
+}
+
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden { display: none !important; }
+
+body.app-view-home .adventure-map,
+body.app-view-home #kidView,
+body.app-view-home #parentView,
+body.app-view-home #parentDetailView,
+body.app-view-home #rewards,
+body.app-view-map #home,
+body.app-view-map #rewards,
+body.app-view-map #parentView,
+body.app-view-map #parentDetailView,
+body.app-view-rewards #home,
+body.app-view-rewards .adventure-map,
+body.app-view-rewards #kidView,
+body.app-view-rewards #parentView,
+body.app-view-rewards #parentDetailView,
+body.app-view-parent #home,
+body.app-view-parent .adventure-map,
+body.app-view-parent #kidView,
+body.app-view-parent #rewards {
+  display: none !important;
+}
+
+body.app-view-map #kidView {
+  margin-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (max-width: 920px) {
+  .section-grid { grid-template-columns: 1fr; }
+  .mission { grid-template-columns: 1fr; }
+  .app-home { grid-template-columns: 1fr; }
+  .product-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .badge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .report-hero-card, .report-wide { grid-column: auto; }
+  .section-grid .panel:nth-child(1) { order: 1; }
+  .section-grid .panel:nth-child(2) { order: 2; }
+  .section-grid .panel:nth-child(3) { order: 3; }
+}
+
+@media (max-width: 620px) {
+  .app { padding: 12px; }
+  .topbar { grid-template-columns: 1fr; }
+  .app-home { gap: 10px; }
+  .story-stage { grid-template-columns: 92px 1fr; min-height: 168px; padding: 12px; }
+  .hero-mascot { width: 86px; height: 86px; border-radius: 28px; }
+  .hero-mascot svg { width: 70px; height: 70px; }
+  .speech-panel h2 { font-size: 1.3rem; }
+  .reward-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .report-hero-card { grid-template-columns: 1fr; min-height: auto; }
+  .report-ring { width: 124px; height: 124px; justify-self: center; }
+  .report-kpis { grid-template-columns: 1fr; }
+  .unit-progress-item { grid-template-columns: 36px minmax(0, 1fr); }
+  .unit-progress-item > .status-chip { grid-column: 2; width: fit-content; }
+  .reward-room-hero { grid-template-columns: 1fr; }
+  .reward-orbit { width: 118px; height: 118px; justify-self: center; }
+  .reward-orbit span { width: 40px; height: 40px; }
+  .reward-orbit span:nth-child(1) { left: 39px; top: -17px; }
+  .reward-orbit span:nth-child(2) { right: -15px; top: 39px; }
+  .reward-orbit span:nth-child(3) { left: 39px; bottom: -17px; }
+  .reward-orbit span:nth-child(4) { left: -15px; top: 39px; }
+  .treasure-panel { align-items: stretch; flex-direction: column; }
+  .complete-stats { grid-template-columns: 1fr; }
+  .read-checklist { grid-template-columns: 1fr; }
+  .mode-tabs { width: 100%; }
+  .tab { flex: 1; min-width: 0; }
+  .daily-path, .lesson-grid, .choices, .stage-tabs, .trace-area, .guide-card, .lesson-guide, .product-strip, .install-card, .onboard-grid { grid-template-columns: 1fr; }
+  .panel-head { align-items: flex-start; flex-direction: column; }
+  .unit-nav { width: 100%; justify-content: stretch; }
+  .unit-nav .mini-btn { flex: 1; }
+  .lesson-card { grid-template-columns: 92px minmax(0, 1fr); min-height: 176px; padding: 12px; }
+  .lesson-art { min-height: 128px; }
+  .lesson-art svg { width: 84px; height: 84px; }
+  .map-stage { height: 360px; }
+  .map-node { width: 70px; min-height: 70px; font-size: .82rem; }
+  .scene, .scene svg { min-height: 250px; }
+  .brand-mark { width: 46px; height: 46px; }
+  .guide-avatar { width: 58px; height: 58px; }
+  .decor-cloud, .decor-pencil, .decor-star, .decor-leaf { opacity: .35; }
+}
+</style>
+</head>
+<body>
+<div class="decor-layer" aria-hidden="true">
+  <span class="decor-item decor-cloud">
+    <svg viewBox="0 0 160 80">
+      <path d="M34 58h86c20 0 26-26 8-35-7-22-39-20-47-3-19-11-43 3-39 24-20-2-25 14-8 14z" fill="#ffffff" stroke="#d8e2dc" stroke-width="4"/>
+    </svg>
+  </span>
+  <span class="decor-item decor-pencil">
+    <svg viewBox="0 0 120 120">
+      <path d="M30 82l51-51 15 15-51 51-22 7z" fill="#f6c85f" stroke="#18212b" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M81 31l8-8 15 15-8 8z" fill="#ef7b45" stroke="#18212b" stroke-width="5"/>
+      <path d="M23 104l7-22 15 15z" fill="#fff6dc" stroke="#18212b" stroke-width="5" stroke-linejoin="round"/>
+    </svg>
+  </span>
+  <span class="decor-item decor-star">
+    <svg viewBox="0 0 100 100">
+      <path d="M50 9l10 28 30 1-24 18 9 29-25-17-25 17 9-29-24-18 30-1z" fill="#f6c85f" stroke="#18212b" stroke-width="5" stroke-linejoin="round"/>
+    </svg>
+  </span>
+  <span class="decor-item decor-leaf">
+    <svg viewBox="0 0 100 100">
+      <path d="M18 75C23 34 58 18 82 20c2 30-15 58-58 63 18-14 33-26 48-45" fill="#dff4e8" stroke="#2f855a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </span>
+</div>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 80 80" width="44" height="44" role="img">
+          <rect x="8" y="12" width="50" height="56" rx="8" fill="#fff6dc" stroke="#18212b" stroke-width="4"/>
+          <path d="M24 28h18M24 42h22M24 56h14" stroke="#2f855a" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="59" cy="23" r="11" fill="#f6c85f" stroke="#18212b" stroke-width="4"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">语文小探险</h1>
+        <p class="brand-subtitle">一年级下册，同步课内，十分钟一关</p>
+      </div>
+    </div>
+    <nav class="mode-tabs" aria-label="视图切换">
+      <button class="tab active" data-view="kid">孩子闯关</button>
+      <button class="tab" data-view="parent">家长进度</button>
+      <button class="sound-btn" id="soundBtn" aria-label="音效开关">音效开</button>
+    </nav>
+  </header>
+
+  <section class="app-home" id="home">
+    <div class="story-stage">
+      <div class="hero-mascot" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="34" fill="#fff6dc"/>
+          <path d="M30 45c5-13 35-13 40 0" fill="none" stroke="#18212b" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="38" cy="52" r="5" fill="#18212b"/>
+          <circle cx="62" cy="52" r="5" fill="#18212b"/>
+          <path d="M41 68c7 5 13 5 20 0" fill="none" stroke="#18212b" stroke-width="6" stroke-linecap="round"/>
+          <path d="M50 13l10 17H40z" fill="#ef7b45" stroke="#18212b" stroke-width="5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="speech-panel">
+        <div>
+          <div class="mission-badge">小语队长 · 今日任务</div>
+          <h2 id="homeTitle">准备开始今天的语文冒险</h2>
+          <p id="homeText">跟着路线点亮关卡，学一个字，读一句话，拿一颗星。</p>
+          <div class="today-meter" aria-label="今日任务进度"><span id="todayMeterFill"></span></div>
+        </div>
+        <button class="big-start" id="homeStartBtn">开始闯关</button>
+      </div>
+    </div>
+    <div class="quick-stack">
+      <button class="quick-card" id="quickReviewBtn">
+        <span class="quick-icon">复</span>
+        <span><strong>复习闯关</strong><span>错字、已学字、本单元一起练</span></span>
+        <span class="status-chip" id="reviewCount">0</span>
+      </button>
+      <button class="quick-card" id="quickRewardBtn">
+        <span class="quick-icon">星</span>
+        <span><strong>星星奖励</strong><span>看看今天点亮了多少星</span></span>
+        <span class="status-chip" id="rewardStars">0</span>
+      </button>
+      <button class="quick-card" id="quickParentBtn">
+        <span class="quick-icon">报</span>
+        <span><strong>家长报告</strong><span>查看进度和学习建议</span></span>
+        <span class="status-chip">家长</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="reward-strip" id="rewards">
+    <div class="reward-badge"><b id="homeStars">0</b><span>累计星星</span></div>
+    <div class="reward-badge"><b id="homeLessons">0</b><span>完成关卡</span></div>
+    <div class="reward-badge"><b id="homeStreak">0</b><span>连续天数</span></div>
+    <div class="reward-badge"><b id="homeWords">0</b><span>已学重点字</span></div>
+  </section>
+
+  <section class="reward-room" id="rewardRoom" aria-label="奖励屋">
+    <div class="reward-room-hero">
+      <div>
+        <span class="mission-badge">奖励屋</span>
+        <h2>点亮下册语文星球</h2>
+        <p id="rewardRoomText">完成每个单元，就会在这里得到一枚主题徽章。</p>
+      </div>
+      <div class="reward-orbit" aria-hidden="true">
+        <span>★</span><span>春</span><span>读</span><span>写</span>
+      </div>
+    </div>
+    <div class="badge-grid" id="badgeGrid"></div>
+    <div class="treasure-panel">
+      <div>
+        <strong id="treasureTitle">今日宝箱</strong>
+        <span id="treasureText">今天完成 2 关可点亮宝箱。</span>
+      </div>
+      <button class="primary-btn" id="treasureBtn">去完成今日任务</button>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="mission">
+      <div>
+        <div class="mission-badge">故事任务 · 课本同步</div>
+        <h2>今天从推荐关卡开始，十分钟完成一个语文任务。</h2>
+        <p class="mission-intro">借鉴孩子熟悉的互动学习体验：先听任务，再认生字，接着玩练习，最后朗读表达。内容围绕一年级下册做原创练习，数据只保存在这台设备上。</p>
+      </div>
+      <div class="guide-card">
+        <div class="guide-avatar" aria-hidden="true">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="28" fill="#fff6dc"/>
+            <path d="M24 37c4-10 28-10 32 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="30" cy="42" r="4" fill="#18212b"/>
+            <circle cx="50" cy="42" r="4" fill="#18212b"/>
+            <path d="M33 54c5 4 10 4 15 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+            <path d="M40 10l8 14H32z" fill="#ef7b45" stroke="#18212b" stroke-width="4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>小语队长</strong>
+          <span>今天我们不刷题，先完成一个语文任务。每学完一课，就点亮一枚“课文星”。</span>
+        </div>
+      </div>
+      <div class="daily-path" aria-label="快捷操作">
+        <button class="path-step action-card" id="heroStartBtn">
+          <span class="step-label">学</span>
+          <strong>开始今日任务</strong>
+          <span>直接进入推荐关卡</span>
+        </button>
+        <button class="path-step action-card" id="heroPrevUnitBtn">
+          <span class="step-label">上</span>
+          <strong>返回上一单元</strong>
+          <span>复习前面的内容</span>
+        </button>
+        <button class="path-step action-card" id="heroNextUnitBtn">
+          <span class="step-label">下</span>
+          <strong>进入下一单元</strong>
+          <span>切换到后续关卡</span>
+        </button>
+        <button class="path-step action-card" id="heroParentBtn">
+          <span class="step-label">报</span>
+          <strong>查看家长报告</strong>
+          <span>看进度和错字本</span>
+        </button>
+      </div>
+    </div>
+    <div class="scene" aria-label="杭州语文探险地图插画">
+      <svg viewBox="0 0 720 440" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="water" x1="0" x2="1">
+            <stop offset="0" stop-color="#91d7e8"/>
+            <stop offset="1" stop-color="#c7edf4"/>
+          </linearGradient>
+          <linearGradient id="hill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#67a96b"/>
+            <stop offset="1" stop-color="#2f855a"/>
+          </linearGradient>
+        </defs>
+        <circle class="scene-float" cx="620" cy="70" r="42" fill="#f6c85f"/>
+        <path d="M0 210 C90 140 155 160 250 210 C340 120 465 140 560 218 C620 168 670 170 720 208 L720 440 L0 440Z" fill="url(#hill)"/>
+        <path d="M0 288 C120 252 220 304 344 272 C475 237 578 255 720 226 L720 440 L0 440Z" fill="url(#water)"/>
+        <path d="M63 280 C148 244 235 276 324 254 C449 222 555 235 672 207" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" opacity=".58"/>
+        <path d="M110 240 L170 188 L230 240 Z" fill="#fff6dc" stroke="#18212b" stroke-width="5"/>
+        <rect x="132" y="240" width="76" height="62" fill="#ffffff" stroke="#18212b" stroke-width="5"/>
+        <path d="M147 259h45M147 279h34" stroke="#ef7b45" stroke-width="7" stroke-linecap="round"/>
+        <path d="M492 126 h72 v126 h-72z" fill="#fff" stroke="#18212b" stroke-width="5"/>
+        <path d="M482 126 h92 l-46 -46z" fill="#ef7b45" stroke="#18212b" stroke-width="5"/>
+        <path d="M510 160h36M510 188h36M510 216h36" stroke="#2364aa" stroke-width="7" stroke-linecap="round"/>
+        <path d="M330 310 q40 -74 82 0" fill="none" stroke="#18212b" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="330" cy="310" r="10" fill="#18212b"/>
+        <circle cx="412" cy="310" r="10" fill="#18212b"/>
+        <path d="M286 348 h170" stroke="#fff6dc" stroke-width="18" stroke-linecap="round"/>
+        <path d="M286 348 h170" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+        <g class="scene-float delay" transform="translate(58 322)">
+          <circle cx="32" cy="22" r="22" fill="#f6c85f" stroke="#18212b" stroke-width="5"/>
+          <path d="M22 22h20M32 12v20" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+          <text x="70" y="31" font-size="30" font-weight="900" fill="#18212b">春</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="product-strip" aria-label="产品能力">
+    <div class="product-card">
+      <b id="contentCount">42</b>
+      <span>覆盖下册 8 个单元，含课文、识字、园地、口语交际和读书吧。</span>
+    </div>
+    <div class="product-card">
+      <b>4步</b>
+      <span>认字、笔顺、词句、朗读，形成一个完整学习闭环。</span>
+    </div>
+    <div class="product-card">
+      <b id="streakDays">0天</b>
+      <span>连续学习激励，帮助孩子建立每天十分钟的习惯。</span>
+    </div>
+    <div class="product-card">
+      <b>本机</b>
+      <span>学习记录保存在设备上，适合家庭先试用和小范围发布。</span>
+    </div>
+  </section>
+
+  <section class="install-card" id="installCard">
+    <div>
+      <strong>可以像 App 一样添加到手机桌面</strong>
+      <span id="installText">在手机浏览器中打开后，使用“添加到主屏幕”，孩子下次可直接进入闯关。</span>
+    </div>
+    <button class="primary-btn" id="installBtn">安装到桌面</button>
+  </section>
+
+  <section class="adventure-map" aria-label="动画闯关地图">
+    <div class="map-head">
+      <div>
+        <strong id="mapTitle">动画闯关地图</strong>
+        <span id="mapSubtitle">点击地图节点开始学习</span>
+      </div>
+      <button class="mini-btn" id="mapNextBtn">下一单元</button>
+    </div>
+    <div class="map-stage" id="mapStage">
+      <div class="map-hills" aria-hidden="true"></div>
+      <svg class="route-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path class="route-base" d="M8 72 C24 40 36 82 50 54 S76 28 92 62"></path>
+        <path class="route-glow" d="M8 72 C24 40 36 82 50 54 S76 28 92 62"></path>
+      </svg>
+      <div class="map-avatar" id="mapAvatar" aria-hidden="true">
+        <svg viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="28" fill="#fff6dc"/>
+          <path d="M24 37c4-10 28-10 32 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="30" cy="42" r="4" fill="#18212b"/>
+          <circle cx="50" cy="42" r="4" fill="#18212b"/>
+          <path d="M33 54c5 4 10 4 15 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div id="mapNodes"></div>
+      <div class="map-tip" id="mapTip">跟着小语队长闯关</div>
+    </div>
+  </section>
+
+  <section class="section-grid" id="kidView">
+    <aside class="panel">
+      <h2 class="panel-title">选择单元</h2>
+      <div class="unit-list" id="unitList"></div>
+    </aside>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title" id="lessonTitle">关卡</h2>
+        <div class="unit-nav">
+          <button class="mini-btn" id="prevUnitBtn">上一单元</button>
+          <button class="mini-btn" id="nextUnitBtn">下一单元</button>
+        </div>
+      </div>
+      <div class="lesson-grid" id="lessonGrid"></div>
+    </section>
+
+    <aside class="panel">
+      <h2 class="panel-title">今日建议</h2>
+      <div class="parent-stats">
+        <div class="stat">
+          <b id="todayTarget">10</b>
+          <span>分钟学习上限</span>
+        </div>
+        <div class="stat">
+          <b id="todayWords">6</b>
+          <span>本关重点字</span>
+        </div>
+        <div class="stat">
+          <b id="todayDone">0</b>
+          <span>已完成关卡</span>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" id="startTodayBtn">开始今日任务</button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section-grid hidden" id="parentView">
+    <section class="panel report-hero-card">
+      <div class="report-hero-copy">
+        <span class="mission-badge">家长报告</span>
+        <h2 id="parentSummaryTitle">今日还未开始</h2>
+        <p id="parentSummaryText">建议每天完成 1 到 2 个短关卡，控制在 10 分钟左右。</p>
+      </div>
+      <div class="report-ring" id="reportRing" style="--report-progress: 0%;">
+        <b id="statRate">0%</b>
+        <span>总进度</span>
+      </div>
+    </section>
+    <aside class="panel">
+      <h2 class="panel-title">关键指标</h2>
+      <div class="parent-stats report-kpis">
+        <div class="stat">
+          <b id="statLessons">0</b>
+          <span>已完成课次</span>
+        </div>
+        <div class="stat">
+          <b id="statStars">0</b>
+          <span>累计星星</span>
+        </div>
+        <div class="stat">
+          <b id="todayStudyCount">0</b>
+          <span>今日完成</span>
+        </div>
+        <div class="stat">
+          <b id="parentMistakeCount">0</b>
+          <span>待复习字</span>
+        </div>
+      </div>
+    </aside>
+    <section class="panel">
+      <h2 class="panel-title">今日学习</h2>
+      <div class="plan-list" id="todayPlan"></div>
+      <div class="action-row">
+        <button class="ghost-btn" id="exportBtn">导出学习报告</button>
+        <button class="ghost-btn" id="privacyBtn">隐私说明</button>
+      </div>
+    </section>
+    <aside class="panel">
+      <h2 class="panel-title">下一步</h2>
+      <div class="stat">
+        <b id="nextLesson">春夏秋冬</b>
+        <span>建议从未完成的第一课继续</span>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" id="continueBtn">继续学习</button>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section-grid hidden" id="parentDetailView">
+    <section class="panel report-wide">
+      <h2 class="panel-title">单元完成度</h2>
+      <div class="unit-progress-list" id="unitProgressList"></div>
+    </section>
+    <aside class="panel">
+      <h2 class="panel-title">能力报告</h2>
+      <div class="report-list">
+        <div class="report-item"><span class="plan-dot">字</span><span><strong id="reportWords">0</strong><span>已接触重点字</span></span><span class="status-chip">识字</span></div>
+        <div class="report-item"><span class="plan-dot">读</span><span><strong id="reportRead">0</strong><span>完成朗读课次</span></span><span class="status-chip">表达</span></div>
+        <div class="report-item"><span class="plan-dot">练</span><span><strong id="reportPractice">0</strong><span>推荐复习字词</span></span><span class="status-chip">复习</span></div>
+      </div>
+    </aside>
+    <section class="panel">
+      <h2 class="panel-title">错字趋势</h2>
+      <div class="mistake-trend" id="mistakeTrend"></div>
+      <h2 class="panel-title small-title">容易混淆的字</h2>
+      <div class="mistake-list" id="mistakeList"></div>
+      <div class="action-row">
+        <button class="ghost-btn" id="resetBtn">清空本机进度</button>
+      </div>
+    </section>
+    <aside class="panel">
+      <h2 class="panel-title">下一步建议</h2>
+      <div class="privacy-list" id="parentAdviceList"></div>
+    </aside>
+    <aside class="panel">
+      <h2 class="panel-title">家庭发布检查</h2>
+      <div class="privacy-list" id="releaseChecklist">
+        <div class="privacy-item"><span class="plan-dot">课</span><span><strong>课程覆盖</strong><span id="releaseLessonCount">下册内容已拆成短关卡。</span></span><span class="status-chip">已具备</span></div>
+        <div class="privacy-item"><span class="plan-dot">音</span><span><strong>生字语音</strong><span id="releaseVoiceCount">重点字已配置真人感发音。</span></span><span class="status-chip">已具备</span></div>
+        <div class="privacy-item"><span class="plan-dot">写</span><span><strong>专业笔顺</strong><span>写一写使用专业字形动画，笔画名称同步高亮朗读。</span></span><span class="status-chip">已具备</span></div>
+        <div class="privacy-item"><span class="plan-dot">离</span><span><strong>离线缓存</strong><span>页面、课程朗读、生字、笔画和反馈音频已纳入缓存。</span></span><span class="status-chip">已具备</span></div>
+        <div class="privacy-item"><span class="plan-dot">私</span><span><strong>数据保护</strong><span>当前不上传儿童学习数据，学习记录只保存在本机。</span></span><span class="status-chip">本机</span></div>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<nav class="bottom-nav" aria-label="底部导航">
+  <button class="active" id="navHomeBtn">首页</button>
+  <button id="navMapBtn">闯关</button>
+  <button id="navRewardBtn">奖励</button>
+  <button id="navParentBtn">家长</button>
+</nav>
+
+<div class="celebration" id="celebration" aria-hidden="true"></div>
+
+<div class="dialog-shell" id="onboardShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2>欢迎来到语文小探险</h2>
+      <button class="close-btn" id="skipOnboard" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="guide-card">
+        <div class="guide-avatar" aria-hidden="true">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="28" fill="#fff6dc"/>
+            <path d="M24 37c4-10 28-10 32 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="30" cy="42" r="4" fill="#18212b"/>
+            <circle cx="50" cy="42" r="4" fill="#18212b"/>
+            <path d="M33 54c5 4 10 4 15 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong>每天十分钟，完成一个小任务</strong>
+          <span>先从“春夏秋冬”开始，孩子学完会自动点亮进度，家长可以在家长区查看报告。</span>
+        </div>
+      </div>
+      <div class="onboard-grid">
+        <div class="onboard-card"><b>听得清</b><span>重点朗读和笔画名称使用预生成语音，减少机械感。</span></div>
+        <div class="onboard-card"><b>看得懂</b><span>拼音、声调、插画和笔顺动画一起呈现。</span></div>
+        <div class="onboard-card"><b>有反馈</b><span>答题、完成、复习都给出即时反馈和星星奖励。</span></div>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" id="startOnboard">开始第一关</button>
+        <button class="ghost-btn" id="parentOnboard">我是家长，先看报告</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="privacyShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2>隐私与家长说明</h2>
+      <button class="close-btn" id="closePrivacy" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="privacy-list">
+        <div class="privacy-item"><span class="plan-dot">本</span><span><strong>学习数据本机保存</strong><span>完成记录、星星、错字本保存在浏览器本地。</span></span><span class="status-chip">默认</span></div>
+        <div class="privacy-item"><span class="plan-dot">少</span><span><strong>不要求孩子登录</strong><span>当前版本不需要手机号、姓名、头像等个人信息。</span></span><span class="status-chip">适合试用</span></div>
+        <div class="privacy-item"><span class="plan-dot">管</span><span><strong>家长可清空记录</strong><span>家长区提供本机学习记录清除能力。</span></span><span class="status-chip">可控</span></div>
+      </div>
+      <p class="brand-subtitle">已提供基础 <a href="./privacy.html">隐私政策</a> 和 <a href="./terms.html">用户协议</a> 页面。正式上架前还需要做法务审核、内容版权说明、应用备案/商店审核材料。</p>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="completeShell" aria-modal="true" role="dialog">
+  <div class="dialog-card complete-card">
+    <div class="dialog-top">
+      <h2>任务奖励</h2>
+      <button class="close-btn" id="closeComplete" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="complete-hero">
+        <div class="complete-medal">★</div>
+      </div>
+      <h2 class="complete-title" id="completeTitle">完成一课啦</h2>
+      <p class="complete-text" id="completeText">点亮课文星，继续下一关吧。</p>
+      <div class="complete-stats">
+        <div class="complete-stat"><b id="completeStars">+3</b><span>本次星星</span></div>
+        <div class="complete-stat"><b id="completeUnit">0/0</b><span>本单元进度</span></div>
+        <div class="complete-stat"><b id="completeTotal">0</b><span>累计星星</span></div>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" id="completeNextBtn">继续下一关</button>
+        <button class="ghost-btn" id="completeReviewBtn">复习闯关</button>
+        <button class="ghost-btn" id="completeRestBtn">休息一下</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="reviewShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2>复习闯关</h2>
+      <button class="close-btn" id="closeReview" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="review-headline">
+        <p class="complete-text" id="reviewPrompt">找到正确的字。</p>
+        <span class="status-chip review-mode" id="reviewMode">错字</span>
+      </div>
+      <div class="review-meter" aria-label="复习进度"><span id="reviewMeterFill"></span></div>
+      <div class="review-word" id="reviewPinyin">pīn</div>
+      <div class="choices" id="reviewChoices"></div>
+      <div class="feedback" id="reviewFeedback"></div>
+      <div class="action-row">
+        <button class="ghost-btn" id="reviewNextBtn">下一个</button>
+        <button class="primary-btn" id="reviewDoneBtn">完成复习</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="game-shell" id="gameShell" aria-modal="true" role="dialog">
+  <div class="game-card">
+    <div class="game-top">
+      <h2 id="gameTitle">关卡</h2>
+      <button class="close-btn" id="closeGame" aria-label="关闭">×</button>
+    </div>
+    <div class="game-body">
+      <div class="lesson-guide">
+        <div class="guide-avatar" aria-hidden="true">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="28" fill="#fff6dc"/>
+            <path d="M24 37c4-10 28-10 32 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="30" cy="42" r="4" fill="#18212b"/>
+            <circle cx="50" cy="42" r="4" fill="#18212b"/>
+            <path d="M33 54c5 4 10 4 15 0" fill="none" stroke="#18212b" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <strong id="guideTitle">小语队长的任务</strong>
+          <span id="guideText">先听任务，再开始闯关。</span>
+        </div>
+      </div>
+      <div class="stage-tabs">
+        <button class="stage-tab active" data-stage="0">识字挑战</button>
+        <button class="stage-tab" data-stage="1">笔顺动画</button>
+        <button class="stage-tab" data-stage="2">选词填空</button>
+        <button class="stage-tab" data-stage="3">朗读示范</button>
+      </div>
+
+      <section class="question-card" id="stageWord">
+        <p class="question-title" id="wordPrompt">听读音，选出正确的字。</p>
+        <div class="big-word" id="bigWord"><span class="big-word-card"><span class="big-pinyin" id="bigPinyin">chūn</span><span class="big-hanzi" id="bigHanzi">春</span></span></div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="wordFeedback"></div>
+      </section>
+
+      <section class="question-card hidden" id="stageTrace">
+        <p class="question-title">观察专业笔顺动画，跟着真实顺序一笔一笔写。</p>
+        <div class="trace-area">
+          <div class="trace-grid" id="traceBoard" style="--write-progress: 0%;">
+            <span class="trace-ghost" id="traceGhost">春</span>
+            <span class="trace-fill" id="traceFill">春</span>
+            <span class="trace-cursor" aria-hidden="true"></span>
+            <svg class="trace-svg" id="traceSvg" viewBox="0 0 120 120" aria-hidden="true"></svg>
+            <div class="hanzi-writer-target" id="hanziWriterTarget"></div>
+          </div>
+          <div>
+            <div class="stroke-list" id="strokeList"></div>
+            <div class="action-row">
+              <button class="ghost-btn" id="replayTrace">再写一遍</button>
+              <button class="primary-btn" id="traceDone">我会写了</button>
+            </div>
+            <div class="feedback" id="traceFeedback"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="question-card hidden" id="stageSentence">
+        <p class="question-title" id="sentencePrompt">把词语放进句子里，读一读是否通顺。</p>
+        <div class="read-line" id="sentenceLine"></div>
+        <div class="choices" id="sentenceChoices"></div>
+        <div class="feedback" id="sentenceFeedback"></div>
+      </section>
+
+      <section class="question-card hidden" id="stageRead">
+        <p class="question-title">跟着节奏朗读，读完给自己点亮一颗星。</p>
+        <div class="read-box" id="readLines"></div>
+        <div class="read-checklist">
+          <div class="read-check" id="listenCheck">1 听示范</div>
+          <div class="read-check" id="followCheck">2 跟读</div>
+          <div class="read-check" id="finishReadCheck">3 完成</div>
+        </div>
+        <audio class="lesson-audio" id="lessonAudio" controls preload="auto"></audio>
+        <div class="action-row">
+          <button class="primary-btn" id="speakBtn">播放示范</button>
+          <button class="ghost-btn" id="followReadBtn">我跟读了</button>
+          <button class="ghost-btn" id="finishLesson">完成本课</button>
+          <button class="primary-btn hidden" id="nextLessonBtn">下一关</button>
+        </div>
+        <div class="feedback" id="readFeedback"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+const units = [
+  {
+    name: "春天与识字",
+    theme: "四季、姓氏、字谜",
+    lessons: [
+      { id: "chunxiaqiudong", title: "春夏秋冬", type: "识字", words: ["春","风","花","雪","飞","入"], pinyin: ["chun","feng","hua","xue","fei","ru"], tonePinyin: ["chūn","fēng","huā","xuě","fēi","rù"], strokes: ["横","横","横","撇","捺","竖","横折","横","横"], sentence: "春风吹，花儿开。", blank: "春风吹，____开。", answer: "花儿", options: ["花儿","书包","铅笔","雨伞"], read: ["春风吹，花儿开。", "雪花飞，鱼儿游。"] },
+      { id: "xingshige", title: "姓氏歌", type: "识字", words: ["姓","什","么","双","国","王"], pinyin: ["xing","shen","me","shuang","guo","wang"], tonePinyin: ["xìng","shén","me","shuāng","guó","wáng"], strokes: ["撇点","撇","横","撇","横","横","竖","横"], sentence: "你姓什么？我姓王。", blank: "你姓____？我姓王。", answer: "什么", options: ["什么","哪里","多少","几只"], read: ["你姓什么？我姓王。", "中国姓氏真有趣。"] },
+      { id: "xiaoqingwa", title: "小青蛙", type: "儿歌", words: ["青","清","气","晴","情","请"], pinyin: ["qing","qing","qi","qing","qing","qing"], tonePinyin: ["qīng","qīng","qì","qíng","qíng","qǐng"], strokes: ["横","横","竖","横","竖","横折钩","横","横"], sentence: "小青蛙保护禾苗。", blank: "小青蛙____禾苗。", answer: "保护", options: ["保护","拿走","忘记","打湿"], read: ["河水清清天气晴。", "小小青蛙大眼睛。"] },
+      { id: "caizimi", title: "猜字谜", type: "游戏", words: ["字","左","右","红","时","动"], pinyin: ["zi","zuo","you","hong","shi","dong"], tonePinyin: ["zì","zuǒ","yòu","hóng","shí","dòng"], strokes: ["点","点","横钩","横撇","竖钩","横"], sentence: "左右相遇起凉风。", blank: "____相遇起凉风。", answer: "左右", options: ["左右","上下","前后","里外"], read: ["猜一猜，想一想。", "汉字里面有故事。"] }
+    ]
+  },
+  {
+    name: "愿望与伙伴",
+    theme: "心愿、校园、伙伴",
+    lessons: [
+      { id: "chishuibuwangwajingren", title: "吃水不忘挖井人", type: "课文", words: ["吃","叫","主","江","住","没"], pinyin: ["chi","jiao","zhu","jiang","zhu","mei"], tonePinyin: ["chī","jiào","zhǔ","jiāng","zhù","méi"], strokes: ["竖","横折","横","撇","横折钩","竖"], sentence: "吃水不忘挖井人。", blank: "吃水不忘____。", answer: "挖井人", options: ["挖井人","小青蛙","铅笔盒","大西湖"], read: ["吃水不忘挖井人。", "想一想，谁帮助过我们？"] },
+      { id: "woduoxiangqukankan", title: "我多想去看看", type: "朗读", words: ["会","走","北","京","门","广"], pinyin: ["hui","zou","bei","jing","men","guang"], tonePinyin: ["huì","zǒu","běi","jīng","mén","guǎng"], strokes: ["撇","捺","横","横","撇折","点"], sentence: "我多想去看看。", blank: "我多想去____。", answer: "看看", options: ["看看","睡觉","写错","打翻"], read: ["我多想去看看。", "看看美丽的天安门。"] },
+      { id: "yigejieyige", title: "一个接一个", type: "课文", words: ["过","各","种","样","伙","伴"], pinyin: ["guo","ge","zhong","yang","huo","ban"], tonePinyin: ["guò","gè","zhǒng","yàng","huǒ","bàn"], strokes: ["点","横折折撇","捺","竖","横折","横"], sentence: "伙伴们一个接一个。", blank: "伙伴们____接一个。", answer: "一个", options: ["一个","大雨","书本","今天"], read: ["一个接一个。", "快乐也一个接一个。"] },
+      { id: "sigetaiyang", title: "四个太阳", type: "想象", words: ["太","阳","道","送","忙","尝"], pinyin: ["tai","yang","dao","song","mang","chang"], tonePinyin: ["tài","yáng","dào","sòng","máng","cháng"], strokes: ["横","撇","捺","点"], sentence: "我画了个绿绿的太阳。", blank: "我画了个____的太阳。", answer: "绿绿", options: ["绿绿","轻轻","弯弯","高高"], read: ["我画了个绿绿的太阳。", "送给夏天一片清凉。"] }
+    ]
+  },
+  {
+    name: "生活好习惯",
+    theme: "文具、时间、规则",
+    lessons: [
+      { id: "wenjudejia", title: "文具的家", type: "生活", words: ["文","次","找","平","办","让"], pinyin: ["wen","ci","zhao","ping","ban","rang"], tonePinyin: ["wén","cì","zhǎo","píng","bàn","ràng"], strokes: ["点","横","撇","捺"], sentence: "文具也有自己的家。", blank: "文具也有自己的____。", answer: "家", options: ["家","树","风","云"], read: ["文具盒，是文具的家。", "用完文具要收好。"] },
+      { id: "yifenzhong", title: "一分钟", type: "时间", words: ["钟","元","洗","共","已","经"], pinyin: ["zhong","yuan","xi","gong","yi","jing"], tonePinyin: ["zhōng","yuán","xǐ","gòng","yǐ","jīng"], strokes: ["撇","横","横","竖提","竖","横折"], sentence: "一分钟能做很多事。", blank: "一分钟能做____事。", answer: "很多", options: ["很多","很少","很慢","很远"], read: ["一分钟，很短。", "一分钟，也能做很多事。"] },
+      { id: "dongwuwangguokaidahui", title: "动物王国开大会", type: "故事", words: ["物","虎","熊","通","注","意"], pinyin: ["wu","hu","xiong","tong","zhu","yi"], tonePinyin: ["wù","hǔ","xióng","tōng","zhù","yì"], strokes: ["撇","横","竖","提","撇","横折钩"], sentence: "通知要说清时间和地点。", blank: "通知要说清____和地点。", answer: "时间", options: ["时间","颜色","味道","大小"], read: ["动物王国开大会。", "通知说清楚，大家不迷路。"] },
+      { id: "xiaohouzixiashan", title: "小猴子下山", type: "故事", words: ["块","非","常","往","瓜","进"], pinyin: ["kuai","fei","chang","wang","gua","jin"], tonePinyin: ["kuài","fēi","cháng","wǎng","guā","jìn"], strokes: ["横","竖","提","横折","横","撇","捺"], sentence: "小猴子看见什么都想要。", blank: "小猴子看见什么都____。", answer: "想要", options: ["想要","不要","睡着","忘了"], read: ["小猴子下山来。", "做事要一心一意。"] }
+    ]
+  }
+];
+
+function toPlainPinyin(text) {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ü/g, "u");
+}
+
+function makeExtraLesson(id, title, type, words, tonePinyin, sentence, answer, options, read, strokes = ["横", "竖", "撇", "捺", "点"]) {
+  const cleanOptions = [answer, ...options.filter(option => option !== answer)].slice(0, 4);
+  return {
+    id,
+    title,
+    type,
+    words,
+    pinyin: tonePinyin.map(toPlainPinyin),
+    tonePinyin,
+    strokes,
+    sentence,
+    blank: sentence.includes(answer) ? sentence.replace(answer, "____") : `${sentence} ____`,
+    answer,
+    options: cleanOptions,
+    read: read || [sentence, "完成任务后，大声读给家长听。"]
+  };
+}
+
+units[0].lessons.push(
+  makeExtraLesson("kouyu_tinggushi", "听故事，讲故事", "口语交际", ["听", "讲", "故", "事", "声", "清"], ["tīng", "jiǎng", "gù", "shì", "shēng", "qīng"], "听完故事，再把故事讲清楚。", "讲清楚", ["讲清楚", "藏起来", "跳过去", "写很快"]),
+  makeExtraLesson("yuwenyuandi1", "语文园地一", "园地", ["阴", "雷", "电", "阵", "冰", "冻"], ["yīn", "léi", "diàn", "zhèn", "bīng", "dòng"], "在园地里复习天气词语。", "天气", ["天气", "颜色", "味道", "方向"]),
+  makeExtraLesson("kuaile_dushuba", "快乐读书吧", "阅读", ["读", "童", "谣", "歌", "笑", "拍"], ["dú", "tóng", "yáo", "gē", "xiào", "pāi"], "读读童谣和儿歌，跟着节奏拍一拍。", "童谣", ["童谣", "通知", "尺子", "雨点"])
+);
+
+units[1].lessons.push(
+  makeExtraLesson("yuwenyuandi2", "语文园地二", "园地", ["辆", "匹", "册", "支", "棵", "架"], ["liàng", "pǐ", "cè", "zhī", "kē", "jià"], "一辆车，一匹马，量词要用对。", "量词", ["量词", "笔画", "故事", "天气"])
+);
+
+const lifeHabitUnit = units.pop();
+lifeHabitUnit.lessons.push(
+  makeExtraLesson("kouyu_zuoyouxi", "一起做游戏", "口语交际", ["游", "戏", "规", "则", "轮", "流"], ["yóu", "xì", "guī", "zé", "lún", "liú"], "一起做游戏，要先说清规则。", "规则", ["规则", "颜色", "梦话", "云朵"]),
+  makeExtraLesson("yuwenyuandi7", "语文园地七", "园地", ["吵", "胖", "岁", "现", "票", "交"], ["chǎo", "pàng", "suì", "xiàn", "piào", "jiāo"], "在园地里复习生活中的好习惯。", "好习惯", ["好习惯", "坏天气", "小池塘", "长尾巴"])
+);
+
+units.push(
+  {
+    name: "伙伴与快乐",
+    theme: "伙伴、帮助、游戏",
+    lessons: [
+      makeExtraLesson("xiaogongji_xiaoyazi", "小公鸡和小鸭子", "课文", ["他", "河", "说", "也", "地", "听"], ["tā", "hé", "shuō", "yě", "dì", "tīng"], "小伙伴互相帮助，心里很高兴。", "互相帮助", ["互相帮助", "互相争抢", "各走各的", "不说话"]),
+      makeExtraLesson("shu_he_xique", "树和喜鹊", "课文", ["单", "居", "招", "呼", "快", "乐"], ["dān", "jū", "zhāo", "hū", "kuài", "lè"], "有了邻居，树和喜鹊都快乐。", "快乐", ["快乐", "害怕", "粗心", "迟到"]),
+      makeExtraLesson("zenme_dou_kuaile", "怎么都快乐", "课文", ["玩", "很", "当", "音", "讲", "行"], ["wán", "hěn", "dāng", "yīn", "jiǎng", "xíng"], "一个人玩很好，许多人玩也快乐。", "快乐", ["快乐", "难过", "安静", "遥远"]),
+      makeExtraLesson("kouyu_bangmang", "请你帮个忙", "口语交际", ["请", "帮", "忙", "借", "谢", "礼"], ["qǐng", "bāng", "máng", "jiè", "xiè", "lǐ"], "请别人帮忙，要把话说清楚。", "说清楚", ["说清楚", "跑很远", "藏起来", "不回答"]),
+      makeExtraLesson("yuwenyuandi3", "语文园地三", "园地", ["查", "字", "典", "音", "序", "部"], ["chá", "zì", "diǎn", "yīn", "xù", "bù"], "遇到不认识的字，可以学着查字典。", "查字典", ["查字典", "扔书包", "画太阳", "数星星"])
+    ]
+  },
+  {
+    name: "家人与节日",
+    theme: "古诗、夜色、端午、彩虹",
+    lessons: [
+      makeExtraLesson("jingyesi", "静夜思", "古诗", ["思", "床", "前", "光", "低", "故"], ["sī", "chuáng", "qián", "guāng", "dī", "gù"], "读古诗时，要读出想家的心情。", "想家", ["想家", "洗手", "打电话", "做游戏"]),
+      makeExtraLesson("yese", "夜色", "课文", ["色", "外", "看", "爸", "晚", "笑"], ["sè", "wài", "kàn", "bà", "wǎn", "xiào"], "夜晚并不可怕，外面的景色也很美。", "夜晚", ["夜晚", "中午", "早饭", "尺子"]),
+      makeExtraLesson("duanwuzong", "端午粽", "课文", ["午", "节", "叶", "米", "真", "分"], ["wǔ", "jié", "yè", "mǐ", "zhēn", "fēn"], "端午节吃粽子，也记住家人的味道。", "粽子", ["粽子", "铅笔", "月亮", "书包"]),
+      makeExtraLesson("caihong", "彩虹", "课文", ["那", "着", "到", "高", "兴", "千"], ["nà", "zhe", "dào", "gāo", "xìng", "qiān"], "彩虹像一座美丽的小桥。", "小桥", ["小桥", "尺子", "闹钟", "雪人"]),
+      makeExtraLesson("yuwenyuandi4", "语文园地四", "园地", ["胆", "粽", "虹", "据", "原", "微"], ["dǎn", "zòng", "hóng", "jù", "yuán", "wēi"], "在园地里复习节日、夜色和古诗。", "复习", ["复习", "忘记", "打翻", "迟到"])
+    ]
+  },
+  {
+    name: "识字与运动",
+    theme: "动物、对子、操场、蒙学",
+    lessons: [
+      makeExtraLesson("dongwu_erge", "动物儿歌", "识字", ["间", "迷", "造", "运", "池", "欢"], ["jiān", "mí", "zào", "yùn", "chí", "huān"], "读动物儿歌，找一找虫字旁的字。", "虫字旁", ["虫字旁", "木字旁", "三点水", "言字旁"]),
+      makeExtraLesson("guduijin", "古对今", "识字", ["古", "凉", "细", "夕", "李", "语"], ["gǔ", "liáng", "xì", "xī", "lǐ", "yǔ"], "古对今，圆对方，对子读起来有节奏。", "对子", ["对子", "通知", "谜语", "故事"]),
+      makeExtraLesson("caochangshang", "操场上", "识字", ["打", "拍", "跑", "足", "声", "身"], ["dǎ", "pāi", "pǎo", "zú", "shēng", "shēn"], "操场上真热闹，大家一起运动。", "运动", ["运动", "睡觉", "发呆", "下雨"]),
+      makeExtraLesson("renzhichu", "人之初", "识字", ["之", "初", "性", "善", "习", "教"], ["zhī", "chū", "xìng", "shàn", "xí", "jiào"], "读蒙学句子，明白学习和习惯很重要。", "习惯", ["习惯", "彩虹", "水杯", "闹钟"]),
+      makeExtraLesson("kouyu_dadianhua", "打电话", "口语交际", ["电", "话", "喂", "请", "再", "见"], ["diàn", "huà", "wéi", "qǐng", "zài", "jiàn"], "打电话要先问好，再把事情说清楚。", "问好", ["问好", "乱喊", "沉默", "跑开"]),
+      makeExtraLesson("yuwenyuandi5", "语文园地五", "园地", ["饭", "能", "饱", "茶", "泡", "轻"], ["fàn", "néng", "bǎo", "chá", "pào", "qīng"], "在园地里复习偏旁和生活中的字。", "偏旁", ["偏旁", "尾巴", "粽子", "云朵"])
+    ]
+  },
+  {
+    name: "夏天与自然",
+    theme: "古诗、荷叶、天气",
+    lessons: [
+      makeExtraLesson("gushi_ershou", "古诗二首", "古诗", ["首", "采", "无", "树", "爱", "尖"], ["shǒu", "cǎi", "wú", "shù", "ài", "jiān"], "读《池上》和《小池》，想象夏天的画面。", "夏天", ["夏天", "冬天", "书包", "电话"]),
+      makeExtraLesson("heye_yuanyuan", "荷叶圆圆", "课文", ["亮", "机", "台", "放", "鱼", "朵"], ["liàng", "jī", "tái", "fàng", "yú", "duǒ"], "荷叶圆圆的，像一把绿色的小伞。", "荷叶", ["荷叶", "铅笔", "钟表", "房子"]),
+      makeExtraLesson("yao_xiayu_le", "要下雨了", "课文", ["直", "呀", "边", "吗", "加", "呢"], ["zhí", "ya", "biān", "ma", "jiā", "ne"], "天快下雨了，先观察身边的变化。", "下雨", ["下雨", "过年", "跑步", "借书"]),
+      makeExtraLesson("yuwenyuandi6", "语文园地六", "园地", ["棍", "汤", "扇", "椅", "萤", "牵"], ["gùn", "tāng", "shàn", "yǐ", "yíng", "qiān"], "在园地里复习夏天和天气词语。", "天气", ["天气", "称呼", "偏旁", "通知"])
+    ]
+  },
+  lifeHabitUnit,
+  {
+    name: "问号与故事",
+    theme: "照顾、声音、尾巴",
+    lessons: [
+      makeExtraLesson("mianhua_guniang", "棉花姑娘", "课文", ["病", "医", "别", "干", "奇", "星"], ["bìng", "yī", "bié", "gàn", "qí", "xīng"], "棉花姑娘生病了，大家想办法帮助她。", "帮助", ["帮助", "吵闹", "睡懒觉", "忘记"]),
+      makeExtraLesson("gudong", "咕咚", "课文", ["吓", "怕", "跟", "家", "羊", "象"], ["xià", "pà", "gēn", "jiā", "yáng", "xiàng"], "听到声音先观察，不要慌张。", "观察", ["观察", "乱跑", "大喊", "躲藏"]),
+      makeExtraLesson("xiaobihu_jieweiba", "小壁虎借尾巴", "课文", ["捉", "条", "爬", "姐", "您", "草"], ["zhuō", "tiáo", "pá", "jiě", "nín", "cǎo"], "小壁虎去借尾巴，最后发现自己的尾巴会长出来。", "尾巴", ["尾巴", "电话", "粽子", "雨伞"]),
+      makeExtraLesson("yuwenyuandi8", "语文园地八", "园地", ["卫", "巾", "刷", "梳", "澡", "盆"], ["wèi", "jīn", "shuā", "shū", "zǎo", "pén"], "在最后的园地里复习卫生、故事和识字方法。", "复习", ["复习", "忘记", "跳过", "打翻"])
+    ]
+  }
+);
+
+const storeKey = "hangzhou-yuwen-adventure-v1";
+const state = {
+  unit: 0,
+  lesson: null,
+  stage: 0,
+  wordIndex: 0,
+  sentenceIndex: 0,
+  progress: JSON.parse(localStorage.getItem(storeKey) || '{"done":{},"stars":0,"mistakes":{}}'),
+  sound: localStorage.getItem(`${storeKey}-sound`) !== "off"
+};
+state.progress.done = state.progress.done || {};
+state.progress.mistakes = state.progress.mistakes || {};
+state.progress.stars = state.progress.stars || 0;
+state.progress.sessions = state.progress.sessions || [];
+state.progress.lastStudyDate = state.progress.lastStudyDate || "";
+state.progress.streak = state.progress.streak || 0;
+
+const strokeVectors = {
+  "姓": [
+    "M30 24 C26 42 21 60 14 80 C20 73 27 66 34 58",
+    "M44 38 C39 58 30 78 17 96",
+    "M16 70 C31 67 47 63 58 58",
+    "M82 23 C77 39 72 50 66 60",
+    "M70 40 L106 40",
+    "M68 60 L104 60",
+    "M87 29 L87 94",
+    "M63 94 L110 94"
+  ]
+};
+
+const unitList = document.querySelector("#unitList");
+const lessonGrid = document.querySelector("#lessonGrid");
+const lessonTitle = document.querySelector("#lessonTitle");
+const kidView = document.querySelector("#kidView");
+const parentView = document.querySelector("#parentView");
+const parentDetailView = document.querySelector("#parentDetailView");
+const gameShell = document.querySelector("#gameShell");
+const celebration = document.querySelector("#celebration");
+const soundBtn = document.querySelector("#soundBtn");
+const onboardShell = document.querySelector("#onboardShell");
+const privacyShell = document.querySelector("#privacyShell");
+const completeShell = document.querySelector("#completeShell");
+const reviewShell = document.querySelector("#reviewShell");
+const mapNodes = document.querySelector("#mapNodes");
+const mapAvatar = document.querySelector("#mapAvatar");
+let deferredInstallPrompt;
+let audioContext;
+let voiceAudio;
+let strokeAudio;
+const audioBufferCache = new Map();
+let traceTimer;
+let hanziWriter;
+let traceToken = 0;
+let readHighlightTimers = [];
+let reviewQueue = [];
+let reviewIndex = 0;
+let reviewMode = "错字";
+
+function updateSoundButton() {
+  soundBtn.textContent = state.sound ? "音效开" : "音效关";
+}
+
+function getAudioContext() {
+  if (!state.sound) return null;
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!audioContext) audioContext = new AudioCtx();
+  if (audioContext.state === "suspended") audioContext.resume();
+  return audioContext;
+}
+
+function playTone(frequency, duration = .12, type = "sine", volume = .08, delay = 0) {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const start = ctx.currentTime + delay;
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, start);
+  gain.gain.setValueAtTime(0, start);
+  gain.gain.linearRampToValueAtTime(volume, start + .01);
+  gain.gain.exponentialRampToValueAtTime(.001, start + duration);
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration + .03);
+}
+
+function loadAudioBuffer(src) {
+  const cached = audioBufferCache.get(src);
+  if (cached) return cached;
+  const promise = new Promise((resolve, reject) => {
+    const ctx = getAudioContext();
+    if (!ctx) {
+      reject(new Error("Audio is off"));
+      return;
+    }
+    const request = new XMLHttpRequest();
+    request.open("GET", src, true);
+    request.responseType = "arraybuffer";
+    request.onload = () => {
+      if (request.status < 200 || request.status >= 300) {
+        reject(new Error(`Audio load failed: ${src}`));
+        return;
+      }
+      ctx.decodeAudioData(request.response).then(resolve).catch(reject);
+    };
+    request.onerror = () => reject(new Error(`Audio request failed: ${src}`));
+    request.send();
+  });
+  audioBufferCache.set(src, promise);
+  return promise;
+}
+
+function playBufferedAudio(src, fallbackText) {
+  const ctx = getAudioContext();
+  if (!ctx) {
+    speakShortPrompt(fallbackText);
+    return;
+  }
+  loadAudioBuffer(src).then(buffer => {
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    source.buffer = buffer;
+    gain.gain.value = .95;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start();
+  }).catch(() => speakShortPrompt(fallbackText));
+}
+
+function warmAudio(src) {
+  if (!src) return;
+  if (getAudioContext()) {
+    loadAudioBuffer(src).catch(() => {});
+    return;
+  }
+  const audio = new Audio(src);
+  audio.preload = "auto";
+  audio.load();
+}
+
+function playSound(name) {
+  if (name === "tap") playTone(420, .06, "triangle", .04);
+  if (name === "open") {
+    playTone(360, .09, "sine", .05);
+    playTone(560, .12, "sine", .05, .08);
+  }
+  if (name === "correct") {
+    playTone(520, .09, "triangle", .07);
+    playTone(740, .12, "triangle", .07, .08);
+    playTone(980, .13, "triangle", .06, .18);
+  }
+  if (name === "wrong") {
+    playTone(190, .12, "sawtooth", .05);
+    playTone(150, .12, "sawtooth", .04, .11);
+  }
+  if (name === "stage") {
+    playTone(480, .08, "triangle", .045);
+    playTone(660, .08, "triangle", .045, .07);
+  }
+  if (name === "complete") {
+    [523, 659, 784, 1046].forEach((note, index) => playTone(note, .16, "triangle", .07, index * .1));
+  }
+}
+
+function playRecordedAudio(src, fallbackText, options = {}) {
+  if (!src) {
+    speakWithSystemVoice(fallbackText);
+    return;
+  }
+  if (voiceAudio) {
+    voiceAudio.pause();
+    voiceAudio.removeAttribute("src");
+  }
+  voiceAudio = new Audio(src);
+  voiceAudio.preload = "auto";
+  voiceAudio.playbackRate = options.playbackRate || 1;
+  voiceAudio.onended = () => {};
+  voiceAudio.onerror = () => speakWithSystemVoice(fallbackText);
+  voiceAudio.play().catch(() => speakWithSystemVoice(fallbackText));
+}
+
+function wordAudioPath(lesson, word) {
+  const index = lesson.words.indexOf(word);
+  if (index < 0) return "";
+  return `audio/words/${lesson.id}-${index}.mp3`;
+}
+
+function lessonAudioPath(lesson) {
+  return `audio/lessons/${lesson.id}.mp3`;
+}
+
+const availableLessonAudio = new Set([
+  "chunxiaqiudong",
+  "xingshige",
+  "xiaoqingwa",
+  "caizimi",
+  "chishuibuwangwajingren",
+  "woduoxiangqukankan",
+  "yigejieyige",
+  "sigetaiyang",
+  "wenjudejia",
+  "yifenzhong",
+  "dongwuwangguokaidahui",
+  "xiaohouzixiashan"
+]);
+
+function lessonHasAudio(lesson) {
+  return Boolean(lesson?.id);
+}
+
+function feedbackAudioPath(name) {
+  return `audio/feedback/${name}.mp3`;
+}
+
+function strokeAudioKey(name) {
+  return {
+    "横": "heng",
+    "竖": "shu",
+    "撇": "pie",
+    "捺": "na",
+    "点": "dian",
+    "提": "ti",
+    "撇点": "piedian",
+    "横折": "hengzhe",
+    "横钩": "henggou",
+    "横撇": "hengpie",
+    "竖钩": "shugou",
+    "横折钩": "hengzhegou",
+    "竖提": "shuti",
+    "撇折": "piezhe",
+    "横折折撇": "hengzhezhepie",
+    "横折提": "hengzheti",
+    "竖折": "shuzhe",
+    "竖弯": "shuwan",
+    "竖弯钩": "shuwangou",
+    "弯钩": "wangou",
+    "斜钩": "xiegou",
+    "卧钩": "wogou",
+    "横折弯钩": "hengzhewangou",
+    "横撇弯钩": "hengpiewangou",
+    "竖折折钩": "shuzhezhegou",
+    "横折折折钩": "hengzhezhezhegou"
+  }[name] || encodeURIComponent(name);
+}
+
+function speakWord(lesson, word) {
+  playRecordedAudio(wordAudioPath(lesson, word), word);
+}
+
+function speakLesson(lesson) {
+  if (!lessonHasAudio(lesson)) {
+    speakShortPrompt(lesson.read.join(" "));
+    return;
+  }
+  playRecordedAudio(lessonAudioPath(lesson), lesson.read.join(" "), { playbackRate: .78 });
+}
+
+function speakFeedback(name, fallbackText) {
+  playRecordedAudio(feedbackAudioPath(name), fallbackText);
+}
+
+function speakStrokeName(name) {
+  playBufferedAudio(`audio/strokes/${strokeAudioKey(name)}.mp3`, name);
+}
+
+function clearReadHighlight() {
+  readHighlightTimers.forEach(timer => clearTimeout(timer));
+  readHighlightTimers = [];
+  document.querySelectorAll("#readLines .read-line").forEach(line => line.classList.remove("active"));
+}
+
+function startReadHighlight(lines, totalMs = 3600) {
+  clearReadHighlight();
+  const readLines = [...document.querySelectorAll("#readLines .read-line")];
+  const count = Math.max(lines.length, readLines.length, 1);
+  const stepMs = Math.max(1200, totalMs / count);
+  readLines.forEach((line, index) => {
+    const timer = setTimeout(() => {
+      readLines.forEach(item => item.classList.remove("active"));
+      line.classList.add("active");
+    }, index * stepMs);
+    readHighlightTimers.push(timer);
+  });
+  readHighlightTimers.push(setTimeout(() => {
+    readLines.forEach(line => line.classList.add("active"));
+  }, stepMs * count));
+}
+
+function popFeedback(selector) {
+  const node = document.querySelector(selector);
+  if (!node) return;
+  node.classList.remove("pop");
+  void node.offsetWidth;
+  node.classList.add("pop");
+}
+
+function celebrate() {
+  document.body.classList.remove("celebrating");
+  void document.body.offsetWidth;
+  document.body.classList.add("celebrating");
+  celebration.innerHTML = "";
+  const colors = ["#f6c85f", "#2f855a", "#2364aa", "#ef7b45", "#d94f4f"];
+  for (let index = 0; index < 36; index += 1) {
+    const spark = document.createElement("span");
+    spark.className = "spark";
+    spark.style.left = `${Math.random() * 100}%`;
+    spark.style.background = colors[index % colors.length];
+    spark.style.animationDelay = `${Math.random() * .25}s`;
+    spark.style.transform = `rotate(${Math.random() * 180}deg)`;
+    celebration.appendChild(spark);
+  }
+  celebration.classList.add("show");
+  setTimeout(() => celebration.classList.remove("show"), 1400);
+}
+
+function save() {
+  localStorage.setItem(storeKey, JSON.stringify(state.progress));
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function yesterdayKey() {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().slice(0, 10);
+}
+
+function recordStudySession(lesson) {
+  const today = todayKey();
+  if (state.progress.lastStudyDate !== today) {
+    state.progress.streak = state.progress.lastStudyDate === yesterdayKey() ? state.progress.streak + 1 : 1;
+    state.progress.lastStudyDate = today;
+  }
+  state.progress.sessions.push({
+    date: today,
+    title: lesson.title,
+    words: lesson.words.length
+  });
+  state.progress.sessions = state.progress.sessions.slice(-60);
+}
+
+function keyFor(unitIndex, lessonIndex) {
+  return `${unitIndex}-${lessonIndex}`;
+}
+
+function allLessons() {
+  return units.flatMap((unit, unitIndex) => unit.lessons.map((lesson, lessonIndex) => ({unit, unitIndex, lesson, lessonIndex})));
+}
+
+function nextLessonItem() {
+  return allLessons().find(item => !state.progress.done[keyFor(item.unitIndex, item.lessonIndex)]) || allLessons()[0];
+}
+
+function todayPlanItems() {
+  const lessons = allLessons();
+  const next = nextLessonItem();
+  const start = Math.max(0, lessons.findIndex(item => item.unitIndex === next.unitIndex && item.lessonIndex === next.lessonIndex));
+  return lessons.slice(start, start + 3);
+}
+
+function doneCountForUnit(unitIndex) {
+  return units[unitIndex].lessons.filter((_, lessonIndex) => state.progress.done[keyFor(unitIndex, lessonIndex)]).length;
+}
+
+function recentDateKeys(days = 7) {
+  return Array.from({ length: days }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - index - 1));
+    return date.toISOString().slice(0, 10);
+  });
+}
+
+function labelForDateKey(key) {
+  const today = todayKey();
+  if (key === today) return "今";
+  return `${Number(key.slice(5, 7))}/${Number(key.slice(8, 10))}`;
+}
+
+function renderUnitProgress(doneLessons) {
+  const firstUnfinished = nextLessonItem();
+  document.querySelector("#unitProgressList").innerHTML = units.map((unit, unitIndex) => {
+    const done = doneCountForUnit(unitIndex);
+    const total = unit.lessons.length;
+    const percent = Math.round(done / total * 100);
+    const active = firstUnfinished?.unitIndex === unitIndex;
+    return `<div class="unit-progress-item">
+      <span class="plan-dot">${unitIndex + 1}</span>
+      <span class="unit-progress-meta">
+        <strong>${unit.name}</strong>
+        <span>${unit.theme} · ${done}/${total} 关</span>
+        <span class="progress-track"><span style="--unit-progress:${percent}%"></span></span>
+      </span>
+      <span class="status-chip">${percent === 100 ? "完成" : active ? "当前" : `${percent}%`}</span>
+    </div>`;
+  }).join("");
+}
+
+function renderMistakeTrend() {
+  const sessions = state.progress.sessions || [];
+  const dates = recentDateKeys(7);
+  const maxCount = Math.max(1, ...dates.map(date => sessions.filter(session => session.date === date).length));
+  document.querySelector("#mistakeTrend").innerHTML = dates.map(date => {
+    const count = sessions.filter(session => session.date === date).length;
+    const height = 8 + Math.round(count / maxCount * 70);
+    return `<div class="trend-bar">
+      <i style="--trend-height:${height}px"></i>
+      <span>${labelForDateKey(date)}</span>
+    </div>`;
+  }).join("");
+}
+
+function renderParentAdvice(next, mistakes, todaySessions) {
+  const advice = [];
+  if (todaySessions === 0) {
+    advice.push(["今", "先完成今日第一关", `${next.unit.name} · ${next.lesson.title}，控制在 10 分钟内。`, "优先"]);
+  } else if (todaySessions < 2) {
+    advice.push(["今", "可以再学一小关", "如果孩子状态好，继续完成第二个短关卡；疲劳就停。", "可选"]);
+  } else {
+    advice.push(["休", "今日任务已够", "今天已经达到建议量，后面以轻松复习为主。", "完成"]);
+  }
+  if (mistakes.length) {
+    advice.push(["错", "复习高频错字", `优先看 ${mistakes.slice(0, 4).map(([word]) => word).join("、")}。`, "复习"]);
+  } else {
+    advice.push(["稳", "保持朗读习惯", "暂时没有错字，建议听一遍示范后跟读。", "保持"]);
+  }
+  advice.push(["下", "下一课预告", `下一步进入《${next.lesson.title}》，重点字：${next.lesson.words.slice(0, 4).join("、")}。`, "下一步"]);
+  document.querySelector("#parentAdviceList").innerHTML = advice.map(([dot, title, text, chip]) => `
+    <div class="privacy-item"><span class="plan-dot">${dot}</span><span><strong>${title}</strong><span>${text}</span></span><span class="status-chip">${chip}</span></div>
+  `).join("");
+}
+
+function mapPosition(index, total) {
+  const desktop = [
+    { x: "12%", y: "72%" },
+    { x: "27%", y: "45%" },
+    { x: "42%", y: "75%" },
+    { x: "57%", y: "52%" },
+    { x: "72%", y: "34%" },
+    { x: "86%", y: "62%" },
+    { x: "48%", y: "28%" }
+  ];
+  const mobile = [
+    { x: "22%", y: "78%" },
+    { x: "72%", y: "70%" },
+    { x: "28%", y: "56%" },
+    { x: "76%", y: "47%" },
+    { x: "26%", y: "34%" },
+    { x: "72%", y: "25%" },
+    { x: "50%", y: "14%" }
+  ];
+  const points = window.innerWidth <= 620 ? mobile : desktop;
+  return points[index % points.length] || points[Math.min(index, points.length - 1)];
+}
+
+function renderAdventureMap() {
+  const unit = units[state.unit];
+  const done = doneCountForUnit(state.unit);
+  const currentIndex = Math.max(0, unit.lessons.findIndex((_, lessonIndex) => !state.progress.done[keyFor(state.unit, lessonIndex)]));
+  document.querySelector("#mapTitle").textContent = `${unit.name} · 动画闯关地图`;
+  document.querySelector("#mapSubtitle").textContent = `${done}/${unit.lessons.length} 已完成，点击节点开始`;
+  document.querySelector("#mapTip").textContent = done === unit.lessons.length ? "本单元完成，可以去下一单元" : "小语队长在推荐关卡等你";
+  document.querySelector("#mapNextBtn").textContent = state.unit >= units.length - 1 ? "最后单元" : "下一单元";
+  document.querySelector("#mapNextBtn").disabled = state.unit >= units.length - 1;
+  mapNodes.innerHTML = unit.lessons.map((lesson, index) => {
+    const pos = mapPosition(index, unit.lessons.length);
+    const finished = state.progress.done[keyFor(state.unit, index)];
+    const current = index === currentIndex && !finished;
+    const locked = !finished && !current && index > currentIndex;
+    return `<button class="map-node ${finished ? "done" : ""} ${current ? "current" : ""} ${locked ? "locked" : ""}" style="--x:${pos.x};--y:${pos.y}" data-map-lesson="${index}">
+      ${finished ? "★" : index + 1}<small>${lesson.title}</small>
+    </button>`;
+  }).join("");
+  const avatarPos = mapPosition(currentIndex >= 0 ? currentIndex : unit.lessons.length - 1, unit.lessons.length);
+  mapAvatar.style.setProperty("--avatar-x", avatarPos.x);
+  mapAvatar.style.setProperty("--avatar-y", avatarPos.y);
+}
+
+function renderUnits() {
+  unitList.innerHTML = units.map((unit, index) => {
+    const done = doneCountForUnit(index);
+    return `<button class="unit-btn ${index === state.unit ? "active" : ""}" data-unit="${index}">
+      <span class="unit-index">${index + 1}</span>
+      <span><span class="unit-name">${unit.name}</span><span class="unit-meta">${unit.theme}</span></span>
+      <span class="progress-pill">${done}/${unit.lessons.length}</span>
+    </button>`;
+  }).join("");
+}
+
+function renderLessons() {
+  const unit = units[state.unit];
+  lessonTitle.textContent = `${unit.name}关卡`;
+  lessonGrid.innerHTML = unit.lessons.map((lesson, index) => {
+    const done = state.progress.done[keyFor(state.unit, index)];
+    const intro = lessonIntro(lesson);
+    const art = lessonArt(lesson.title, state.unit, index);
+    return `<button class="lesson-card ${done ? "done" : ""}" style="--card-tint:${art.tint};--card-sun:${art.sun};--art-bg:${art.bg}" data-lesson="${index}">
+      <span class="lesson-art">${art.svg}</span>
+      <span class="lesson-copy">
+        <span class="lesson-head">
+          <h3>${lesson.title}</h3>
+          <span class="lesson-type">${done ? "已完成" : lesson.type}</span>
+        </span>
+        <p>${intro}</p>
+        <span class="word-row">${lesson.words.map((word, wordIndex) => renderWordChip(lesson, word, wordIndex)).join("")}</span>
+        <span class="lesson-footer"><span class="story-tag">任务卡</span><span>${done ? "复习一下" : "开始闯关"}</span></span>
+      </span>
+    </button>`;
+  }).join("");
+  const next = nextLessonItem();
+  document.querySelector("#todayWords").textContent = next.lesson.words.length;
+  document.querySelector("#todayDone").textContent = doneCountForUnit(state.unit);
+  document.querySelector("#contentCount").textContent = allLessons().length;
+  const prevUnitBtn = document.querySelector("#prevUnitBtn");
+  const nextUnitBtn = document.querySelector("#nextUnitBtn");
+  prevUnitBtn.disabled = state.unit <= 0;
+  prevUnitBtn.textContent = state.unit <= 0 ? "第一单元" : "上一单元";
+  nextUnitBtn.disabled = state.unit >= units.length - 1;
+  nextUnitBtn.textContent = state.unit >= units.length - 1 ? "最后单元" : "下一单元";
+}
+
+function renderWordChip(lesson, word, index) {
+  const py = lesson.tonePinyin?.[index] || lesson.pinyin?.[index] || "";
+  return `<span class="word-chip with-pinyin"><span class="chip-pinyin">${py}</span><span class="chip-hanzi">${word}</span></span>`;
+}
+
+function lessonArt(title, unitIndex, lessonIndex) {
+  const palettes = [
+    { bg: "#e7f7ee", tint: "rgba(47,133,90,.13)", sun: "rgba(246,200,95,.22)" },
+    { bg: "#fff1d6", tint: "rgba(239,123,69,.13)", sun: "rgba(239,123,69,.2)" },
+    { bg: "#e7f0ff", tint: "rgba(35,100,170,.12)", sun: "rgba(35,100,170,.16)" },
+    { bg: "#f7eadf", tint: "rgba(217,79,79,.1)", sun: "rgba(217,79,79,.14)" }
+  ];
+  const palette = palettes[(unitIndex * 4 + lessonIndex) % palettes.length];
+  const common = `stroke="#18212b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"`;
+  const artMap = {
+    "春夏秋冬": `<svg viewBox="0 0 120 120"><circle cx="86" cy="27" r="16" fill="#f6c85f" ${common}/><path d="M22 82c15-28 41-45 77-41-7 35-28 53-67 53 18-13 32-25 50-38" fill="#dff4e8" stroke="#2f855a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 28c10 4 15 10 18 20M31 25c5 12 5 21 0 30" fill="none" ${common}/></svg>`,
+    "姓氏歌": `<svg viewBox="0 0 120 120"><rect x="26" y="22" width="68" height="78" rx="10" fill="#fff" ${common}/><path d="M42 43h36M42 61h28M42 79h20" ${common}/><circle cx="82" cy="82" r="15" fill="#f6c85f" ${common}/><path d="M75 82h14M82 75v14" ${common}/></svg>`,
+    "小青蛙": `<svg viewBox="0 0 120 120"><path d="M26 73c9-20 53-20 68 0v20H26z" fill="#dff4e8" stroke="#2f855a" stroke-width="5" stroke-linejoin="round"/><circle cx="42" cy="61" r="12" fill="#fff" ${common}/><circle cx="78" cy="61" r="12" fill="#fff" ${common}/><path d="M48 84c8 5 16 5 24 0" fill="none" ${common}/><path d="M18 96h84" ${common}/></svg>`,
+    "猜字谜": `<svg viewBox="0 0 120 120"><path d="M28 30h64v64H28z" fill="#fff6dc" ${common}/><path d="M43 50c3-11 29-12 33 0 3 8-5 13-13 18-4 3-5 5-5 9" fill="none" ${common}/><circle cx="58" cy="87" r="4" fill="#18212b"/><path d="M20 20l14 12M100 20L86 32" ${common}/></svg>`,
+    "吃水不忘挖井人": `<svg viewBox="0 0 120 120"><path d="M31 49h58v48H31z" fill="#fff" ${common}/><path d="M24 49h72l-36-28z" fill="#ef7b45" ${common}/><path d="M47 69h26M47 84h26" ${common}/><path d="M18 101c17-8 28-8 45 0s28 8 43 0" fill="none" stroke="#2364aa" stroke-width="5" stroke-linecap="round"/></svg>`,
+    "我多想去看看": `<svg viewBox="0 0 120 120"><path d="M22 89c15-26 42-44 76-49" fill="none" stroke="#2364aa" stroke-width="8" stroke-linecap="round"/><path d="M30 85l16 12 45-61" fill="none" stroke="#2f855a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M76 22l16 8-16 8z" fill="#ef7b45" ${common}/><path d="M76 22v50" ${common}/></svg>`,
+    "一个接一个": `<svg viewBox="0 0 120 120"><circle cx="33" cy="61" r="17" fill="#fff6dc" ${common}/><circle cx="62" cy="61" r="17" fill="#e7f0ff" ${common}/><circle cx="91" cy="61" r="17" fill="#dff4e8" ${common}/><path d="M25 91h74" ${common}/><path d="M45 35h34" stroke="#ef7b45" stroke-width="5" stroke-linecap="round"/></svg>`,
+    "四个太阳": `<svg viewBox="0 0 120 120"><circle cx="38" cy="38" r="15" fill="#f6c85f" ${common}/><circle cx="82" cy="38" r="15" fill="#ef7b45" ${common}/><circle cx="38" cy="82" r="15" fill="#dff4e8" ${common}/><circle cx="82" cy="82" r="15" fill="#e7f0ff" ${common}/><path d="M60 15v90M15 60h90" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/></svg>`,
+    "文具的家": `<svg viewBox="0 0 120 120"><rect x="25" y="38" width="70" height="50" rx="9" fill="#fff" ${common}/><path d="M35 38l10-16h30l10 16" fill="#fff6dc" ${common}/><path d="M44 58h32M44 74h22" ${common}/><path d="M84 28l14-14 8 8-14 14z" fill="#f6c85f" ${common}/></svg>`,
+    "一分钟": `<svg viewBox="0 0 120 120"><circle cx="60" cy="63" r="39" fill="#fff" ${common}/><path d="M60 63V39M60 63l18 12" ${common}/><path d="M44 18h32M60 18v10" ${common}/><path d="M31 95l-8 10M89 95l8 10" ${common}/></svg>`,
+    "动物王国开大会": `<svg viewBox="0 0 120 120"><path d="M25 32h70v52H64L47 99V84H25z" fill="#fff" ${common}/><path d="M42 51h36M42 67h28" ${common}/><circle cx="32" cy="29" r="9" fill="#f6c85f" ${common}/><circle cx="88" cy="29" r="9" fill="#f6c85f" ${common}/></svg>`,
+    "小猴子下山": `<svg viewBox="0 0 120 120"><path d="M26 83c15-24 43-34 74-32" fill="none" stroke="#2f855a" stroke-width="8" stroke-linecap="round"/><path d="M26 83h67" ${common}/><circle cx="40" cy="53" r="18" fill="#fff6dc" ${common}/><path d="M33 55h14M36 66c5 3 9 3 13 0" ${common}/><path d="M81 35l19-12" stroke="#ef7b45" stroke-width="7" stroke-linecap="round"/></svg>`
+  };
+  return {
+    ...palette,
+    svg: artMap[title] || `<svg viewBox="0 0 120 120"><rect x="30" y="25" width="60" height="72" rx="8" fill="#fff" ${common}/><path d="M45 48h30M45 65h24M45 82h18" ${common}/></svg>`
+  };
+}
+
+function lessonIntro(lesson) {
+  const map = {
+    "春夏秋冬": "去西湖边找四季的秘密，先认识春风花雪。",
+    "姓氏歌": "和新朋友打招呼，学会介绍自己的姓。",
+    "小青蛙": "帮小青蛙分清一串长得像的字。",
+    "猜字谜": "进入字谜小屋，用线索猜汉字。",
+    "吃水不忘挖井人": "听一个感谢帮助者的故事。",
+    "我多想去看看": "把心愿说出来，练习有感情朗读。",
+    "一个接一个": "跟着伙伴一起发现快乐接力。",
+    "四个太阳": "打开想象力，给四季送太阳。",
+    "文具的家": "帮文具回家，养成收纳好习惯。",
+    "一分钟": "挑战一分钟，看看能做好几件事。",
+    "动物王国开大会": "帮动物们把通知说清楚。",
+    "小猴子下山": "跟着故事学会做事专心。"
+  };
+  return map[lesson.title] || lesson.sentence;
+}
+
+function renderParent() {
+  const lessons = allLessons();
+  const doneLessons = lessons.filter(item => state.progress.done[keyFor(item.unitIndex, item.lessonIndex)]);
+  const rate = Math.round(doneLessons.length / lessons.length * 100);
+  const learnedWords = new Set(doneLessons.flatMap(item => item.lesson.words));
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  const mistakes = Object.entries(state.progress.mistakes).sort((a, b) => b[1] - a[1]).slice(0, 16);
+  const next = nextLessonItem();
+  document.querySelector("#parentSummaryTitle").textContent = todaySessions
+    ? `今天已完成 ${todaySessions} 关`
+    : "今日还未开始";
+  document.querySelector("#parentSummaryText").textContent = todaySessions
+    ? `最近继续保持 ${state.progress.streak || 0} 天连续学习，下一步建议复习错字或进入《${next.lesson.title}》。`
+    : `建议从《${next.lesson.title}》开始，先学一小关，再看孩子状态决定是否继续。`;
+  document.querySelector("#reportRing").style.setProperty("--report-progress", `${rate}%`);
+  document.querySelector("#statLessons").textContent = doneLessons.length;
+  document.querySelector("#statStars").textContent = state.progress.stars;
+  document.querySelector("#statRate").textContent = `${rate}%`;
+  document.querySelector("#todayStudyCount").textContent = todaySessions;
+  document.querySelector("#parentMistakeCount").textContent = Object.keys(state.progress.mistakes).length;
+  document.querySelector("#streakDays").textContent = `${state.progress.streak || 0}天`;
+  document.querySelector("#reportWords").textContent = learnedWords.size;
+  document.querySelector("#reportRead").textContent = doneLessons.length;
+  document.querySelector("#reportPractice").textContent = Object.keys(state.progress.mistakes).length;
+  document.querySelector("#releaseLessonCount").textContent = `${lessons.length} 个学习关卡，覆盖 8 个单元的课文、识字、园地和口语交际。`;
+  document.querySelector("#releaseVoiceCount").textContent = `${lessons.reduce((sum, item) => sum + item.lesson.words.length, 0)} 个生字音频，另含笔画名称和反馈提示音。`;
+  document.querySelector("#mistakeList").innerHTML = mistakes.length
+    ? mistakes.map(([word, count]) => `<span class="word-chip">${word} × ${count}</span>`).join("")
+    : `<span class="word-chip">还没有错字</span>`;
+  document.querySelector("#nextLesson").textContent = next.lesson.title;
+  renderUnitProgress(doneLessons);
+  renderMistakeTrend();
+  renderParentAdvice(next, mistakes, todaySessions);
+  renderTodayPlan();
+  renderHomeStats(doneLessons, learnedWords, next);
+}
+
+function renderHomeStats(doneLessons, learnedWords, next) {
+  const mistakeCount = Object.keys(state.progress.mistakes).length;
+  const reviewReady = mistakeCount || learnedWords.size || unitReviewWords().length;
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  const todayProgress = Math.min(100, Math.round(todaySessions / 2 * 100));
+  document.querySelector("#homeTitle").textContent = next ? `今天推荐：${next.lesson.title}` : "今天的语文冒险完成啦";
+  document.querySelector("#homeText").textContent = next ? `${next.unit.name} · ${next.lesson.words.length} 个重点字 · 今日已完成 ${todaySessions}/2 关` : "可以复习错字，或者听一听已经学过的朗读。";
+  document.querySelector("#todayMeterFill").style.setProperty("--today-progress", `${todayProgress}%`);
+  document.querySelector("#reviewCount").textContent = mistakeCount ? mistakeCount : reviewReady ? "练" : 0;
+  document.querySelector("#rewardStars").textContent = state.progress.stars;
+  document.querySelector("#homeStars").textContent = state.progress.stars;
+  document.querySelector("#homeLessons").textContent = doneLessons.length;
+  document.querySelector("#homeStreak").textContent = state.progress.streak || 0;
+  document.querySelector("#homeWords").textContent = learnedWords.size;
+}
+
+function renderTodayPlan() {
+  const items = todayPlanItems();
+  document.querySelector("#todayPlan").innerHTML = items.map((item, index) => {
+    const done = state.progress.done[keyFor(item.unitIndex, item.lessonIndex)];
+    return `<div class="plan-item">
+      <span class="plan-dot">${index + 1}</span>
+      <span><strong>${item.lesson.title}</strong><span>${item.unit.name} · ${item.lesson.words.length} 个重点字</span></span>
+      <span class="status-chip">${done ? "已完成" : index === 0 ? "今日" : "备选"}</span>
+    </div>`;
+  }).join("");
+}
+
+function renderRewards() {
+  const icons = ["春", "愿", "友", "家", "动", "夏", "习", "问"];
+  const colors = [
+    "rgba(47,133,90,.22)",
+    "rgba(239,123,69,.2)",
+    "rgba(35,100,170,.18)",
+    "rgba(217,79,79,.16)"
+  ];
+  const completedUnits = units.filter((_, unitIndex) => doneCountForUnit(unitIndex) === units[unitIndex].lessons.length).length;
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  document.querySelector("#rewardRoomText").textContent = completedUnits
+    ? `已经点亮 ${completedUnits}/${units.length} 枚单元徽章，继续收集整套下册星球。`
+    : "完成每个单元，就会在这里得到一枚主题徽章。";
+  document.querySelector("#badgeGrid").innerHTML = units.map((unit, index) => {
+    const done = doneCountForUnit(index);
+    const unlocked = done === unit.lessons.length;
+    const current = index === state.unit;
+    return `<button class="unit-badge ${unlocked ? "done" : "locked"}" style="--badge-glow:${colors[index % colors.length]}" data-reward-unit="${index}">
+      <span class="unit-badge-icon">${unlocked ? "★" : icons[index]}</span>
+      <span>
+        <strong>${unit.name}</strong>
+        <span>${done}/${unit.lessons.length} 关 · ${unlocked ? "徽章已点亮" : current ? "正在挑战" : "继续收集"}</span>
+      </span>
+    </button>`;
+  }).join("");
+  const treasureReady = todaySessions >= 2;
+  const treasurePanel = document.querySelector(".treasure-panel");
+  treasurePanel.classList.toggle("claimed", treasureReady);
+  document.querySelector("#treasureTitle").textContent = treasureReady ? "今日宝箱已点亮" : "今日宝箱";
+  document.querySelector("#treasureText").textContent = treasureReady
+    ? "今天已经完成学习目标，可以休息或复习错字。"
+    : `今天已完成 ${todaySessions}/2 关，再完成一点点就能点亮宝箱。`;
+  document.querySelector("#treasureBtn").textContent = treasureReady ? "去复习错字" : "去完成今日任务";
+}
+
+function renderAll() {
+  renderUnits();
+  renderLessons();
+  renderParent();
+  renderRewards();
+  renderAdventureMap();
+}
+
+function currentLesson() {
+  return units[state.unit].lessons[state.lesson];
+}
+
+function speakWithSystemVoice(text) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "zh-CN";
+  utterance.rate = .82;
+  speechSynthesis.speak(utterance);
+}
+
+function speakShortPrompt(text) {
+  if (voiceAudio) voiceAudio.pause();
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "zh-CN";
+  utterance.rate = .72;
+  utterance.pitch = 1.08;
+  speechSynthesis.speak(utterance);
+}
+
+function speakStrokeStep(name, index) {
+  speakStrokeName(name || ordinalStrokeName(index));
+}
+
+function warmLessonAudio(lesson) {
+  lesson.words.forEach(word => warmAudio(wordAudioPath(lesson, word)));
+  if (lessonHasAudio(lesson)) warmAudio(lessonAudioPath(lesson));
+  ["try-again", "complete"].forEach(name => warmAudio(feedbackAudioPath(name)));
+}
+
+function shuffle(items) {
+  return [...items].sort(() => Math.random() - .5);
+}
+
+function openGame(lessonIndex) {
+  playSound("open");
+  state.lesson = lessonIndex;
+  state.stage = 0;
+  state.wordIndex = 0;
+  state.sentenceIndex = 0;
+  const lesson = currentLesson();
+  warmLessonAudio(lesson);
+  document.querySelector("#gameTitle").textContent = lesson.title;
+  document.querySelector("#guideTitle").textContent = `小语队长：${lesson.title}任务`;
+  document.querySelector("#guideText").textContent = lessonIntro(lesson);
+  document.querySelector("#traceGhost").textContent = lesson.words[0];
+  document.querySelector("#traceFill").textContent = lesson.words[0];
+  document.querySelector("#traceBoard").style.setProperty("--write-progress", "0%");
+  renderTraceVector(lesson.words[0]);
+  document.querySelector("#strokeList").innerHTML = lesson.strokes.map(item => `<span class="stroke">${item}</span>`).join("");
+  document.querySelector("#sentenceLine").textContent = lesson.blank;
+  document.querySelector("#readLines").innerHTML = lesson.read.map(line => `<div class="read-line">${line}</div>`).join("");
+  const lessonAudio = document.querySelector("#lessonAudio");
+  lessonAudio.classList.toggle("hidden", !lessonHasAudio(lesson));
+  lessonAudio.playbackRate = .78;
+  if (lessonHasAudio(lesson)) {
+    lessonAudio.src = lessonAudioPath(lesson);
+    lessonAudio.load();
+  } else {
+    lessonAudio.removeAttribute("src");
+    lessonAudio.load();
+  }
+  document.querySelector("#wordFeedback").textContent = "";
+  document.querySelector("#traceFeedback").textContent = "";
+  document.querySelector("#sentenceFeedback").textContent = "";
+  document.querySelector("#readFeedback").textContent = "";
+  document.querySelectorAll(".read-check").forEach(item => item.classList.remove("done"));
+  document.querySelectorAll(".read-line").forEach(item => item.classList.remove("active"));
+  document.querySelector("#nextLessonBtn").classList.add("hidden");
+  document.querySelector("#finishLesson").classList.remove("hidden");
+  document.querySelector("#finishLesson").disabled = true;
+  document.querySelector("#finishLesson").textContent = "完成本课";
+  renderChoices();
+  showStage(0);
+  gameShell.classList.add("open");
+}
+
+function nextLessonPosition() {
+  if (state.lesson === null) return null;
+  if (state.lesson + 1 < units[state.unit].lessons.length) {
+    return { unit: state.unit, lesson: state.lesson + 1 };
+  }
+  if (state.unit + 1 < units.length) {
+    return { unit: state.unit + 1, lesson: 0 };
+  }
+  return null;
+}
+
+function renderTraceVector(word) {
+  const board = document.querySelector("#traceBoard");
+  const svg = document.querySelector("#traceSvg");
+  const paths = strokeVectors[word];
+  board.classList.toggle("vector-mode", !!paths);
+  board.classList.remove("writer-mode");
+  document.querySelector("#hanziWriterTarget").innerHTML = "";
+  hanziWriter = null;
+  if (!paths) {
+    svg.innerHTML = "";
+    return;
+  }
+  const renderGroup = (className) => `<g class="${className}">${paths.map((d, index) => `<path data-stroke="${index}" pathLength="1" d="${d}"></path>`).join("")}</g>`;
+  svg.innerHTML = renderGroup("trace-bg") + renderGroup("trace-fg");
+}
+
+function setupHanziWriter(word) {
+  const target = document.querySelector("#hanziWriterTarget");
+  const board = document.querySelector("#traceBoard");
+  target.innerHTML = "";
+  hanziWriter = null;
+  if (!window.HanziWriter) return false;
+  board.classList.add("writer-mode");
+  board.classList.remove("vector-mode");
+  hanziWriter = HanziWriter.create(target, word, {
+    width: target.clientWidth || 300,
+    height: target.clientHeight || 300,
+    padding: 20,
+    showOutline: true,
+    showCharacter: false,
+    strokeColor: "#18212b",
+    outlineColor: "rgba(24,33,43,.18)",
+    radicalColor: null,
+    strokeAnimationSpeed: .72,
+    delayBetweenStrokes: 620,
+    onLoadCharDataError: () => {
+      board.classList.remove("writer-mode");
+      renderTraceVector(word);
+    }
+  });
+  return true;
+}
+
+function ordinalStrokeName(index) {
+  return `第${index + 1}笔`;
+}
+
+const strokeNameSequences = {
+  "春": ["横", "横", "横", "撇", "捺", "竖", "横折", "横", "横"],
+  "姓": ["撇点", "撇", "横", "撇", "横", "横", "竖", "横"],
+  "青": ["横", "横", "竖", "横", "竖", "横折钩", "横", "横"],
+  "字": ["点", "点", "横钩", "横撇", "竖钩", "横"],
+  "吃": ["竖", "横折", "横", "撇", "横", "横折弯钩"],
+  "会": ["撇", "捺", "横", "横", "撇折", "点"],
+  "过": ["横", "竖钩", "点", "点", "横折折撇", "捺"],
+  "太": ["横", "撇", "捺", "点"],
+  "文": ["点", "横", "撇", "捺"],
+  "钟": ["撇", "横", "横", "横", "竖提", "竖", "横折", "横", "竖"],
+  "物": ["撇", "横", "竖", "提", "撇", "横折钩", "撇", "撇"],
+  "块": ["横", "竖", "提", "横折", "横", "撇", "捺"],
+  "听": ["竖", "横折", "横", "撇", "撇", "横", "竖"],
+  "阴": ["横撇弯钩", "竖", "撇", "横折钩", "横", "横"],
+  "读": ["点", "横折提", "横", "竖", "横钩", "点", "点", "横", "撇", "点"],
+  "辆": ["横", "撇折", "竖", "提", "横", "竖", "横折钩", "撇", "点", "撇", "点"],
+  "游": ["点", "点", "提", "点", "横", "横折钩", "撇", "撇", "横", "横撇", "竖钩", "横"],
+  "吵": ["竖", "横折", "横", "竖", "撇", "点", "撇"],
+  "他": ["撇", "竖", "横折钩", "竖", "竖弯钩"],
+  "单": ["点", "撇", "竖", "横折", "横", "横", "横", "竖"],
+  "玩": ["横", "横", "竖", "提", "横", "横", "撇", "竖弯钩"],
+  "请": ["点", "横折提", "横", "横", "竖", "横", "竖", "横折钩", "横", "横"],
+  "查": ["横", "竖", "撇", "捺", "竖", "横折", "横", "横", "横"],
+  "思": ["竖", "横折", "横", "竖", "横", "点", "卧钩", "点", "点"],
+  "色": ["撇", "横撇", "横折", "竖", "横", "竖弯钩"],
+  "午": ["撇", "横", "横", "竖"],
+  "那": ["横折钩", "横", "横", "撇", "横撇弯钩", "竖"],
+  "胆": ["撇", "横折钩", "横", "横", "竖", "横折", "横", "横", "横"],
+  "间": ["点", "竖", "横折钩", "竖", "横折", "横", "横"],
+  "古": ["横", "竖", "竖", "横折", "横"],
+  "打": ["横", "竖钩", "提", "横", "竖钩"],
+  "之": ["点", "横撇", "捺"],
+  "电": ["竖", "横折", "横", "横", "竖弯钩"],
+  "饭": ["撇", "横撇", "竖提", "撇", "撇", "横撇", "捺"],
+  "首": ["点", "撇", "横", "撇", "竖", "横折", "横", "横", "横"],
+  "亮": ["点", "横", "竖", "横折", "横", "点", "横钩", "撇", "横折弯钩"],
+  "直": ["横", "竖", "竖", "横折", "横", "横", "横", "横"],
+  "棍": ["横", "竖", "撇", "点", "竖", "横折", "横", "横", "横", "竖提", "撇", "竖弯钩"],
+  "病": ["点", "横", "撇", "点", "提", "横", "竖", "横折钩", "撇", "点"],
+  "吓": ["竖", "横折", "横", "横", "竖", "点"],
+  "捉": ["横", "竖钩", "提", "竖", "横折", "横", "竖", "横", "撇", "捺"],
+  "卫": ["横折钩", "竖", "横"]
+};
+
+function loadHanziStrokeCount(word) {
+  if (!window.HanziWriter || !HanziWriter.loadCharacterData) return Promise.resolve(null);
+  return HanziWriter.loadCharacterData(word)
+    .then(data => data?.strokes?.length || null)
+    .catch(() => null);
+}
+
+function strokeNamesForWord(word, count, fallbackStrokes) {
+  const names = strokeNameSequences[word];
+  if (names && (!count || names.length === count)) return names;
+  if (fallbackStrokes?.length && (!count || fallbackStrokes.length === count)) return fallbackStrokes;
+  if (names?.length) return names;
+  return count
+    ? Array.from({ length: count }, (_, index) => ordinalStrokeName(index))
+    : fallbackStrokes;
+}
+
+function renderStrokeSteps(word, count, fallbackStrokes) {
+  const steps = strokeNamesForWord(word, count, fallbackStrokes);
+  document.querySelector("#strokeList").innerHTML = steps.map(item => `<span class="stroke">${item}</span>`).join("");
+  return steps;
+}
+
+function renderChoices() {
+  const lesson = currentLesson();
+  const target = lesson.words[state.wordIndex] || lesson.words[0];
+  const py = lesson.tonePinyin?.[state.wordIndex] || lesson.pinyin?.[state.wordIndex] || "";
+  document.querySelector("#bigPinyin").textContent = py;
+  document.querySelector("#bigHanzi").textContent = "？";
+  document.querySelector("#wordPrompt").textContent = `第 ${state.wordIndex + 1}/${lesson.words.length} 个：听读音 ${py}，选出正确的字。`;
+  document.querySelector("#wordFeedback").textContent = "";
+  const wrongPool = allLessons().flatMap(item => item.lesson.words).filter(word => word !== target);
+  const wordOptions = shuffle([target, ...shuffle(wrongPool).slice(0, 3)]);
+  document.querySelector("#choices").innerHTML = wordOptions.map(word => `<button class="choice" data-answer="${word}">${word}</button>`).join("");
+  renderSentenceChallenge();
+}
+
+function lessonSentenceChallenges(lesson) {
+  const secondWord = lesson.words[1] || lesson.words[0];
+  const secondPinyin = lesson.tonePinyin?.[1] || lesson.pinyin?.[1] || "";
+  const wordPool = shuffle([...lesson.words, ...allLessons().flatMap(item => item.lesson.words).filter(word => !lesson.words.includes(word))]).slice(0, 8);
+  const readingPool = shuffle(allLessons().map(item => item.lesson.read[0]).filter(line => line !== lesson.read[0])).slice(0, 3);
+  return [
+    {
+      prompt: "把词语放进句子里，读一读是否通顺。",
+      line: lesson.blank,
+      answer: lesson.answer,
+      options: lesson.options
+    },
+    {
+      prompt: `听拼音 ${secondPinyin}，选出对应的字。`,
+      line: `哪个字读 ${secondPinyin}？`,
+      answer: secondWord,
+      options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+    },
+    {
+      prompt: "选出这一课的朗读句。",
+      line: "哪一句最适合本课朗读？",
+      answer: lesson.read[0],
+      options: shuffle([lesson.read[0], ...readingPool])
+    }
+  ];
+}
+
+function renderSentenceChallenge() {
+  const lesson = currentLesson();
+  const challenges = lessonSentenceChallenges(lesson);
+  const challenge = challenges[state.sentenceIndex] || challenges[0];
+  document.querySelector("#sentencePrompt").textContent = `第 ${state.sentenceIndex + 1}/${challenges.length} 题：${challenge.prompt}`;
+  document.querySelector("#sentenceLine").textContent = challenge.line;
+  document.querySelector("#sentenceFeedback").textContent = "";
+  document.querySelector("#sentenceChoices").innerHTML = shuffle(challenge.options).map(option => `<button class="choice" data-sentence="${option}">${option}</button>`).join("");
+}
+
+function showStage(stage) {
+  if (state.stage !== stage) playSound("stage");
+  state.stage = stage;
+  document.querySelectorAll(".stage-tab").forEach(tab => tab.classList.toggle("active", Number(tab.dataset.stage) === stage));
+  ["stageWord","stageTrace","stageSentence","stageRead"].forEach((id, index) => {
+    document.querySelector(`#${id}`).classList.toggle("hidden", index !== stage);
+  });
+  if (stage === 1) {
+    setTimeout(() => startTraceWriting(), 180);
+  } else {
+    stopTraceWriting();
+  }
+}
+
+function stopTraceWriting() {
+  if (traceTimer) {
+    clearInterval(traceTimer);
+    traceTimer = null;
+  }
+  traceToken += 1;
+  if (hanziWriter) hanziWriter.pauseAnimation();
+  document.querySelector("#traceBoard")?.classList.remove("writing");
+}
+
+async function startTraceWriting() {
+  const lesson = currentLesson();
+  if (!lesson) return;
+  stopTraceWriting();
+  const board = document.querySelector("#traceBoard");
+  const word = lesson.words[0];
+  const strokeCount = await loadHanziStrokeCount(word);
+  const strokeLabels = renderStrokeSteps(word, strokeCount, lesson.strokes);
+  const strokes = [...document.querySelectorAll("#strokeList .stroke")];
+  const vectorPaths = [...document.querySelectorAll("#traceSvg .trace-fg path")];
+  const usingWriter = setupHanziWriter(lesson.words[0]);
+  const hasVector = !usingWriter && vectorPaths.length > 0;
+  const total = Math.max(strokeLabels.length, 1);
+  let step = 0;
+  const token = traceToken;
+  board.style.setProperty("--write-progress", "0%");
+  board.classList.add("writing");
+  strokes.forEach(stroke => stroke.classList.remove("active", "done"));
+  vectorPaths.forEach(path => path.classList.remove("active", "done"));
+  speakWord(lesson, word);
+  playSound("stage");
+  if (usingWriter && hanziWriter) {
+    hanziWriter.hideCharacter({ duration: 0 });
+    const animateNextStroke = () => {
+      if (token !== traceToken) return;
+      if (step > 0 && strokes[step - 1]) {
+        strokes[step - 1].classList.remove("active");
+        strokes[step - 1].classList.add("done");
+      }
+      if (step >= total) {
+        board.classList.remove("writing");
+        document.querySelector("#traceFeedback").textContent = "写完啦，可以点“再写一遍”重复观看。";
+        popFeedback("#traceFeedback");
+        playSound("correct");
+        return;
+      }
+      if (strokes[step]) strokes[step].classList.add("active");
+      speakStrokeStep(strokeLabels[step], step);
+      hanziWriter.animateStroke(step, {
+        onComplete: () => {
+          if (token !== traceToken) return;
+          step += 1;
+          setTimeout(animateNextStroke, 360);
+        }
+      });
+    };
+    setTimeout(animateNextStroke, 520);
+    return;
+  }
+  traceTimer = setInterval(() => {
+    if (step > 0 && strokes[step - 1]) {
+      strokes[step - 1].classList.remove("active");
+      strokes[step - 1].classList.add("done");
+    }
+    if (step > 0 && vectorPaths[step - 1]) {
+      vectorPaths[step - 1].classList.remove("active");
+      vectorPaths[step - 1].classList.add("done");
+    }
+    if (step >= total) {
+      board.style.setProperty("--write-progress", "100%");
+      stopTraceWriting();
+      document.querySelector("#traceFeedback").textContent = "写完啦，可以点“再写一遍”重复观看。";
+      popFeedback("#traceFeedback");
+      playSound("correct");
+      return;
+    }
+    const progress = Math.round(((step + 1) / total) * 100);
+    if (!hasVector) board.style.setProperty("--write-progress", `${progress}%`);
+    if (strokes[step]) strokes[step].classList.add("active");
+    if (vectorPaths[step]) vectorPaths[step].classList.add("active");
+    speakStrokeStep(strokeLabels[step], step);
+    step += 1;
+  }, 520);
+}
+
+function markMistake(word) {
+  state.progress.mistakes[word] = (state.progress.mistakes[word] || 0) + 1;
+  save();
+}
+
+function showKidView() {
+  document.body.classList.remove("app-view-home", "app-view-rewards", "app-view-parent");
+  document.body.classList.add("app-view-map");
+  activateBottomNav("navMapBtn");
+  document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item.dataset.view === "kid"));
+  kidView.classList.remove("hidden");
+  parentView.classList.add("hidden");
+  parentDetailView.classList.add("hidden");
+}
+
+function showParentView() {
+  if (!confirmParentGate()) return;
+  document.body.classList.remove("app-view-home", "app-view-map", "app-view-rewards");
+  document.body.classList.add("app-view-parent");
+  activateBottomNav("navParentBtn");
+  document.querySelectorAll(".tab").forEach(item => item.classList.toggle("active", item.dataset.view === "parent"));
+  kidView.classList.add("hidden");
+  parentView.classList.remove("hidden");
+  parentDetailView.classList.remove("hidden");
+  renderParent();
+}
+
+function showAppView(view) {
+  document.body.classList.remove("app-view-home", "app-view-map", "app-view-rewards", "app-view-parent");
+  document.body.classList.add(`app-view-${view}`);
+  const navMap = {
+    home: "navHomeBtn",
+    map: "navMapBtn",
+    rewards: "navRewardBtn",
+    parent: "navParentBtn"
+  };
+  activateBottomNav(navMap[view]);
+  if (view === "parent") {
+    parentView.classList.remove("hidden");
+    parentDetailView.classList.remove("hidden");
+    kidView.classList.add("hidden");
+    renderParent();
+    return;
+  }
+  parentView.classList.add("hidden");
+  parentDetailView.classList.add("hidden");
+  kidView.classList.toggle("hidden", view !== "map");
+}
+
+function goUnit(direction) {
+  const nextUnit = Math.min(Math.max(state.unit + direction, 0), units.length - 1);
+  if (nextUnit === state.unit) return;
+  playSound("tap");
+  state.unit = nextUnit;
+  showKidView();
+  renderAll();
+  document.querySelector("#lessonTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+unitList.addEventListener("click", event => {
+  const btn = event.target.closest("[data-unit]");
+  if (!btn) return;
+  playSound("tap");
+  state.unit = Number(btn.dataset.unit);
+  showKidView();
+  renderAll();
+});
+
+document.querySelector("#prevUnitBtn").addEventListener("click", () => goUnit(-1));
+
+document.querySelector("#nextUnitBtn").addEventListener("click", () => {
+  goUnit(1);
+});
+
+document.querySelector("#heroStartBtn").addEventListener("click", openNextLesson);
+document.querySelector("#heroPrevUnitBtn").addEventListener("click", () => goUnit(-1));
+document.querySelector("#heroNextUnitBtn").addEventListener("click", () => goUnit(1));
+document.querySelector("#heroParentBtn").addEventListener("click", showParentView);
+document.querySelector("#mapNextBtn").addEventListener("click", () => goUnit(1));
+
+mapNodes.addEventListener("click", event => {
+  const btn = event.target.closest("[data-map-lesson]");
+  if (!btn) return;
+  openGame(Number(btn.dataset.mapLesson));
+});
+
+lessonGrid.addEventListener("click", event => {
+  const btn = event.target.closest("[data-lesson]");
+  if (!btn) return;
+  openGame(Number(btn.dataset.lesson));
+});
+
+document.querySelector("#badgeGrid").addEventListener("click", event => {
+  const btn = event.target.closest("[data-reward-unit]");
+  if (!btn) return;
+  playSound("tap");
+  state.unit = Number(btn.dataset.rewardUnit);
+  renderAll();
+  scrollToSection(".adventure-map", "navMapBtn");
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    playSound("tap");
+    if (tab.dataset.view === "parent") {
+      showParentView();
+    } else {
+      showKidView();
+    }
+  });
+});
+
+document.querySelectorAll(".stage-tab").forEach(tab => {
+  tab.addEventListener("click", () => showStage(Number(tab.dataset.stage)));
+});
+
+soundBtn.addEventListener("click", () => {
+  state.sound = !state.sound;
+  localStorage.setItem(`${storeKey}-sound`, state.sound ? "on" : "off");
+  updateSoundButton();
+  if (state.sound) playSound("correct");
+});
+
+document.querySelector("#choices").addEventListener("click", event => {
+  const choice = event.target.closest(".choice");
+  if (!choice) return;
+  const lesson = currentLesson();
+  const target = lesson.words[state.wordIndex] || lesson.words[0];
+  const ok = choice.dataset.answer === target;
+  choice.classList.add(ok ? "correct" : "wrong");
+  document.querySelector("#wordFeedback").textContent = ok ? "答对了，继续收集下一个重点字。" : "再看一眼字形，错字已经放进复习本。";
+  playSound(ok ? "correct" : "wrong");
+  popFeedback("#wordFeedback");
+  if (ok) {
+    document.querySelector("#bigHanzi").textContent = target;
+    speakWord(lesson, target);
+  } else {
+    speakFeedback("try-again", "再试一次");
+  }
+  if (!ok) markMistake(target);
+  if (ok) {
+    if (state.wordIndex + 1 < lesson.words.length) {
+      state.wordIndex += 1;
+      setTimeout(() => {
+        renderChoices();
+        speakWord(lesson, lesson.words[state.wordIndex]);
+      }, 720);
+    } else {
+      document.querySelector("#wordFeedback").textContent = "本课重点字收集完成，进入笔顺动画。";
+      popFeedback("#wordFeedback");
+      setTimeout(() => showStage(1), 760);
+    }
+  }
+});
+
+document.querySelector("#sentenceChoices").addEventListener("click", event => {
+  const choice = event.target.closest(".choice");
+  if (!choice) return;
+  const lesson = currentLesson();
+  const challenges = lessonSentenceChallenges(lesson);
+  const challenge = challenges[state.sentenceIndex] || challenges[0];
+  const ok = choice.dataset.sentence === challenge.answer;
+  choice.classList.add(ok ? "correct" : "wrong");
+  document.querySelector("#sentenceFeedback").textContent = ok ? "答对了，继续完成下一题。" : "这一题再想一想，错题已经放进复习本。";
+  playSound(ok ? "correct" : "wrong");
+  popFeedback("#sentenceFeedback");
+  if (!ok) markMistake(lesson.words[1] || lesson.words[0]);
+  if (ok) {
+    if (state.sentenceIndex + 1 < challenges.length) {
+      state.sentenceIndex += 1;
+      setTimeout(() => renderSentenceChallenge(), 720);
+    } else {
+      document.querySelector("#sentenceFeedback").textContent = "练习完成，进入朗读小舞台。";
+      popFeedback("#sentenceFeedback");
+      setTimeout(() => showStage(3), 760);
+    }
+  }
+});
+
+document.querySelector("#traceDone").addEventListener("click", () => {
+  stopTraceWriting();
+  document.querySelector("#traceFeedback").textContent = "很好，记住笔画方向和字的结构。";
+  playSound("correct");
+  popFeedback("#traceFeedback");
+  setTimeout(() => showStage(2), 650);
+});
+
+document.querySelector("#replayTrace").addEventListener("click", () => {
+  document.querySelector("#traceFeedback").textContent = "";
+  startTraceWriting();
+});
+
+document.querySelector("#speakBtn").addEventListener("click", () => {
+  const lesson = currentLesson();
+  const lessonAudio = document.querySelector("#lessonAudio");
+  lessonAudio.pause();
+  const durationMs = lessonHasAudio(lesson) ? lesson.read.length * 3000 : lesson.read.length * 2400;
+  startReadHighlight(lesson.read, durationMs);
+  speakLesson(lesson);
+  document.querySelector("#listenCheck").classList.add("done");
+  document.querySelector("#readFeedback").textContent = lessonHasAudio(lesson)
+    ? "正在播放示范，跟着亮起的句子听一遍。"
+    : "这课暂时没有整课录音，先用朗读文本发声示范。";
+  popFeedback("#readFeedback");
+});
+
+document.querySelector("#followReadBtn").addEventListener("click", () => {
+  playSound("correct");
+  document.querySelector("#followCheck").classList.add("done");
+  document.querySelector("#finishLesson").disabled = false;
+  document.querySelector("#readFeedback").textContent = "跟读完成，可以点“完成本课”领取星星。";
+  document.querySelectorAll("#readLines .read-line").forEach(line => line.classList.add("active"));
+  popFeedback("#readFeedback");
+});
+
+document.querySelector("#finishLesson").addEventListener("click", () => {
+  if (document.querySelector("#finishLesson").disabled) {
+    document.querySelector("#readFeedback").textContent = "先听示范，再点“我跟读了”。";
+    popFeedback("#readFeedback");
+    return;
+  }
+  document.querySelector("#finishReadCheck").classList.add("done");
+  const lesson = currentLesson();
+  const id = keyFor(state.unit, state.lesson);
+  let earnedStars = 0;
+  if (!state.progress.done[id]) {
+    state.progress.done[id] = true;
+    earnedStars = 3;
+    state.progress.stars += earnedStars;
+    recordStudySession(lesson);
+  }
+  save();
+  document.querySelector("#readFeedback").textContent = earnedStars ? "任务完成，点亮 1 枚课文星，获得 3 颗星星。" : "这关已经完成过啦，复习也很棒。";
+  playSound("complete");
+  speakFeedback("complete", "任务完成，太棒了！");
+  celebrate();
+  popFeedback("#readFeedback");
+  renderAll();
+  const next = nextLessonPosition();
+  if (next) {
+    document.querySelector("#nextLessonBtn").classList.remove("hidden");
+    document.querySelector("#finishLesson").classList.add("hidden");
+  } else {
+    document.querySelector("#readFeedback").textContent = "全部关卡完成啦，今天的语文探险真棒！";
+  }
+  showCompleteDialog(lesson, earnedStars);
+});
+
+document.querySelector("#nextLessonBtn").addEventListener("click", () => {
+  const next = nextLessonPosition();
+  if (!next) return;
+  state.unit = next.unit;
+  openGame(next.lesson);
+});
+
+document.querySelector("#closeGame").addEventListener("click", () => {
+  closeGameShell();
+});
+
+document.querySelector("#resetBtn").addEventListener("click", () => {
+  if (!confirm("确定清空这台设备上的语文学习进度吗？")) return;
+  state.progress = { done: {}, stars: 0, mistakes: {}, sessions: [], lastStudyDate: "", streak: 0 };
+  save();
+  renderAll();
+});
+
+function confirmParentGate() {
+  return confirm("家长区包含学习报告和清空进度操作，请家长确认后进入。");
+}
+
+function openNextLesson() {
+  const next = nextLessonItem();
+  state.unit = next.unitIndex;
+  renderAll();
+  openGame(next.lessonIndex);
+}
+
+function closeGameShell() {
+  gameShell.classList.remove("open");
+  stopTraceWriting();
+  clearReadHighlight();
+  if (voiceAudio) voiceAudio.pause();
+  if (strokeAudio) strokeAudio.pause();
+  document.querySelector("#lessonAudio")?.pause();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+function showCompleteDialog(lesson, earnedStars) {
+  const next = nextLessonPosition();
+  const unitDone = doneCountForUnit(state.unit);
+  const unitTotal = units[state.unit].lessons.length;
+  document.querySelector("#completeTitle").textContent = `${lesson.title}完成啦`;
+  document.querySelector("#completeText").textContent = next
+    ? "奖励已经到账，小语队长准备带你去下一关。"
+    : "这一阶段全部完成，可以休息一下或复习错字。";
+  document.querySelector("#completeStars").textContent = `+${earnedStars}`;
+  document.querySelector("#completeUnit").textContent = `${unitDone}/${unitTotal}`;
+  document.querySelector("#completeTotal").textContent = state.progress.stars;
+  document.querySelector("#completeNextBtn").textContent = next ? "继续下一关" : "回到地图";
+  completeShell.classList.add("open");
+}
+
+function activateBottomNav(activeId) {
+  document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.toggle("active", btn.id === activeId));
+}
+
+function scrollToSection(selector, activeId) {
+  if (activeId === "navHomeBtn") showAppView("home");
+  if (activeId === "navMapBtn") showAppView("map");
+  if (activeId === "navRewardBtn") showAppView("rewards");
+  document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function uniqueWords(items) {
+  return [...new Set(items)];
+}
+
+function learnedReviewWords() {
+  const doneWords = allLessons()
+    .filter(item => state.progress.done[keyFor(item.unitIndex, item.lessonIndex)])
+    .flatMap(item => item.lesson.words);
+  return uniqueWords(doneWords);
+}
+
+function unitReviewWords() {
+  return uniqueWords(units[state.unit].lessons.flatMap(lesson => lesson.words));
+}
+
+function buildReviewQueue() {
+  const mistakes = Object.keys(state.progress.mistakes)
+    .sort((a, b) => (state.progress.mistakes[b] || 0) - (state.progress.mistakes[a] || 0));
+  if (mistakes.length) {
+    reviewMode = "错字";
+    return mistakes.slice(0, 8);
+  }
+  const learned = learnedReviewWords();
+  if (learned.length) {
+    reviewMode = "已学";
+    return shuffle(learned).slice(0, 8);
+  }
+  reviewMode = "本单元";
+  return shuffle(unitReviewWords()).slice(0, 8);
+}
+
+function openReviewMode() {
+  reviewQueue = buildReviewQueue();
+  reviewIndex = 0;
+  renderReviewQuestion();
+  reviewShell.classList.add("open");
+}
+
+function findWordInfo(word) {
+  for (const item of allLessons()) {
+    const index = item.lesson.words.indexOf(word);
+    if (index >= 0) {
+      return {
+        lesson: item.lesson,
+        word,
+        pinyin: item.lesson.tonePinyin?.[index] || item.lesson.pinyin?.[index] || ""
+      };
+    }
+  }
+  return { lesson: null, word, pinyin: word };
+}
+
+function renderReviewQuestion() {
+  const word = reviewQueue[reviewIndex];
+  const progress = Math.min(100, Math.round((reviewIndex / Math.max(reviewQueue.length, 1)) * 100));
+  document.querySelector("#reviewMeterFill").style.setProperty("--review-progress", `${progress}%`);
+  document.querySelector("#reviewMode").textContent = reviewMode;
+  if (!word) {
+    document.querySelector("#reviewPrompt").textContent = "今天的复习闯关完成啦。";
+    document.querySelector("#reviewPinyin").innerHTML = "★<small>复习完成</small>";
+    document.querySelector("#reviewChoices").innerHTML = "";
+    document.querySelector("#reviewFeedback").textContent = "回到首页继续闯关，或者去奖励屋看看星星。";
+    document.querySelector("#reviewMeterFill").style.setProperty("--review-progress", "100%");
+    playSound("complete");
+    return;
+  }
+  const info = findWordInfo(word);
+  const wrongPool = allLessons().flatMap(item => item.lesson.words).filter(itemWord => itemWord !== word);
+  const options = shuffle([word, ...shuffle(wrongPool).slice(0, 3)]);
+  const promptMap = {
+    "错字": "错字再练一次",
+    "已学": "已学字巩固",
+    "本单元": "本单元预热"
+  };
+  document.querySelector("#reviewPrompt").textContent = `第 ${reviewIndex + 1}/${reviewQueue.length} 个：${promptMap[reviewMode]}，选择读 ${info.pinyin} 的字。`;
+  document.querySelector("#reviewPinyin").innerHTML = `${info.pinyin}<small>听声音，找汉字</small>`;
+  document.querySelector("#reviewFeedback").textContent = "";
+  document.querySelector("#reviewChoices").innerHTML = options.map(option => `<button class="choice" data-review-answer="${option}">${option}</button>`).join("");
+  if (info.lesson) speakWord(info.lesson, word);
+}
+
+document.querySelector("#startTodayBtn").addEventListener("click", openNextLesson);
+document.querySelector("#continueBtn").addEventListener("click", openNextLesson);
+document.querySelector("#homeStartBtn").addEventListener("click", openNextLesson);
+document.querySelector("#quickReviewBtn").addEventListener("click", openReviewMode);
+document.querySelector("#quickRewardBtn").addEventListener("click", () => scrollToSection("#rewards", "navRewardBtn"));
+document.querySelector("#quickParentBtn").addEventListener("click", showParentView);
+document.querySelector("#treasureBtn").addEventListener("click", () => {
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  if (todaySessions >= 2 && Object.keys(state.progress.mistakes).length) {
+    openReviewMode();
+    return;
+  }
+  openNextLesson();
+});
+document.querySelector("#navHomeBtn").addEventListener("click", () => scrollToSection("#home", "navHomeBtn"));
+document.querySelector("#navMapBtn").addEventListener("click", () => scrollToSection(".adventure-map", "navMapBtn"));
+document.querySelector("#navRewardBtn").addEventListener("click", () => scrollToSection("#rewards", "navRewardBtn"));
+document.querySelector("#navParentBtn").addEventListener("click", () => {
+  if (!confirmParentGate()) return;
+  showAppView("parent");
+});
+
+document.querySelector("#exportBtn").addEventListener("click", () => {
+  const lessons = allLessons();
+  const doneLessons = lessons.filter(item => state.progress.done[keyFor(item.unitIndex, item.lessonIndex)]);
+  const mistakes = Object.entries(state.progress.mistakes).sort((a, b) => b[1] - a[1]);
+  const next = nextLessonItem();
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  const unitLines = units.map((unit, unitIndex) => `${unit.name}:${doneCountForUnit(unitIndex)}/${unit.lessons.length}`).join("；");
+  const report = [
+    "语文小探险学习报告",
+    `生成日期：${todayKey()}`,
+    `今日学习：${todaySessions}关`,
+    `完成课次：${doneLessons.length}/${lessons.length}`,
+    `累计星星：${state.progress.stars}`,
+    `连续学习：${state.progress.streak || 0}天`,
+    `单元进度：${unitLines}`,
+    `已完成：${doneLessons.map(item => item.lesson.title).join("、") || "暂无"}`,
+    `建议复习：${mistakes.map(([word, count]) => `${word}(${count})`).join("、") || "暂无"}`,
+    `下一步：${next.unit.name}《${next.lesson.title}》`
+  ].join("\n");
+  navigator.clipboard?.writeText(report).then(() => {
+    alert("学习报告已复制，可以粘贴到微信、备忘录或文档里。");
+  }).catch(() => {
+    alert(report);
+  });
+});
+
+document.querySelector("#privacyBtn").addEventListener("click", () => {
+  privacyShell.classList.add("open");
+});
+
+document.querySelector("#closePrivacy").addEventListener("click", () => {
+  privacyShell.classList.remove("open");
+});
+
+document.querySelector("#closeComplete").addEventListener("click", () => {
+  completeShell.classList.remove("open");
+});
+
+document.querySelector("#completeNextBtn").addEventListener("click", () => {
+  completeShell.classList.remove("open");
+  const next = nextLessonPosition();
+  if (!next) {
+    closeGameShell();
+    scrollToSection(".adventure-map", "navMapBtn");
+    return;
+  }
+  state.unit = next.unit;
+  renderAll();
+  openGame(next.lesson);
+});
+
+document.querySelector("#completeReviewBtn").addEventListener("click", () => {
+  completeShell.classList.remove("open");
+  closeGameShell();
+  openReviewMode();
+});
+
+document.querySelector("#completeRestBtn").addEventListener("click", () => {
+  completeShell.classList.remove("open");
+  closeGameShell();
+  scrollToSection("#home", "navHomeBtn");
+});
+
+document.querySelector("#reviewChoices").addEventListener("click", event => {
+  const choice = event.target.closest("[data-review-answer]");
+  if (!choice) return;
+  const word = reviewQueue[reviewIndex];
+  const ok = choice.dataset.reviewAnswer === word;
+  document.querySelectorAll("#reviewChoices .choice").forEach(item => item.disabled = true);
+  choice.classList.add(ok ? "correct" : "wrong");
+  playSound(ok ? "correct" : "wrong");
+  document.querySelector("#reviewFeedback").textContent = ok ? "复习正确，马上进入下一个。" : "再看一眼拼音和字形，这个字会继续留在复习里。";
+  popFeedback("#reviewFeedback");
+  if (ok) {
+    if (state.progress.mistakes[word]) {
+      state.progress.mistakes[word] = Math.max(0, state.progress.mistakes[word] - 1);
+      if (state.progress.mistakes[word] === 0) delete state.progress.mistakes[word];
+      save();
+    }
+    renderAll();
+    setTimeout(() => {
+      reviewIndex += 1;
+      renderReviewQuestion();
+    }, 720);
+  } else {
+    markMistake(word);
+    speakFeedback("try-again", "再试一次");
+  }
+});
+
+document.querySelector("#reviewNextBtn").addEventListener("click", () => {
+  reviewIndex += 1;
+  renderReviewQuestion();
+});
+
+document.querySelector("#reviewDoneBtn").addEventListener("click", () => {
+  reviewShell.classList.remove("open");
+  renderAll();
+  scrollToSection("#home", "navHomeBtn");
+});
+
+document.querySelector("#closeReview").addEventListener("click", () => {
+  reviewShell.classList.remove("open");
+});
+
+document.querySelector("#skipOnboard").addEventListener("click", () => {
+  localStorage.setItem(`${storeKey}-onboard`, "done");
+  onboardShell.classList.remove("open");
+});
+
+document.querySelector("#startOnboard").addEventListener("click", () => {
+  localStorage.setItem(`${storeKey}-onboard`, "done");
+  onboardShell.classList.remove("open");
+  openNextLesson();
+});
+
+document.querySelector("#parentOnboard").addEventListener("click", () => {
+  localStorage.setItem(`${storeKey}-onboard`, "done");
+  onboardShell.classList.remove("open");
+  document.querySelector('[data-view="parent"]').click();
+});
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  document.querySelector("#installText").textContent = "当前浏览器支持一键安装，安装后可从桌面直接打开。";
+});
+
+document.querySelector("#installBtn").addEventListener("click", () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(() => {
+      deferredInstallPrompt = null;
+    });
+    return;
+  }
+  alert("手机端可在浏览器菜单中选择“添加到主屏幕”。电脑端也可用浏览器地址栏旁的安装按钮。");
+});
+
+renderAll();
+updateSoundButton();
+showAppView("home");
+if (localStorage.getItem(`${storeKey}-onboard`) !== "done") {
+  onboardShell.classList.add("open");
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
