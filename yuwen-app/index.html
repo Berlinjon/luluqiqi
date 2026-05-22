@@ -2654,14 +2654,6 @@ body.app-view-map #kidView {
     </div>
   </section>
 
-  <section class="install-card" id="installCard">
-    <div>
-      <strong>可以像 App 一样添加到手机桌面</strong>
-      <span id="installText">在手机浏览器中打开后，使用“添加到主屏幕”，孩子下次可直接进入闯关。</span>
-    </div>
-    <button class="primary-btn" id="installBtn">安装到桌面</button>
-  </section>
-
   <section class="adventure-map" aria-label="动画闯关地图">
     <div class="map-head">
       <div>
@@ -4728,18 +4720,6 @@ document.querySelector("#parentOnboard").addEventListener("click", () => {
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   deferredInstallPrompt = event;
-  document.querySelector("#installText").textContent = "当前浏览器支持一键安装，安装后可从桌面直接打开。";
-});
-
-document.querySelector("#installBtn").addEventListener("click", () => {
-  if (deferredInstallPrompt) {
-    deferredInstallPrompt.prompt();
-    deferredInstallPrompt.userChoice.finally(() => {
-      deferredInstallPrompt = null;
-    });
-    return;
-  }
-  alert("手机端可在浏览器菜单中选择“添加到主屏幕”。电脑端也可用浏览器地址栏旁的安装按钮。");
 });
 
 renderAll();
