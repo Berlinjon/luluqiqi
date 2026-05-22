@@ -1720,6 +1720,72 @@ button:active {
   margin-top: 2px;
 }
 
+.complete-actions {
+  display: grid;
+  gap: 10px;
+  text-align: left;
+}
+
+.complete-action {
+  width: 100%;
+  min-height: 66px;
+  padding: 12px;
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(24,33,43,.1);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 8px 20px rgba(27,49,66,.07);
+}
+
+.complete-action.primary-action {
+  background: var(--orange);
+  color: #fff;
+  border-color: rgba(123,75,0,.16);
+  box-shadow: 0 8px 0 rgba(123,75,0,.18);
+}
+
+.complete-action b,
+.complete-action span {
+  display: block;
+}
+
+.complete-action span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.complete-action.primary-action span {
+  color: rgba(255,255,255,.88);
+}
+
+.complete-action-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 950;
+}
+
+.primary-action .complete-action-icon {
+  background: rgba(255,255,255,.18);
+  color: #fff;
+}
+
+.complete-action-go {
+  font-weight: 950;
+  color: currentColor;
+}
+
 .review-word {
   min-height: 140px;
   display: grid;
@@ -2891,10 +2957,22 @@ body.app-view-map #kidView {
         <div class="complete-stat"><b id="completeUnit">0/0</b><span>本单元进度</span></div>
         <div class="complete-stat"><b id="completeTotal">0</b><span>累计星星</span></div>
       </div>
-      <div class="action-row">
-        <button class="primary-btn" id="completeNextBtn">继续下一关</button>
-        <button class="ghost-btn" id="completeReviewBtn">复习闯关</button>
-        <button class="ghost-btn" id="completeRestBtn">休息一下</button>
+      <div class="complete-actions">
+        <button class="complete-action primary-action" id="completeNextBtn">
+          <span class="complete-action-icon">进</span>
+          <span><b id="completeNextTitle">继续下一课</b><span id="completeNextText">趁状态好，再完成一个短任务。</span></span>
+          <span class="complete-action-go">›</span>
+        </button>
+        <button class="complete-action" id="completeReviewBtn">
+          <span class="complete-action-icon">复</span>
+          <span><b id="completeReviewTitle">复习错字</b><span id="completeReviewText">把刚才不熟的字再练一遍。</span></span>
+          <span class="complete-action-go">›</span>
+        </button>
+        <button class="complete-action" id="completeRestBtn">
+          <span class="complete-action-icon">奖</span>
+          <span><b id="completeRestTitle">去奖励屋</b><span id="completeRestText">看看星星和单元徽章。</span></span>
+          <span class="complete-action-go">›</span>
+        </button>
       </div>
     </div>
   </div>
@@ -4470,6 +4548,7 @@ function showCompleteDialog(lesson, earnedStars) {
   const next = nextLessonPosition();
   const unitDone = doneCountForUnit(state.unit);
   const unitTotal = units[state.unit].lessons.length;
+  const mistakeCount = Object.keys(state.progress.mistakes || {}).length;
   document.querySelector("#completeTitle").textContent = `${lesson.title}完成啦`;
   document.querySelector("#completeText").textContent = next
     ? "奖励已经到账，小语队长准备带你去下一关。"
@@ -4477,7 +4556,16 @@ function showCompleteDialog(lesson, earnedStars) {
   document.querySelector("#completeStars").textContent = `+${earnedStars}`;
   document.querySelector("#completeUnit").textContent = `${unitDone}/${unitTotal}`;
   document.querySelector("#completeTotal").textContent = state.progress.stars;
-  document.querySelector("#completeNextBtn").textContent = next ? "继续下一关" : "回到地图";
+  document.querySelector("#completeNextTitle").textContent = next ? "继续下一课" : "回到闯关地图";
+  document.querySelector("#completeNextText").textContent = next
+    ? `下一站：${units[next.unit].name} · ${units[next.unit].lessons[next.lesson].title}`
+    : "下册任务都完成了，可以从地图自由复习。";
+  document.querySelector("#completeReviewTitle").textContent = mistakeCount ? "复习错字" : "轻松复习";
+  document.querySelector("#completeReviewText").textContent = mistakeCount
+    ? `错字本里还有 ${mistakeCount} 个字，趁热再练。`
+    : "没有明显错字，可以抽查已学字。";
+  document.querySelector("#completeRestTitle").textContent = "去奖励屋";
+  document.querySelector("#completeRestText").textContent = "看看星星、宝箱和单元徽章。";
   completeShell.classList.add("open");
 }
 
@@ -4655,7 +4743,7 @@ document.querySelector("#completeReviewBtn").addEventListener("click", () => {
 document.querySelector("#completeRestBtn").addEventListener("click", () => {
   completeShell.classList.remove("open");
   closeGameShell();
-  scrollToSection("#home", "navHomeBtn");
+  scrollToSection("#rewards", "navRewardBtn");
 });
 
 document.querySelector("#reviewChoices").addEventListener("click", event => {
