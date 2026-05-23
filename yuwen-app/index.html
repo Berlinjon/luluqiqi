@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#f7fbf5">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,12 +36,15 @@ html { min-height: 100%; background: var(--paper); }
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   background:
     linear-gradient(180deg, rgba(247,251,245,.94), rgba(242,248,246,.98)),
     radial-gradient(circle at 10% 0%, rgba(246,200,95,.22), transparent 32%),
     radial-gradient(circle at 94% 18%, rgba(35,100,170,.16), transparent 30%);
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 body.celebrating {
@@ -53,6 +56,7 @@ button {
   border: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 button:active {
@@ -62,7 +66,7 @@ button:active {
 .app {
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 18px 18px 94px;
+  padding: calc(18px + env(safe-area-inset-top)) 18px calc(94px + env(safe-area-inset-bottom));
   position: relative;
   z-index: 1;
 }
@@ -295,6 +299,13 @@ button:active {
   gap: 10px;
 }
 
+.path-title {
+  margin: 0 0 2px;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 950;
+}
+
 .quick-card {
   min-height: 64px;
   border-radius: var(--radius);
@@ -319,6 +330,21 @@ button:active {
   background: var(--green-soft);
   color: var(--green);
   font-weight: 950;
+}
+
+.quick-card.primary-path {
+  background: var(--ink);
+  color: #fff;
+}
+
+.quick-card.primary-path .quick-icon {
+  background: #fff6dc;
+  color: #7b4b00;
+}
+
+.quick-card.primary-path span,
+.quick-card.primary-path .status-chip {
+  color: rgba(255,255,255,.84);
 }
 
 .quick-card strong {
@@ -491,6 +517,30 @@ button:active {
   line-height: 1.5;
 }
 
+.badge-detail-hero {
+  min-height: 132px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #fff8e5, #e7f0ff);
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.badge-detail-icon {
+  width: 92px;
+  height: 92px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  background: #fff6dc;
+  color: #7b4b00;
+  border: 5px solid #18212b;
+  font-size: 2.4rem;
+  font-weight: 950;
+  box-shadow: 0 10px 0 rgba(123,75,0,.14);
+  animation: badgeUnlock .8s ease both;
+}
+
 .treasure-panel {
   border-radius: var(--radius);
   border: 1px solid rgba(24,33,43,.08);
@@ -505,6 +555,256 @@ button:active {
 
 .treasure-panel.claimed {
   background: #fff6dc;
+}
+
+.growth-panel {
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+}
+
+.growth-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.growth-head strong,
+.card-album-head strong {
+  display: block;
+  font-weight: 950;
+}
+
+.growth-head span,
+.card-album-head span {
+  display: block;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.streak-track {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.streak-day {
+  min-height: 54px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #f1f5f3;
+  color: var(--muted);
+  border: 1px solid rgba(24,33,43,.08);
+  font-weight: 950;
+  font-size: .78rem;
+}
+
+.streak-day.done {
+  background: var(--green-soft);
+  color: var(--green);
+  animation: collectPop .36s ease;
+}
+
+.card-album {
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+}
+
+.card-album-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.word-card-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.album-card {
+  min-height: 58px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(24,33,43,.08);
+  background: #f1f5f3;
+  color: var(--muted);
+  font-weight: 950;
+  position: relative;
+  overflow: hidden;
+}
+
+.album-card.unlocked {
+  background: #fff8e5;
+  color: #7b4b00;
+  border-color: rgba(123,75,0,.22);
+  box-shadow: 0 6px 0 rgba(123,75,0,.1);
+}
+
+.album-card.review {
+  background: #ffe9e6;
+  color: var(--red);
+  border-color: rgba(217,79,79,.24);
+}
+
+.album-card small {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  font-size: .58rem;
+  color: currentColor;
+  opacity: .72;
+}
+
+.word-detail-hero {
+  min-height: 168px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #fff8e5, #eef8ff);
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.word-detail-card {
+  width: 126px;
+  height: 126px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  background: #fff6dc;
+  color: #7b4b00;
+  border: 6px solid #18212b;
+  box-shadow: 0 10px 0 rgba(123,75,0,.16);
+  font-size: 4.4rem;
+  font-weight: 950;
+}
+
+.word-detail-card.review {
+  background: #ffe9e6;
+  color: var(--red);
+  box-shadow: 0 10px 0 rgba(217,79,79,.14);
+}
+
+.review-bag-hero {
+  min-height: 138px;
+  border-radius: var(--radius);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  background: linear-gradient(135deg, #ffe9e6, #fff8e5);
+  border: 1px solid rgba(217,79,79,.16);
+}
+
+.review-bag-icon {
+  width: 82px;
+  height: 82px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  color: var(--red);
+  border: 5px solid #18212b;
+  box-shadow: 0 8px 0 rgba(217,79,79,.14);
+  font-size: 2rem;
+  font-weight: 950;
+}
+
+.review-bag-hero strong,
+.review-bag-hero span {
+  display: block;
+}
+
+.review-bag-hero span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: .88rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.review-bag-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.review-bag-card {
+  width: 100%;
+  min-height: 76px;
+  padding: 12px;
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  background: #fff;
+  border: 1px solid rgba(24,33,43,.08);
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+  color: var(--ink);
+}
+
+.review-bag-card:disabled {
+  opacity: .58;
+}
+
+.review-bag-card b,
+.review-bag-card span {
+  display: block;
+}
+
+.review-bag-card span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.review-reward-card {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+}
+
+.review-reward-hero {
+  min-height: 142px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #fff8e5, #e7f7ee);
+  border: 1px solid rgba(24,33,43,.08);
+}
+
+.review-reward-icon {
+  width: 104px;
+  height: 104px;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  background: #fff6dc;
+  color: #7b4b00;
+  border: 6px solid #18212b;
+  box-shadow: 0 10px 0 rgba(123,75,0,.15);
+  font-size: 2.5rem;
+  font-weight: 950;
+  animation: badgeUnlock .8s ease both;
 }
 
 .today-meter {
@@ -528,7 +828,7 @@ button:active {
 .bottom-nav {
   position: fixed;
   left: 50%;
-  bottom: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   width: min(680px, calc(100% - 24px));
   z-index: 18;
@@ -536,6 +836,7 @@ button:active {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   padding: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom) * .25);
   border-radius: 18px;
   background: rgba(255,255,255,.94);
   border: 1px solid rgba(24,33,43,.1);
@@ -841,16 +1142,79 @@ button:active {
   opacity: .46;
 }
 
-.unit-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: flex-end;
+.unit-fold-panel {
+  display: none;
+  margin: 8px 0 12px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.82);
+  border: 1px solid rgba(24,33,43,.08);
+  box-shadow: 0 8px 20px rgba(27,49,66,.06);
+}
+
+.unit-map-control {
+  margin-top: 10px;
+}
+
+.unit-map-control .unit-fold-toggle {
+  margin-bottom: 0;
+}
+
+.unit-map-control .unit-fold-panel.open {
+  margin-bottom: 0;
+}
+
+.unit-fold-panel.open {
+  display: block;
+  animation: cardIn .2s ease both;
+}
+
+.unit-fold-panel .unit-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.unit-fold-toggle {
+  width: 100%;
+  min-height: 38px;
+  margin-bottom: 8px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  background: #f1f5f3;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.unit-fold-toggle strong,
+.unit-fold-toggle span {
+  display: block;
+}
+
+.unit-fold-toggle span {
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.unit-fold-arrow {
+  font-size: .9rem;
+  color: var(--muted);
+  font-weight: 950;
 }
 
 .unit-list {
   display: grid;
   gap: 8px;
+  overflow: visible;
+  padding-bottom: 0;
+}
+
+.unit-list::-webkit-scrollbar {
+  display: none;
 }
 
 .unit-btn {
@@ -1433,8 +1797,8 @@ button:active {
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: 76px;
-  min-height: 76px;
+  width: 86px;
+  min-height: 86px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: #fff;
@@ -1451,12 +1815,28 @@ button:active {
   animation: nodeFloat 3.2s ease-in-out infinite;
 }
 
+.map-node b {
+  display: block;
+  font-size: .9rem;
+}
+
 .map-node small {
   display: block;
   color: var(--muted);
   font-size: .66rem;
   margin-top: 3px;
   font-weight: 850;
+}
+
+.map-node-status {
+  display: block;
+  margin-top: 4px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: #f1f5f3;
+  color: var(--muted);
+  font-size: .58rem;
+  font-weight: 950;
 }
 
 .map-node.done {
@@ -1469,6 +1849,16 @@ button:active {
   background: var(--green-soft);
   border-color: var(--green);
   animation: currentNode 1.1s ease-in-out infinite;
+}
+
+.map-node.current .map-node-status {
+  background: var(--green);
+  color: #fff;
+}
+
+.map-node.done .map-node-status {
+  background: #7b4b00;
+  color: #fff;
 }
 
 .map-node.locked {
@@ -1536,10 +1926,54 @@ button:active {
 }
 
 .mistake-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: grid;
+  gap: 8px;
   min-height: 40px;
+}
+
+.smart-review-list {
+  display: grid;
+  gap: 8px;
+}
+
+.mistake-card,
+.review-plan-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(24,33,43,.08);
+  background: #fff;
+}
+
+.mistake-word {
+  min-width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 1.35rem;
+  font-weight: 950;
+}
+
+.mistake-meta strong,
+.review-plan-card strong {
+  display: block;
+  font-weight: 950;
+}
+
+.mistake-meta span,
+.review-plan-card span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .game-shell {
@@ -1548,8 +1982,9 @@ button:active {
   inset: 0;
   z-index: 20;
   background: rgba(11,21,31,.48);
-  padding: 16px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .game-shell.open { display: grid; place-items: center; }
@@ -1559,9 +1994,10 @@ button:active {
   position: fixed;
   inset: 0;
   z-index: 25;
-  padding: 16px;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   background: rgba(11,21,31,.45);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .dialog-shell.open {
@@ -1572,12 +2008,14 @@ button:active {
 .game-card,
 .dialog-card {
   width: min(760px, 100%);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   background: #fff;
   border-radius: var(--radius);
   box-shadow: 0 24px 80px rgba(0,0,0,.24);
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid rgba(24,33,43,.12);
   animation: modalPop .28s cubic-bezier(.2, 1.35, .35, 1);
+  -webkit-overflow-scrolling: touch;
 }
 
 .dialog-card {
@@ -1681,6 +2119,67 @@ button:active {
   animation: correctPop .9s ease infinite;
 }
 
+.complete-chest {
+  width: 128px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  animation: chestLand .5s ease both;
+}
+
+.complete-chest::before {
+  content: "";
+  position: absolute;
+  width: 108px;
+  height: 58px;
+  bottom: 16px;
+  border-radius: 12px 12px 18px 18px;
+  background: #f6c85f;
+  border: 6px solid #18212b;
+  box-shadow: 0 10px 0 rgba(123,75,0,.18);
+}
+
+.complete-chest::after {
+  content: "";
+  position: absolute;
+  width: 104px;
+  height: 42px;
+  top: 12px;
+  border-radius: 18px 18px 8px 8px;
+  background: #ef7b45;
+  border: 6px solid #18212b;
+  transform-origin: bottom center;
+  animation: chestOpen .9s .35s ease forwards;
+}
+
+.complete-chest span {
+  position: relative;
+  z-index: 2;
+  font-size: 2.25rem;
+  font-weight: 950;
+  color: #7b4b00;
+  animation: starBurst .9s .55s ease both;
+}
+
+.complete-card.reward-ready .complete-actions,
+.complete-card.reward-ready .complete-stats {
+  animation: rewardPanelIn .36s ease both;
+}
+
+.complete-card.unit-complete .complete-hero {
+  background: linear-gradient(135deg, #fff1d6, #e7f0ff);
+}
+
+.complete-card.unit-complete .complete-chest span {
+  color: var(--blue);
+}
+
+.unit-badge.newly-unlocked {
+  animation: badgeUnlock .8s ease both;
+  border-color: rgba(246,200,95,.75);
+}
+
 .complete-title {
   margin: 0;
   font-size: clamp(1.35rem, 4vw, 2rem);
@@ -1691,6 +2190,52 @@ button:active {
   color: var(--muted);
   font-weight: 850;
   line-height: 1.55;
+}
+
+.complete-guide {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #f0fbff;
+  border: 1px solid rgba(47,111,167,.16);
+  text-align: left;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.55);
+}
+
+.complete-guide .status-chip {
+  justify-self: start;
+  background: #e3f0ff;
+  color: var(--blue);
+}
+
+.complete-guide h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.complete-guide p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+  font-size: .86rem;
+}
+
+.complete-guide-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.complete-guide-metrics span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(24,33,43,.08);
+  color: var(--muted);
+  font-weight: 850;
+  font-size: .72rem;
 }
 
 .complete-stats {
@@ -1790,11 +2335,14 @@ button:active {
   min-height: 140px;
   display: grid;
   place-items: center;
+  gap: 6px;
+  text-align: center;
   border-radius: var(--radius);
   border: 1px solid rgba(24,33,43,.08);
   background: linear-gradient(135deg, #eef8ff, #fff8e5);
-  font-size: clamp(4rem, 16vw, 7rem);
+  font-size: clamp(3rem, 12vw, 5.8rem);
   font-weight: 950;
+  line-height: 1.1;
 }
 
 .review-headline {
@@ -1807,6 +2355,28 @@ button:active {
 .review-mode {
   width: fit-content;
   justify-self: end;
+}
+
+.review-stage-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.review-stage-tabs span {
+  min-height: 34px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: #f1f5f3;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 950;
+}
+
+.review-stage-tabs span.active {
+  background: var(--ink);
+  color: #fff;
 }
 
 .review-meter {
@@ -1830,6 +2400,12 @@ button:active {
   display: block;
   font-size: 1rem;
   color: var(--muted);
+}
+
+.review-word .review-context {
+  max-width: 92%;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  line-height: 1.45;
 }
 
 .onboard-grid {
@@ -1923,6 +2499,466 @@ button:active {
   animation: activeStep .32s ease;
 }
 
+.game-scene-strip {
+  min-height: 76px;
+  margin-bottom: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(24,33,43,.08);
+  background:
+    radial-gradient(circle at 88% 20%, rgba(246,200,95,.58) 0 22px, transparent 23px),
+    linear-gradient(135deg, #e7f7ee, #eef8ff);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.game-scene-strip.theme-literacy {
+  background:
+    radial-gradient(circle at 84% 18%, rgba(246,200,95,.62) 0 24px, transparent 25px),
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.68) 0 18px, transparent 19px),
+    linear-gradient(135deg, #e7f7ee, #eef8ff);
+}
+
+.game-scene-strip.theme-stage {
+  background:
+    radial-gradient(circle at 20% 8%, rgba(246,200,95,.5) 0 18px, transparent 19px),
+    radial-gradient(circle at 80% 10%, rgba(246,200,95,.44) 0 18px, transparent 19px),
+    linear-gradient(135deg, #fff2e5, #eef8ff);
+}
+
+.game-scene-strip.theme-story {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(246,200,95,.52) 0 22px, transparent 23px),
+    linear-gradient(135deg, #e9f7e8, #fff8e5);
+}
+
+.game-scene-strip.theme-garden {
+  background:
+    radial-gradient(circle at 88% 18%, rgba(239,123,69,.28) 0 22px, transparent 23px),
+    linear-gradient(135deg, #eef8ff, #f1f5f3);
+}
+
+.game-scene-strip.theme-book {
+  background:
+    radial-gradient(circle at 80% 18%, rgba(246,200,95,.45) 0 22px, transparent 23px),
+    linear-gradient(135deg, #fff8e5, #e7f0ff);
+}
+
+.game-scene-strip.stage-glow {
+  animation: sceneGlow .58s ease;
+}
+
+.game-scene-strip::after {
+  content: "";
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  bottom: -36px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(47,133,90,.16);
+}
+
+.scene-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 3px solid #18212b;
+  box-shadow: 0 6px 0 rgba(24,33,43,.12);
+  font-size: 1.45rem;
+  font-weight: 950;
+  position: relative;
+  z-index: 1;
+  animation: guideBounce 2.4s ease-in-out infinite;
+}
+
+.scene-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.scene-copy strong,
+.scene-copy span {
+  display: block;
+}
+
+.scene-copy span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.scene-tokens {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.scene-tokens span {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #fff8e5;
+  color: #7b4b00;
+  font-size: .82rem;
+  font-weight: 950;
+  box-shadow: 0 5px 0 rgba(123,75,0,.12);
+  animation: tokenHop 2.2s ease-in-out infinite;
+}
+
+.scene-tokens span:nth-child(2) { animation-delay: .18s; }
+.scene-tokens span:nth-child(3) { animation-delay: .36s; }
+
+.scene-props {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scene-props span {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(24,33,43,.08);
+  box-shadow: 0 8px 18px rgba(27,49,66,.08);
+  color: rgba(24,33,43,.56);
+  font-weight: 950;
+  animation: propFloat 3.4s ease-in-out infinite;
+}
+
+.scene-props span:nth-child(1) {
+  left: 10%;
+  top: 12px;
+  width: 34px;
+  height: 34px;
+}
+
+.scene-props span:nth-child(2) {
+  right: 12%;
+  top: 58px;
+  width: 42px;
+  height: 42px;
+  animation-delay: .35s;
+}
+
+.scene-props span:nth-child(3) {
+  left: 62%;
+  bottom: 18px;
+  width: 30px;
+  height: 30px;
+  animation-delay: .7s;
+}
+
+.scene-route {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  min-height: 82px;
+  padding: 12px 8px 4px;
+}
+
+.route-track {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  top: 34px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.72);
+  box-shadow: inset 0 0 0 1px rgba(24,33,43,.08);
+  overflow: hidden;
+}
+
+.route-track span {
+  display: block;
+  height: 100%;
+  width: var(--route-progress, 0%);
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2f855a, #f6c85f);
+  transition: width .45s ease;
+}
+
+.route-avatar {
+  position: absolute;
+  left: calc(28px + (100% - 56px) * var(--route-avatar, 0));
+  top: 4px;
+  width: 48px;
+  height: 48px;
+  transform: translateX(-50%);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #6da8ff;
+  color: #fff;
+  border: 4px solid #18212b;
+  box-shadow: 0 8px 0 rgba(35,100,170,.16);
+  font-weight: 950;
+  transition: left .5s cubic-bezier(.2, .85, .22, 1.25);
+  animation: guideBounce 2.4s ease-in-out infinite;
+}
+
+.route-avatar::before {
+  content: "";
+  width: 20px;
+  height: 12px;
+  border-radius: 0 0 12px 12px;
+  border: 4px solid #d8fbff;
+  border-top: 0;
+  box-shadow: inset 0 -8px 0 rgba(216,251,255,.22);
+}
+
+.route-stations {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding-top: 48px;
+}
+
+.route-stations span {
+  display: grid;
+  place-items: center;
+  min-height: 28px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.68);
+  color: var(--muted);
+  border: 1px solid rgba(24,33,43,.08);
+  font-size: .72rem;
+  font-weight: 950;
+  transition: transform .2s ease, background .2s ease, color .2s ease;
+}
+
+.route-stations span.active,
+.route-stations span.done {
+  background: var(--ink);
+  color: #fff;
+}
+
+.route-stations span.done {
+  background: var(--green);
+}
+
+.route-stations span.bump {
+  animation: stationBump .42s ease;
+}
+
+.scene-mission {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(24,33,43,.08);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 850;
+}
+
+.scene-mission b {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #fff8e5;
+  color: #7b4b00;
+  border: 1px solid rgba(123,75,0,.18);
+}
+
+.captain-bubble {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  max-width: min(100%, 520px);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(24,33,43,.1);
+  box-shadow: 0 8px 18px rgba(27,49,66,.08);
+  color: var(--ink);
+  font-size: .84rem;
+  font-weight: 900;
+  transform-origin: left center;
+}
+
+.captain-bubble::before {
+  content: "队";
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #6da8ff;
+  color: #fff;
+  border: 2px solid #18212b;
+  font-size: .78rem;
+}
+
+.captain-bubble.good {
+  animation: bubbleGood .46s ease;
+}
+
+.captain-bubble.try {
+  animation: bubbleTry .46s ease;
+}
+
+.review-bag {
+  min-width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #ffe9e6;
+  color: var(--red);
+  border: 1px solid rgba(217,79,79,.22);
+  font-size: .74rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.review-bag.bump {
+  animation: stationBump .42s ease;
+}
+
+.collect-board {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 6px;
+}
+
+.collect-label {
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 900;
+}
+
+.collect-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.collect-slot {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.72);
+  border: 1px dashed rgba(24,33,43,.22);
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 950;
+}
+
+.collect-slot.filled {
+  background: #fff8e5;
+  border-style: solid;
+  border-color: rgba(123,75,0,.34);
+  color: #7b4b00;
+  box-shadow: 0 5px 0 rgba(123,75,0,.1);
+  animation: collectPop .36s ease;
+}
+
+.sort-board {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.sort-baskets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sort-basket {
+  min-height: 82px;
+  border-radius: var(--radius);
+  border: 2px dashed rgba(24,33,43,.2);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  color: var(--muted);
+  font-weight: 950;
+  text-align: center;
+}
+
+.sort-basket.target {
+  border-color: rgba(47,133,90,.5);
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.sort-basket.active {
+  transform: scale(1.02);
+  box-shadow: 0 10px 22px rgba(47,133,90,.14);
+}
+
+.sort-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sort-card {
+  min-height: 54px;
+  border-radius: 10px;
+  background: #fff8e5;
+  color: #7b4b00;
+  border: 2px solid rgba(123,75,0,.18);
+  font-weight: 950;
+  padding: 10px;
+  box-shadow: 0 6px 0 rgba(123,75,0,.1);
+}
+
+.sort-card:active {
+  transform: scale(.98);
+}
+
+.sort-card.correct {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+  animation: correctPop .42s ease;
+}
+
+.sort-card.wrong {
+  border-color: var(--red);
+  background: #ffe9e6;
+  color: var(--red);
+  animation: wrongShake .36s ease;
+}
+
 .question-card {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1995,6 +3031,53 @@ button:active {
 
 .choice.correct { border-color: var(--green); background: var(--green-soft); animation: correctPop .42s ease; }
 .choice.wrong { border-color: var(--red); background: #ffe9e6; animation: wrongShake .36s ease; }
+
+.reward-pop {
+  position: absolute;
+  right: 18px;
+  top: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f6c85f;
+  color: #7b4b00;
+  border: 3px solid #18212b;
+  font-weight: 950;
+  z-index: 3;
+  pointer-events: none;
+  animation: rewardFly .82s ease-out forwards;
+}
+
+.flying-card {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #fff8e5;
+  color: #7b4b00;
+  border: 3px solid #18212b;
+  box-shadow: 0 8px 0 rgba(123,75,0,.14);
+  font-size: 1.35rem;
+  font-weight: 950;
+  z-index: 60;
+  pointer-events: none;
+  transform: translate(var(--fly-x), var(--fly-y)) scale(1);
+  animation: cardFlyToBag .78s cubic-bezier(.2, .8, .2, 1) forwards;
+}
+
+.flying-card.mistake-card-fly {
+  background: #ffe9e6;
+  color: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 8px 0 rgba(217,79,79,.14);
+  animation-name: cardFlyToReview;
+}
 
 .read-checklist + .lesson-audio {
   margin-top: 4px;
@@ -2360,6 +3443,109 @@ button:active {
   100% { transform: scale(1); }
 }
 
+@keyframes tokenHop {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  45% { transform: translateY(-8px) rotate(-4deg); }
+}
+
+@keyframes rewardFly {
+  0% { opacity: 0; transform: translateY(12px) scale(.7); }
+  28% { opacity: 1; transform: translateY(0) scale(1.08); }
+  100% { opacity: 0; transform: translateY(-34px) scale(.86); }
+}
+
+@keyframes cardFlyToBag {
+  0% {
+    opacity: 0;
+    transform: translate(var(--fly-x), var(--fly-y)) scale(.82) rotate(-4deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(var(--fly-x), var(--fly-y)) scale(1.08) rotate(3deg);
+  }
+  100% {
+    opacity: .12;
+    transform: translate(var(--bag-x), var(--bag-y)) scale(.45) rotate(10deg);
+  }
+}
+
+@keyframes cardFlyToReview {
+  0% {
+    opacity: 0;
+    transform: translate(var(--fly-x), var(--fly-y)) scale(.82) rotate(4deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(var(--fly-x), var(--fly-y)) scale(1.06) rotate(-3deg);
+  }
+  100% {
+    opacity: .1;
+    transform: translate(var(--review-x), var(--review-y)) scale(.48) rotate(-12deg);
+  }
+}
+
+@keyframes collectPop {
+  0% { transform: scale(.82); }
+  65% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes propFloat {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-8px) rotate(4deg); }
+}
+
+@keyframes stationBump {
+  0% { transform: scale(1); }
+  55% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bubbleGood {
+  0% { opacity: .2; transform: translateY(6px) scale(.96); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes bubbleTry {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  55% { transform: translateX(4px); }
+}
+
+@keyframes sceneGlow {
+  0% { box-shadow: inset 0 0 0 0 rgba(246,200,95,0), 0 0 0 rgba(246,200,95,0); }
+  45% { box-shadow: inset 0 0 0 3px rgba(246,200,95,.55), 0 14px 28px rgba(246,200,95,.22); }
+  100% { box-shadow: inset 0 0 0 0 rgba(246,200,95,0), 0 0 0 rgba(246,200,95,0); }
+}
+
+@keyframes chestLand {
+  from { opacity: 0; transform: translateY(18px) scale(.86); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes chestOpen {
+  0% { transform: rotateX(0) translateY(0); }
+  100% { transform: rotateX(58deg) translateY(-12px); }
+}
+
+@keyframes starBurst {
+  0% { opacity: 0; transform: translateY(18px) scale(.6) rotate(-12deg); }
+  70% { opacity: 1; transform: translateY(-12px) scale(1.2) rotate(8deg); }
+  100% { opacity: 1; transform: translateY(-4px) scale(1) rotate(0); }
+}
+
+@keyframes rewardPanelIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes badgeUnlock {
+  0% { transform: scale(.92); box-shadow: 0 0 0 rgba(246,200,95,0); }
+  60% { transform: scale(1.04); box-shadow: 0 0 0 10px rgba(246,200,95,.22); }
+  100% { transform: scale(1); box-shadow: 0 8px 20px rgba(27,49,66,.06); }
+}
+
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -2462,19 +3648,68 @@ body.app-view-map #kidView {
 }
 
 @media (max-width: 620px) {
-  .app { padding: 12px; }
+  .app {
+    padding: calc(12px + env(safe-area-inset-top)) 12px calc(92px + env(safe-area-inset-bottom));
+  }
   .topbar { grid-template-columns: 1fr; }
+  .brand-subtitle { font-size: .86rem; }
+  .bottom-nav {
+    width: calc(100% - 16px);
+    gap: 6px;
+    border-radius: 16px;
+  }
+  .bottom-nav button {
+    min-height: 48px;
+    border-radius: 10px;
+    font-size: .82rem;
+  }
+  .game-shell,
+  .dialog-shell {
+    padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+    align-items: stretch;
+  }
+  .game-shell.open,
+  .dialog-shell.open {
+    place-items: stretch center;
+  }
+  .game-card,
+  .dialog-card {
+    width: 100%;
+    max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    border-radius: 10px;
+  }
+  .game-top,
+  .dialog-top {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 10px;
+  }
+  .game-body,
+  .dialog-body {
+    padding: 14px;
+  }
+  .close-btn,
+  .small-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .exit-game-btn {
+    min-width: 92px;
+  }
   .app-home { gap: 10px; }
   .story-stage { grid-template-columns: 92px 1fr; min-height: 168px; padding: 12px; }
   .hero-mascot { width: 86px; height: 86px; border-radius: 28px; }
   .hero-mascot svg { width: 70px; height: 70px; }
   .speech-panel h2 { font-size: 1.3rem; }
   .reward-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .word-card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .report-hero-card { grid-template-columns: 1fr; min-height: auto; }
   .report-ring { width: 124px; height: 124px; justify-self: center; }
   .report-kpis { grid-template-columns: 1fr; }
   .unit-progress-item { grid-template-columns: 36px minmax(0, 1fr); }
   .unit-progress-item > .status-chip { grid-column: 2; width: fit-content; }
+  .unit-fold-panel .unit-list { grid-template-columns: 1fr; }
   .reward-room-hero { grid-template-columns: 1fr; }
   .reward-orbit { width: 118px; height: 118px; justify-self: center; }
   .reward-orbit span { width: 40px; height: 40px; }
@@ -2483,19 +3718,41 @@ body.app-view-map #kidView {
   .reward-orbit span:nth-child(3) { left: 39px; bottom: -17px; }
   .reward-orbit span:nth-child(4) { left: -15px; top: 39px; }
   .treasure-panel { align-items: stretch; flex-direction: column; }
+  .growth-head,
+  .card-album-head { align-items: flex-start; flex-direction: column; }
   .complete-stats { grid-template-columns: 1fr; }
   .read-checklist { grid-template-columns: 1fr; }
   .mode-tabs { width: 100%; }
   .tab { flex: 1; min-width: 0; }
   .daily-path, .lesson-grid, .choices, .stage-tabs, .trace-area, .guide-card, .lesson-guide, .product-strip, .install-card, .onboard-grid { grid-template-columns: 1fr; }
+  .game-scene-strip {
+    grid-template-columns: auto 1fr;
+  }
+  .scene-props span:nth-child(2) {
+    right: 6%;
+    top: 92px;
+  }
+  .scene-props span:nth-child(3) {
+    left: 70%;
+    bottom: 24px;
+  }
+  .scene-tokens {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .choices .choice,
+  .primary-btn,
+  .ghost-btn {
+    min-height: 48px;
+  }
   .panel-head { align-items: flex-start; flex-direction: column; }
-  .unit-nav { width: 100%; justify-content: stretch; }
-  .unit-nav .mini-btn { flex: 1; }
   .lesson-card { grid-template-columns: 92px minmax(0, 1fr); min-height: 176px; padding: 12px; }
   .lesson-art { min-height: 128px; }
   .lesson-art svg { width: 84px; height: 84px; }
   .map-stage { height: 360px; }
-  .map-node { width: 70px; min-height: 70px; font-size: .82rem; }
+  .map-node { width: 82px; min-height: 82px; font-size: .82rem; }
+  .map-node small { font-size: .62rem; }
+  .map-node-status { font-size: .56rem; padding: 2px 5px; }
   .scene, .scene svg { min-height: 250px; }
   .brand-mark { width: 46px; height: 46px; }
   .guide-avatar { width: 58px; height: 58px; }
@@ -2569,18 +3826,24 @@ body.app-view-map #kidView {
           <p id="homeText">跟着路线点亮关卡，学一个字，读一句话，拿一颗星。</p>
           <div class="today-meter" aria-label="今日任务进度"><span id="todayMeterFill"></span></div>
         </div>
-        <button class="big-start" id="homeStartBtn">开始闯关</button>
+        <button class="big-start" id="homeStartBtn" data-start-today>开始今日任务</button>
       </div>
     </div>
     <div class="quick-stack">
+      <p class="path-title">今日路径</p>
+      <button class="quick-card primary-path" id="quickTodayBtn" data-start-today>
+        <span class="quick-icon">1</span>
+        <span><strong>学一关</strong><span id="quickTodayText">先完成今天推荐课</span></span>
+        <span class="status-chip" id="quickTodayStatus">开始</span>
+      </button>
       <button class="quick-card" id="quickReviewBtn">
-        <span class="quick-icon">复</span>
-        <span><strong>复习闯关</strong><span>错字、已学字、本单元一起练</span></span>
+        <span class="quick-icon">2</span>
+        <span><strong>复习一下</strong><span>错字、已学字、本单元一起练</span></span>
         <span class="status-chip" id="reviewCount">0</span>
       </button>
       <button class="quick-card" id="quickRewardBtn">
-        <span class="quick-icon">星</span>
-        <span><strong>星星奖励</strong><span>看看今天点亮了多少星</span></span>
+        <span class="quick-icon">3</span>
+        <span><strong>拿奖励</strong><span>看星星、宝箱和单元徽章</span></span>
         <span class="status-chip" id="rewardStars">0</span>
       </button>
       <button class="quick-card" id="quickParentBtn">
@@ -2610,6 +3873,20 @@ body.app-view-map #kidView {
       </div>
     </div>
     <div class="badge-grid" id="badgeGrid"></div>
+    <div class="growth-panel">
+      <div class="growth-head">
+        <span><strong>连续学习奖励</strong><span id="streakRewardText">每天完成一关，点亮 7 天路线。</span></span>
+        <span class="status-chip" id="streakRewardStatus">0/7</span>
+      </div>
+      <div class="streak-track" id="streakTrack"></div>
+    </div>
+    <div class="card-album">
+      <div class="card-album-head">
+        <span><strong>字卡图鉴</strong><span id="albumText">完成课文后，重点字会收进图鉴。</span></span>
+        <span class="status-chip" id="albumStatus">0</span>
+      </div>
+      <div class="word-card-grid" id="wordCardGrid"></div>
+    </div>
     <div class="treasure-panel">
       <div>
         <strong id="treasureTitle">今日宝箱</strong>
@@ -2643,7 +3920,7 @@ body.app-view-map #kidView {
         </div>
       </div>
       <div class="daily-path" aria-label="快捷操作">
-        <button class="path-step action-card" id="heroStartBtn">
+        <button class="path-step action-card" id="heroStartBtn" data-start-today>
           <span class="step-label">学</span>
           <strong>开始今日任务</strong>
           <span>直接进入推荐关卡</span>
@@ -2726,7 +4003,6 @@ body.app-view-map #kidView {
         <strong id="mapTitle">动画闯关地图</strong>
         <span id="mapSubtitle">点击地图节点开始学习</span>
       </div>
-      <button class="mini-btn" id="mapNextBtn">下一单元</button>
     </div>
     <div class="map-stage" id="mapStage">
       <div class="map-hills" aria-hidden="true"></div>
@@ -2746,21 +4022,22 @@ body.app-view-map #kidView {
       <div id="mapNodes"></div>
       <div class="map-tip" id="mapTip">跟着小语队长闯关</div>
     </div>
+    <div class="unit-map-control">
+      <button class="unit-fold-toggle" id="openUnitPickerBtn">
+        <span class="unit-index" id="compactUnitIndex">1</span>
+        <span><strong id="compactUnitName">第一单元</strong><span id="compactUnitMeta">点击展开单元</span></span>
+        <span class="unit-fold-arrow">▾</span>
+      </button>
+      <div class="unit-fold-panel" id="unitFoldPanel">
+        <div class="unit-list" id="unitList"></div>
+      </div>
+    </div>
   </section>
 
   <section class="section-grid" id="kidView">
-    <aside class="panel">
-      <h2 class="panel-title">选择单元</h2>
-      <div class="unit-list" id="unitList"></div>
-    </aside>
-
     <section class="panel">
       <div class="panel-head">
         <h2 class="panel-title" id="lessonTitle">关卡</h2>
-        <div class="unit-nav">
-          <button class="mini-btn" id="prevUnitBtn">上一单元</button>
-          <button class="mini-btn" id="nextUnitBtn">下一单元</button>
-        </div>
       </div>
       <div class="lesson-grid" id="lessonGrid"></div>
     </section>
@@ -2782,7 +4059,7 @@ body.app-view-map #kidView {
         </div>
       </div>
       <div class="action-row">
-        <button class="primary-btn" id="startTodayBtn">开始今日任务</button>
+        <button class="primary-btn" id="startTodayBtn" data-start-today>开始今日任务</button>
       </div>
     </aside>
   </section>
@@ -2853,6 +4130,13 @@ body.app-view-map #kidView {
         <div class="report-item"><span class="plan-dot">练</span><span><strong id="reportPractice">0</strong><span>推荐复习字词</span></span><span class="status-chip">复习</span></div>
       </div>
     </aside>
+    <section class="panel">
+      <h2 class="panel-title">智能复习推荐</h2>
+      <div class="smart-review-list" id="smartReviewList"></div>
+      <div class="action-row">
+        <button class="primary-btn" id="startSmartReviewBtn">开始推荐复习</button>
+      </div>
+    </section>
     <section class="panel">
       <h2 class="panel-title">错字趋势</h2>
       <div class="mistake-trend" id="mistakeTrend"></div>
@@ -2940,6 +4224,88 @@ body.app-view-map #kidView {
   </div>
 </div>
 
+<div class="dialog-shell" id="badgeShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2 id="badgeDetailTitle">单元徽章</h2>
+      <button class="close-btn" id="closeBadge" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="badge-detail-hero">
+        <div class="badge-detail-icon" id="badgeDetailIcon">★</div>
+      </div>
+      <div class="privacy-list" id="badgeDetailList"></div>
+      <div class="action-row">
+        <button class="primary-btn" id="badgeGoBtn">去这个单元</button>
+        <button class="ghost-btn" id="badgeReviewBtn">复习本单元</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="reviewBagShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2>复习袋</h2>
+      <button class="close-btn" id="closeReviewBag" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="review-bag-hero">
+        <div class="review-bag-icon">复</div>
+        <div>
+          <strong id="reviewBagTitle">把不稳的字再练稳</strong>
+          <span id="reviewBagText">错字会自动进入复习袋，按今天、高频、本单元分类练习。</span>
+        </div>
+      </div>
+      <div class="review-bag-grid" id="reviewBagGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="reviewRewardShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2>复习奖励</h2>
+      <button class="close-btn" id="closeReviewReward" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body review-reward-card">
+      <div class="review-reward-hero">
+        <div class="review-reward-icon">稳</div>
+      </div>
+      <h2 class="complete-title" id="reviewRewardTitle">错字变稳了</h2>
+      <p class="complete-text" id="reviewRewardText">这次复习完成得很棒。</p>
+      <div class="complete-stats">
+        <div class="complete-stat"><b id="reviewRewardCorrect">0</b><span>答对步数</span></div>
+        <div class="complete-stat"><b id="reviewRewardFixed">0</b><span>改正错字</span></div>
+        <div class="complete-stat"><b id="reviewRewardLeft">0</b><span>剩余错字</span></div>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" id="reviewRewardBagBtn">继续复习袋</button>
+        <button class="ghost-btn" id="reviewRewardRoomBtn">去奖励屋</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dialog-shell" id="wordDetailShell" aria-modal="true" role="dialog">
+  <div class="dialog-card">
+    <div class="dialog-top">
+      <h2 id="wordDetailTitle">字卡详情</h2>
+      <button class="close-btn" id="closeWordDetail" aria-label="关闭">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="word-detail-hero">
+        <div class="word-detail-card" id="wordDetailCard">字</div>
+      </div>
+      <div class="privacy-list" id="wordDetailList"></div>
+      <div class="action-row">
+        <button class="primary-btn" id="wordListenBtn">播放读音</button>
+        <button class="ghost-btn" id="wordTraceBtn">去笔顺练习</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="dialog-shell" id="completeShell" aria-modal="true" role="dialog">
   <div class="dialog-card complete-card">
     <div class="dialog-top">
@@ -2948,10 +4314,20 @@ body.app-view-map #kidView {
     </div>
     <div class="dialog-body">
       <div class="complete-hero">
-        <div class="complete-medal">★</div>
+        <div class="complete-chest" id="completeChest"><span>★</span></div>
       </div>
       <h2 class="complete-title" id="completeTitle">完成一课啦</h2>
       <p class="complete-text" id="completeText">点亮课文星，继续下一关吧。</p>
+      <div class="complete-guide" id="completeGuide">
+        <span class="status-chip" id="completeGuideBadge">小语队长推荐</span>
+        <h3 id="completeGuideTitle">继续下一课</h3>
+        <p id="completeGuideText">状态不错，可以进入下一关。</p>
+        <div class="complete-guide-metrics" id="completeGuideMetrics">
+          <span>今日 0/2</span>
+          <span>错字 0</span>
+          <span>进度 0/0</span>
+        </div>
+      </div>
       <div class="complete-stats">
         <div class="complete-stat"><b id="completeStars">+3</b><span>本次星星</span></div>
         <div class="complete-stat"><b id="completeUnit">0/0</b><span>本单元进度</span></div>
@@ -2988,6 +4364,11 @@ body.app-view-map #kidView {
       <div class="review-headline">
         <p class="complete-text" id="reviewPrompt">找到正确的字。</p>
         <span class="status-chip review-mode" id="reviewMode">错字</span>
+      </div>
+      <div class="review-stage-tabs" id="reviewStageTabs" aria-label="复习闯关步骤">
+        <span data-review-stage="sound">听音</span>
+        <span data-review-stage="pinyin">拼音</span>
+        <span data-review-stage="context">句子</span>
       </div>
       <div class="review-meter" aria-label="复习进度"><span id="reviewMeterFill"></span></div>
       <div class="review-word" id="reviewPinyin">pīn</div>
@@ -3029,6 +4410,23 @@ body.app-view-map #kidView {
         <button class="stage-tab" data-stage="2">选词填空</button>
         <button class="stage-tab" data-stage="3">朗读示范</button>
       </div>
+      <div class="game-scene-strip" id="gameSceneStrip" aria-hidden="true">
+        <span class="scene-props" id="sceneProps"></span>
+        <span class="scene-badge" id="sceneBadge">字</span>
+        <span class="scene-copy"><strong id="sceneTitle">收集字卡</strong><span id="sceneText">听一听，点一点，把字卡放进背包。</span></span>
+        <span class="scene-tokens" id="sceneTokens"><span>1</span><span>2</span><span>3</span></span>
+        <span class="scene-route" id="sceneRoute">
+          <span class="route-track"><span id="routeTrackFill"></span></span>
+          <span class="route-avatar" id="routeAvatar"></span>
+          <span class="route-stations" id="routeStations"></span>
+        </span>
+        <span class="scene-mission"><b id="sceneMissionStep">1</b><span id="sceneMissionText">先收集本课重点字卡。</span></span>
+        <span class="captain-bubble" id="captainBubble"><span id="captainText">准备好了吗？听声音，收集第一张字卡。</span><span class="review-bag" id="reviewBag">复 0</span></span>
+        <span class="collect-board">
+          <span class="collect-label" id="collectLabel">字卡背包</span>
+          <span class="collect-slots" id="collectSlots"></span>
+        </span>
+      </div>
 
       <section class="question-card" id="stageWord">
         <p class="question-title" id="wordPrompt">听读音，选出正确的字。</p>
@@ -3038,7 +4436,7 @@ body.app-view-map #kidView {
       </section>
 
       <section class="question-card hidden" id="stageTrace">
-        <p class="question-title">观察专业笔顺动画，跟着真实顺序一笔一笔写。</p>
+        <p class="question-title" id="tracePrompt">观察专业笔顺动画，跟着真实顺序一笔一笔写。</p>
         <div class="trace-area">
           <div class="trace-grid" id="traceBoard" style="--write-progress: 0%;">
             <span class="trace-ghost" id="traceGhost">春</span>
@@ -3061,12 +4459,19 @@ body.app-view-map #kidView {
       <section class="question-card hidden" id="stageSentence">
         <p class="question-title" id="sentencePrompt">把词语放进句子里，读一读是否通顺。</p>
         <div class="read-line" id="sentenceLine"></div>
+        <div class="sort-board hidden" id="sortBoard">
+          <div class="sort-baskets">
+            <div class="sort-basket target" id="sortTarget">放到这里</div>
+            <div class="sort-basket" id="sortDecoy">再想想</div>
+          </div>
+          <div class="sort-cards" id="sortCards"></div>
+        </div>
         <div class="choices" id="sentenceChoices"></div>
         <div class="feedback" id="sentenceFeedback"></div>
       </section>
 
       <section class="question-card hidden" id="stageRead">
-        <p class="question-title">跟着节奏朗读，读完给自己点亮一颗星。</p>
+        <p class="question-title" id="readPrompt">跟着节奏朗读，读完给自己点亮一颗星。</p>
         <div class="read-box" id="readLines"></div>
         <div class="read-checklist">
           <div class="read-check" id="listenCheck">1 听示范</div>
@@ -3228,6 +4633,8 @@ const state = {
 };
 state.progress.done = state.progress.done || {};
 state.progress.mistakes = state.progress.mistakes || {};
+state.progress.mistakeLog = state.progress.mistakeLog || [];
+state.progress.reviewClearedDate = state.progress.reviewClearedDate || "";
 state.progress.stars = state.progress.stars || 0;
 state.progress.sessions = state.progress.sessions || [];
 state.progress.lastStudyDate = state.progress.lastStudyDate || "";
@@ -3257,6 +4664,10 @@ const celebration = document.querySelector("#celebration");
 const soundBtn = document.querySelector("#soundBtn");
 const onboardShell = document.querySelector("#onboardShell");
 const privacyShell = document.querySelector("#privacyShell");
+const badgeShell = document.querySelector("#badgeShell");
+const reviewBagShell = document.querySelector("#reviewBagShell");
+const reviewRewardShell = document.querySelector("#reviewRewardShell");
+const wordDetailShell = document.querySelector("#wordDetailShell");
 const completeShell = document.querySelector("#completeShell");
 const reviewShell = document.querySelector("#reviewShell");
 const mapNodes = document.querySelector("#mapNodes");
@@ -3271,8 +4682,12 @@ let hanziWriter;
 let traceToken = 0;
 let readHighlightTimers = [];
 let reviewQueue = [];
+let reviewSteps = [];
 let reviewIndex = 0;
 let reviewMode = "错字";
+let reviewStats = { correct: 0, wrong: 0, fixed: 0 };
+let badgeDetailUnit = 0;
+let wordDetailWord = "";
 
 function updateSoundButton() {
   soundBtn.textContent = state.sound ? "音效开" : "音效关";
@@ -3347,7 +4762,38 @@ function playBufferedAudio(src, fallbackText) {
   }).catch(() => speakShortPrompt(fallbackText));
 }
 
+function playBufferedAudioWithFallback(paths, fallbackText) {
+  const [first, ...rest] = paths.filter(Boolean);
+  if (!first) {
+    speakShortPrompt(fallbackText);
+    return;
+  }
+  const ctx = getAudioContext();
+  if (!ctx) {
+    const audio = new Audio(first);
+    audio.onerror = () => rest.length ? playBufferedAudioWithFallback(rest, fallbackText) : speakShortPrompt(fallbackText);
+    audio.play().catch(() => rest.length ? playBufferedAudioWithFallback(rest, fallbackText) : speakShortPrompt(fallbackText));
+    return;
+  }
+  loadAudioBuffer(first).then(buffer => {
+    const source = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    source.buffer = buffer;
+    gain.gain.value = .95;
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start();
+  }).catch(() => {
+    if (rest.length) playBufferedAudioWithFallback(rest, fallbackText);
+    else speakShortPrompt(fallbackText);
+  });
+}
+
 function warmAudio(src) {
+  if (Array.isArray(src)) {
+    src.forEach(item => warmAudio(item));
+    return;
+  }
   if (!src) return;
   if (getAudioContext()) {
     loadAudioBuffer(src).catch(() => {});
@@ -3355,6 +4801,21 @@ function warmAudio(src) {
   }
   const audio = new Audio(src);
   audio.preload = "auto";
+  audio.load();
+}
+
+function setAudioElementWithFallback(audio, paths) {
+  const [first, ...rest] = (Array.isArray(paths) ? paths : [paths]).filter(Boolean);
+  if (!first) {
+    audio.removeAttribute("src");
+    audio.load();
+    return;
+  }
+  audio.onerror = () => {
+    if (!rest.length) return;
+    setAudioElementWithFallback(audio, rest);
+  };
+  audio.src = first;
   audio.load();
 }
 
@@ -3383,7 +4844,9 @@ function playSound(name) {
 }
 
 function playRecordedAudio(src, fallbackText, options = {}) {
-  if (!src) {
+  const paths = Array.isArray(src) ? src.filter(Boolean) : [src].filter(Boolean);
+  const [first, ...rest] = paths;
+  if (!first) {
     speakWithSystemVoice(fallbackText);
     return;
   }
@@ -3391,22 +4854,31 @@ function playRecordedAudio(src, fallbackText, options = {}) {
     voiceAudio.pause();
     voiceAudio.removeAttribute("src");
   }
-  voiceAudio = new Audio(src);
+  voiceAudio = new Audio(first);
   voiceAudio.preload = "auto";
   voiceAudio.playbackRate = options.playbackRate || 1;
   voiceAudio.onended = () => {};
-  voiceAudio.onerror = () => speakWithSystemVoice(fallbackText);
-  voiceAudio.play().catch(() => speakWithSystemVoice(fallbackText));
+  voiceAudio.onerror = () => rest.length ? playRecordedAudio(rest, fallbackText, options) : speakWithSystemVoice(fallbackText);
+  voiceAudio.play().catch(() => rest.length ? playRecordedAudio(rest, fallbackText, options) : speakWithSystemVoice(fallbackText));
+}
+
+function xiaoxiaoPath(mp3Path) {
+  return mp3Path ? mp3Path.replace("audio/", "audio/xiaoxiao/").replace(/\.mp3$/, ".wav") : "";
+}
+
+function voicePathCandidates(mp3Path) {
+  return [xiaoxiaoPath(mp3Path), mp3Path];
 }
 
 function wordAudioPath(lesson, word) {
   const index = lesson.words.indexOf(word);
   if (index < 0) return "";
-  return `audio/words/${lesson.id}-${index}.mp3`;
+  const path = `audio/words/${lesson.id}-${index}.mp3`;
+  return [path, xiaoxiaoPath(path)];
 }
 
 function lessonAudioPath(lesson) {
-  return `audio/lessons/${lesson.id}.mp3`;
+  return voicePathCandidates(`audio/lessons/${lesson.id}.mp3`);
 }
 
 const availableLessonAudio = new Set([
@@ -3429,7 +4901,7 @@ function lessonHasAudio(lesson) {
 }
 
 function feedbackAudioPath(name) {
-  return `audio/feedback/${name}.mp3`;
+  return voicePathCandidates(`audio/feedback/${name}.mp3`);
 }
 
 function strokeAudioKey(name) {
@@ -3480,7 +4952,8 @@ function speakFeedback(name, fallbackText) {
 }
 
 function speakStrokeName(name) {
-  playBufferedAudio(`audio/strokes/${strokeAudioKey(name)}.mp3`, name);
+  const path = `audio/strokes/${strokeAudioKey(name)}.mp3`;
+  playBufferedAudioWithFallback([path, xiaoxiaoPath(path)], name);
 }
 
 function clearReadHighlight() {
@@ -3512,6 +4985,58 @@ function popFeedback(selector) {
   node.classList.remove("pop");
   void node.offsetWidth;
   node.classList.add("pop");
+}
+
+function popReward(anchorSelector, label = "★") {
+  const anchor = document.querySelector(anchorSelector);
+  if (!anchor) return;
+  const pop = document.createElement("span");
+  pop.className = "reward-pop";
+  pop.textContent = label;
+  anchor.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+function pulseScene() {
+  const scene = document.querySelector("#gameSceneStrip");
+  if (!scene) return;
+  scene.classList.remove("stage-glow");
+  void scene.offsetWidth;
+  scene.classList.add("stage-glow");
+}
+
+function flyCardToBag(label, fromSelector = "#bigWord") {
+  const from = document.querySelector(fromSelector);
+  const bag = document.querySelector("#collectSlots");
+  if (!from || !bag) return;
+  const fromRect = from.getBoundingClientRect();
+  const bagRect = bag.getBoundingClientRect();
+  const card = document.createElement("span");
+  card.className = "flying-card";
+  card.textContent = label;
+  card.style.setProperty("--fly-x", `${fromRect.left + fromRect.width / 2 - 24}px`);
+  card.style.setProperty("--fly-y", `${fromRect.top + fromRect.height / 2 - 24}px`);
+  card.style.setProperty("--bag-x", `${bagRect.left + Math.min(bagRect.width - 24, 24)}px`);
+  card.style.setProperty("--bag-y", `${bagRect.top + bagRect.height / 2 - 24}px`);
+  document.body.appendChild(card);
+  setTimeout(() => card.remove(), 820);
+}
+
+function flyMistakeToReview(label, fromSelector = "#bigWord") {
+  const from = document.querySelector(fromSelector);
+  const reviewTarget = document.querySelector("#sceneBadge") || document.querySelector("#quickReviewBtn");
+  if (!from || !reviewTarget) return;
+  const fromRect = from.getBoundingClientRect();
+  const targetRect = reviewTarget.getBoundingClientRect();
+  const card = document.createElement("span");
+  card.className = "flying-card mistake-card-fly";
+  card.textContent = label;
+  card.style.setProperty("--fly-x", `${fromRect.left + fromRect.width / 2 - 24}px`);
+  card.style.setProperty("--fly-y", `${fromRect.top + fromRect.height / 2 - 24}px`);
+  card.style.setProperty("--review-x", `${targetRect.left + targetRect.width / 2 - 24}px`);
+  card.style.setProperty("--review-y", `${targetRect.top + targetRect.height / 2 - 24}px`);
+  document.body.appendChild(card);
+  setTimeout(() => card.remove(), 820);
 }
 
 function celebrate() {
@@ -3678,18 +5203,17 @@ function renderAdventureMap() {
   const unit = units[state.unit];
   const done = doneCountForUnit(state.unit);
   const currentIndex = Math.max(0, unit.lessons.findIndex((_, lessonIndex) => !state.progress.done[keyFor(state.unit, lessonIndex)]));
-  document.querySelector("#mapTitle").textContent = `${unit.name} · 动画闯关地图`;
-  document.querySelector("#mapSubtitle").textContent = `${done}/${unit.lessons.length} 已完成，点击节点开始`;
-  document.querySelector("#mapTip").textContent = done === unit.lessons.length ? "本单元完成，可以去下一单元" : "小语队长在推荐关卡等你";
-  document.querySelector("#mapNextBtn").textContent = state.unit >= units.length - 1 ? "最后单元" : "下一单元";
-  document.querySelector("#mapNextBtn").disabled = state.unit >= units.length - 1;
+  document.querySelector("#mapTitle").textContent = `${unit.name} · 课程闯关地图`;
+  document.querySelector("#mapSubtitle").textContent = `圆圈是学习关卡，不是时间安排。${done}/${unit.lessons.length} 已完成`;
+  document.querySelector("#mapTip").textContent = done === unit.lessons.length ? "本单元课程关卡已完成，可以通过今日建议上方切换单元" : "点击当前关卡开始学习";
   mapNodes.innerHTML = unit.lessons.map((lesson, index) => {
     const pos = mapPosition(index, unit.lessons.length);
     const finished = state.progress.done[keyFor(state.unit, index)];
     const current = index === currentIndex && !finished;
     const locked = !finished && !current && index > currentIndex;
+    const status = finished ? "已完成" : current ? "当前" : "未开始";
     return `<button class="map-node ${finished ? "done" : ""} ${current ? "current" : ""} ${locked ? "locked" : ""}" style="--x:${pos.x};--y:${pos.y}" data-map-lesson="${index}">
-      ${finished ? "★" : index + 1}<small>${lesson.title}</small>
+      <b>${finished ? "★" : `第${index + 1}关`}</b><small>${lesson.title}</small><span class="map-node-status">${status}</span>
     </button>`;
   }).join("");
   const avatarPos = mapPosition(currentIndex >= 0 ? currentIndex : unit.lessons.length - 1, unit.lessons.length);
@@ -3711,6 +5235,10 @@ function renderUnits() {
 function renderLessons() {
   const unit = units[state.unit];
   lessonTitle.textContent = `${unit.name}关卡`;
+  const unitDone = doneCountForUnit(state.unit);
+  document.querySelector("#compactUnitIndex").textContent = state.unit + 1;
+  document.querySelector("#compactUnitName").textContent = unit.name;
+  document.querySelector("#compactUnitMeta").textContent = `${unit.theme} · ${unitDone}/${unit.lessons.length}`;
   lessonGrid.innerHTML = unit.lessons.map((lesson, index) => {
     const done = state.progress.done[keyFor(state.unit, index)];
     const intro = lessonIntro(lesson);
@@ -3730,14 +5258,8 @@ function renderLessons() {
   }).join("");
   const next = nextLessonItem();
   document.querySelector("#todayWords").textContent = next.lesson.words.length;
-  document.querySelector("#todayDone").textContent = doneCountForUnit(state.unit);
+  document.querySelector("#todayDone").textContent = unitDone;
   document.querySelector("#contentCount").textContent = allLessons().length;
-  const prevUnitBtn = document.querySelector("#prevUnitBtn");
-  const nextUnitBtn = document.querySelector("#nextUnitBtn");
-  prevUnitBtn.disabled = state.unit <= 0;
-  prevUnitBtn.textContent = state.unit <= 0 ? "第一单元" : "上一单元";
-  nextUnitBtn.disabled = state.unit >= units.length - 1;
-  nextUnitBtn.textContent = state.unit >= units.length - 1 ? "最后单元" : "下一单元";
 }
 
 function renderWordChip(lesson, word, index) {
@@ -3799,6 +5321,7 @@ function renderParent() {
   const learnedWords = new Set(doneLessons.flatMap(item => item.lesson.words));
   const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
   const mistakes = Object.entries(state.progress.mistakes).sort((a, b) => b[1] - a[1]).slice(0, 16);
+  const smartPlan = buildSmartReviewPlan(8);
   const next = nextLessonItem();
   document.querySelector("#parentSummaryTitle").textContent = todaySessions
     ? `今天已完成 ${todaySessions} 关`
@@ -3815,12 +5338,26 @@ function renderParent() {
   document.querySelector("#streakDays").textContent = `${state.progress.streak || 0}天`;
   document.querySelector("#reportWords").textContent = learnedWords.size;
   document.querySelector("#reportRead").textContent = doneLessons.length;
-  document.querySelector("#reportPractice").textContent = Object.keys(state.progress.mistakes).length;
+  document.querySelector("#reportPractice").textContent = smartPlan.length;
   document.querySelector("#releaseLessonCount").textContent = `${lessons.length} 个学习关卡，覆盖 8 个单元的课文、识字、园地和口语交际。`;
   document.querySelector("#releaseVoiceCount").textContent = `${lessons.reduce((sum, item) => sum + item.lesson.words.length, 0)} 个生字音频，另含笔画名称和反馈提示音。`;
   document.querySelector("#mistakeList").innerHTML = mistakes.length
-    ? mistakes.map(([word, count]) => `<span class="word-chip">${word} × ${count}</span>`).join("")
-    : `<span class="word-chip">还没有错字</span>`;
+    ? mistakes.map(([word, count]) => {
+      const info = findWordInfo(word);
+      return `<div class="mistake-card">
+        <span class="mistake-word">${word}</span>
+        <span class="mistake-meta"><strong>${info.pinyin || "拼音"}</strong><span>${info.lesson?.title || "已学内容"} · 错 ${count} 次</span></span>
+        <span class="status-chip">${masteredLabel(count)}</span>
+      </div>`;
+    }).join("")
+    : `<div class="mistake-card"><span class="mistake-word">✓</span><span class="mistake-meta"><strong>还没有错字</strong><span>可以继续保持朗读和轻松抽查。</span></span><span class="status-chip">很好</span></div>`;
+  document.querySelector("#smartReviewList").innerHTML = smartPlan.length
+    ? smartPlan.map(item => `<div class="review-plan-card">
+      <span class="mistake-word">${item.word}</span>
+      <span><strong>${item.pinyin}</strong><span>${item.lessonTitle} · ${item.reason}${item.mistakeCount ? ` · 错 ${item.mistakeCount} 次` : ""}</span></span>
+      <span class="status-chip">${item.mistakeCount ? masteredLabel(item.mistakeCount) : "巩固"}</span>
+    </div>`).join("")
+    : `<div class="review-plan-card"><span class="mistake-word">读</span><span><strong>先完成一课</strong><span>有学习记录后，会自动生成推荐复习字。</span></span><span class="status-chip">等待</span></div>`;
   document.querySelector("#nextLesson").textContent = next.lesson.title;
   renderUnitProgress(doneLessons);
   renderMistakeTrend();
@@ -3837,6 +5374,8 @@ function renderHomeStats(doneLessons, learnedWords, next) {
   document.querySelector("#homeTitle").textContent = next ? `今天推荐：${next.lesson.title}` : "今天的语文冒险完成啦";
   document.querySelector("#homeText").textContent = next ? `${next.unit.name} · ${next.lesson.words.length} 个重点字 · 今日已完成 ${todaySessions}/2 关` : "可以复习错字，或者听一听已经学过的朗读。";
   document.querySelector("#todayMeterFill").style.setProperty("--today-progress", `${todayProgress}%`);
+  document.querySelector("#quickTodayText").textContent = next ? `${next.unit.name} · ${next.lesson.title}` : "今日学习任务已完成";
+  document.querySelector("#quickTodayStatus").textContent = todaySessions ? `${todaySessions}/2` : "开始";
   document.querySelector("#reviewCount").textContent = mistakeCount ? mistakeCount : reviewReady ? "练" : 0;
   document.querySelector("#rewardStars").textContent = state.progress.stars;
   document.querySelector("#homeStars").textContent = state.progress.stars;
@@ -3867,6 +5406,11 @@ function renderRewards() {
   ];
   const completedUnits = units.filter((_, unitIndex) => doneCountForUnit(unitIndex) === units[unitIndex].lessons.length).length;
   const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  const doneLessons = allLessons().filter(item => state.progress.done[keyFor(item.unitIndex, item.lessonIndex)]);
+  const learnedWords = uniqueWords(doneLessons.flatMap(item => item.lesson.words));
+  const allWords = uniqueWords(allLessons().flatMap(item => item.lesson.words));
+  const albumWords = learnedWords.length ? learnedWords.slice(-24).reverse() : allWords.slice(0, 24);
+  const streakCount = Math.min(state.progress.streak || 0, 7);
   document.querySelector("#rewardRoomText").textContent = completedUnits
     ? `已经点亮 ${completedUnits}/${units.length} 枚单元徽章，继续收集整套下册星球。`
     : "完成每个单元，就会在这里得到一枚主题徽章。";
@@ -3874,7 +5418,7 @@ function renderRewards() {
     const done = doneCountForUnit(index);
     const unlocked = done === unit.lessons.length;
     const current = index === state.unit;
-    return `<button class="unit-badge ${unlocked ? "done" : "locked"}" style="--badge-glow:${colors[index % colors.length]}" data-reward-unit="${index}">
+    return `<button class="unit-badge ${unlocked ? "done" : "locked"} ${unlocked && current ? "newly-unlocked" : ""}" style="--badge-glow:${colors[index % colors.length]}" data-reward-unit="${index}">
       <span class="unit-badge-icon">${unlocked ? "★" : icons[index]}</span>
       <span>
         <strong>${unit.name}</strong>
@@ -3882,14 +5426,91 @@ function renderRewards() {
       </span>
     </button>`;
   }).join("");
+  document.querySelector("#streakRewardStatus").textContent = `${streakCount}/7`;
+  document.querySelector("#streakRewardText").textContent = streakCount >= 7
+    ? "7 天路线已经点亮，可以给孩子一个周奖励。"
+    : `再坚持 ${7 - streakCount} 天，就能点亮一条完整学习路线。`;
+  document.querySelector("#streakTrack").innerHTML = Array.from({ length: 7 }, (_, index) => {
+    const done = index < streakCount;
+    return `<span class="streak-day ${done ? "done" : ""}">${done ? "★" : index + 1}</span>`;
+  }).join("");
+  document.querySelector("#albumStatus").textContent = `${learnedWords.length}/${allWords.length}`;
+  document.querySelector("#albumText").textContent = learnedWords.length
+    ? `已收集 ${learnedWords.length} 张重点字卡，红色字卡建议复习。`
+    : "先完成一关，重点字会自动收进图鉴。";
+  document.querySelector("#wordCardGrid").innerHTML = albumWords.map(word => {
+    const unlocked = learnedWords.includes(word);
+    const review = Boolean(state.progress.mistakes[word]);
+    const info = findWordInfo(word);
+    return `<button class="album-card ${unlocked ? "unlocked" : ""} ${review ? "review" : ""}" data-album-word="${word}" ${unlocked ? "" : "disabled"}>${unlocked ? word : "?"}<small>${unlocked ? info.pinyin || "" : "待收集"}</small></button>`;
+  }).join("");
   const treasureReady = todaySessions >= 2;
   const treasurePanel = document.querySelector(".treasure-panel");
   treasurePanel.classList.toggle("claimed", treasureReady);
   document.querySelector("#treasureTitle").textContent = treasureReady ? "今日宝箱已点亮" : "今日宝箱";
   document.querySelector("#treasureText").textContent = treasureReady
-    ? "今天已经完成学习目标，可以休息或复习错字。"
+    ? state.progress.reviewClearedDate === todayKey()
+      ? "今天已经完成学习目标，复习袋也清理过啦。"
+      : "今天已经完成学习目标，可以休息或复习错字。"
     : `今天已完成 ${todaySessions}/2 关，再完成一点点就能点亮宝箱。`;
-  document.querySelector("#treasureBtn").textContent = treasureReady ? "去复习错字" : "去完成今日任务";
+  document.querySelector("#treasureBtn").textContent = treasureReady
+    ? state.progress.reviewClearedDate === todayKey() ? "查看奖励屋" : "去复习袋"
+    : "去完成今日任务";
+}
+
+function openBadgeDetail(unitIndex) {
+  badgeDetailUnit = unitIndex;
+  const unit = units[unitIndex];
+  const done = doneCountForUnit(unitIndex);
+  const total = unit.lessons.length;
+  const unlocked = done === total;
+  const words = uniqueWords(unit.lessons.flatMap(lesson => lesson.words));
+  const mistakeWords = words.filter(word => state.progress.mistakes[word]);
+  document.querySelector("#badgeDetailTitle").textContent = `${unit.name}徽章`;
+  document.querySelector("#badgeDetailIcon").textContent = unlocked ? "★" : unitIndex + 1;
+  document.querySelector("#badgeDetailList").innerHTML = `
+    <div class="privacy-item"><span class="plan-dot">章</span><span><strong>${unlocked ? "徽章已点亮" : "继续收集徽章"}</strong><span>${unit.theme} · ${done}/${total} 关完成</span></span><span class="status-chip">${unlocked ? "已获得" : "进行中"}</span></div>
+    <div class="privacy-item"><span class="plan-dot">字</span><span><strong>${words.slice(0, 8).join("、")}</strong><span>本单元重点字 ${words.length} 个</span></span><span class="status-chip">识字</span></div>
+    <div class="privacy-item"><span class="plan-dot">复</span><span><strong>${mistakeWords.length ? mistakeWords.slice(0, 6).join("、") : "暂无高频错字"}</strong><span>${mistakeWords.length ? "建议先复习这些字。" : "可以听示范朗读巩固。"}</span></span><span class="status-chip">${mistakeWords.length ? "复习" : "保持"}</span></div>
+  `;
+  document.querySelector("#badgeGoBtn").textContent = unlocked ? "回到本单元复习" : "继续挑战本单元";
+  badgeShell.classList.add("open");
+}
+
+function openWordDetail(word) {
+  const info = findWordInfo(word);
+  if (!info.lesson) return;
+  wordDetailWord = word;
+  const mistakeCount = state.progress.mistakes[word] || 0;
+  const item = allLessons().find(entry => entry.lesson === info.lesson);
+  document.querySelector("#wordDetailTitle").textContent = `${word} 字卡`;
+  document.querySelector("#wordDetailCard").textContent = word;
+  document.querySelector("#wordDetailCard").classList.toggle("review", mistakeCount > 0);
+  document.querySelector("#wordDetailList").innerHTML = `
+    <div class="privacy-item"><span class="plan-dot">音</span><span><strong>${info.pinyin || "拼音"}</strong><span>点击播放读音，可以反复听。</span></span><span class="status-chip">读音</span></div>
+    <div class="privacy-item"><span class="plan-dot">课</span><span><strong>${info.lesson.title}</strong><span>${item?.unit.name || "一年级下册"} · ${info.lesson.type}</span></span><span class="status-chip">来源</span></div>
+    <div class="privacy-item"><span class="plan-dot">句</span><span><strong>${info.lesson.sentence}</strong><span>放回课文句子里记，会更牢。</span></span><span class="status-chip">语境</span></div>
+    <div class="privacy-item"><span class="plan-dot">复</span><span><strong>${mistakeCount ? `错字本 ${mistakeCount} 次` : "已收集"}</strong><span>${mistakeCount ? "建议听音、看拼音、句子补字再练一次。" : "可以继续听读音或复习笔顺。"}</span></span><span class="status-chip">${mistakeCount ? "待复习" : "掌握中"}</span></div>
+  `;
+  wordDetailShell.classList.add("open");
+}
+
+function openWordTracePractice(word) {
+  const info = findWordInfo(word);
+  const item = allLessons().find(entry => entry.lesson === info.lesson);
+  if (!item) return;
+  wordDetailShell.classList.remove("open");
+  state.unit = item.unitIndex;
+  renderAll();
+  openGame(item.lessonIndex);
+  const index = Math.max(0, info.lesson.words.indexOf(word));
+  state.wordIndex = index;
+  setTimeout(() => {
+    showStage(1);
+    document.querySelector("#traceGhost").textContent = word;
+    document.querySelector("#traceSolid").textContent = word;
+    renderStrokeSteps(word, strokeVectors[word]?.length || info.lesson.strokes.length, info.lesson.strokes);
+  }, 220);
 }
 
 function renderAll() {
@@ -3938,6 +5559,176 @@ function shuffle(items) {
   return [...items].sort(() => Math.random() - .5);
 }
 
+function lessonPlayProfile(lesson) {
+  if (lesson.title.includes("语文园地")) {
+    return {
+      tabs: ["分类收纳", "字形工坊", "词语配对", "园地朗读"],
+      wordPrompt: "把本关的重点字收进正确的小篮子，先听音再选择。",
+      tracePrompt: "进入字形工坊，看清结构和笔顺，再动手写。",
+      sentencePrompt: "园地任务：把词语、拼音和句子分一分。",
+      readPrompt: "读一读园地里的句子，像小老师一样说清楚。",
+      feedbackDone: "园地整理完成，进入字形工坊。",
+      sentenceDone: "园地练习完成，进入朗读小讲台。",
+      collectLabel: "收纳进度",
+      theme: "garden",
+      scene: { badge: "园", title: "词语收纳屋", text: "把字词放进正确篮子，整理成小老师的知识架。", tokens: ["类","词","读"] }
+    };
+  }
+  if (lesson.title.includes("快乐读书吧") || lesson.type.includes("读书")) {
+    return {
+      tabs: ["听故事", "封面找字", "故事问答", "讲给家长"],
+      wordPrompt: "听故事里的读音，找出藏在封面上的字。",
+      tracePrompt: "封面上的字也要写端正，跟着笔顺写一写。",
+      sentencePrompt: "故事问答：听懂内容，再选出正确答案。",
+      readPrompt: "把故事里的句子慢慢讲给家长听。",
+      feedbackDone: "故事字卡收集完成，去写一写。",
+      sentenceDone: "故事问答完成，进入讲故事小舞台。",
+      collectLabel: "故事线索",
+      theme: "book",
+      scene: { badge: "书", title: "故事探险屋", text: "听故事、找字卡、回答问题，最后讲给家长听。", tokens: ["听","找","讲"] }
+    };
+  }
+  if (lesson.type.includes("儿歌")) {
+    return {
+      tabs: ["节奏认字", "拍手写字", "押韵配对", "儿歌跟读"],
+      wordPrompt: "跟着节奏听读音，选出儿歌里的字。",
+      tracePrompt: "像拍手打节奏一样，一笔一笔写清楚。",
+      sentencePrompt: "押韵配对：找出最适合儿歌节奏的答案。",
+      readPrompt: "跟着节奏朗读儿歌，声音放慢一点。",
+      feedbackDone: "节奏字卡收集完成，进入拍手写字。",
+      sentenceDone: "押韵练习完成，进入儿歌跟读。",
+      collectLabel: "节奏拍点",
+      theme: "stage",
+      scene: { badge: "拍", title: "节奏小舞台", text: "跟着节奏认字，找押韵，再把儿歌读出来。", tokens: ["听","拍","读"] }
+    };
+  }
+  if (lesson.type.includes("故事") || lesson.type.includes("课文") || lesson.type.includes("朗读") || lesson.type.includes("生活") || lesson.type.includes("时间") || lesson.type.includes("想象")) {
+    return {
+      tabs: ["故事找字", "关键字书写", "情节选择", "角色朗读"],
+      wordPrompt: "听一句故事里的读音，找到对应的关键字。",
+      tracePrompt: "把故事里的关键字写端正，记住字形。",
+      sentencePrompt: "情节选择：把句子补完整，看看故事通不通。",
+      readPrompt: "用角色的语气读一读，读给家长听。",
+      feedbackDone: "故事关键字收集完成，进入关键字书写。",
+      sentenceDone: "情节练习完成，进入角色朗读。",
+      collectLabel: "关键字背包",
+      theme: "story",
+      scene: { badge: "演", title: "故事任务站", text: "找关键字、补情节，再用角色的语气朗读。", tokens: ["找","补","演"] }
+    };
+  }
+  return {
+    tabs: ["听音抓字", "笔顺工坊", "词句闯关", "朗读小舞台"],
+    wordPrompt: "听读音，抓住正确的汉字。",
+    tracePrompt: "观察专业笔顺动画，跟着真实顺序一笔一笔写。",
+    sentencePrompt: "把词语放进句子里，读一读是否通顺。",
+    readPrompt: "跟着节奏朗读，读完给自己点亮一颗星。",
+    feedbackDone: "本课重点字收集完成，进入笔顺动画。",
+    sentenceDone: "练习完成，进入朗读小舞台。",
+    collectLabel: "字卡背包",
+    theme: "literacy",
+    scene: { badge: "字", title: "字卡收集站", text: "听读音抓汉字，收集完字卡再去写一写。", tokens: ["听","选","星"] }
+  };
+}
+
+function applyLessonPlayProfile(lesson) {
+  const profile = lessonPlayProfile(lesson);
+  const sceneStrip = document.querySelector("#gameSceneStrip");
+  sceneStrip.classList.remove("theme-literacy", "theme-stage", "theme-story", "theme-garden", "theme-book");
+  sceneStrip.classList.add(`theme-${profile.theme || "literacy"}`);
+  document.querySelectorAll(".stage-tab").forEach((tab, index) => {
+    tab.textContent = profile.tabs[index] || tab.textContent;
+  });
+  document.querySelector("#tracePrompt").textContent = profile.tracePrompt;
+  document.querySelector("#readPrompt").textContent = profile.readPrompt;
+  document.querySelector("#sceneBadge").textContent = profile.scene.badge;
+  document.querySelector("#sceneTitle").textContent = profile.scene.title;
+  document.querySelector("#sceneText").textContent = profile.scene.text;
+  document.querySelector("#sceneTokens").innerHTML = profile.scene.tokens.map(token => `<span>${token}</span>`).join("");
+  document.querySelector("#sceneProps").innerHTML = scenePropsForTheme(profile.theme).map(prop => `<span>${prop}</span>`).join("");
+  document.querySelector("#collectLabel").textContent = profile.collectLabel;
+  document.querySelector("#routeStations").innerHTML = profile.tabs.map((tab, index) => `<span data-route-stage="${index}">${tab}</span>`).join("");
+  return profile;
+}
+
+function scenePropsForTheme(theme) {
+  return {
+    garden: ["篮", "拼", "句"],
+    book: ["书", "页", "讲"],
+    stage: ["拍", "音", "读"],
+    story: ["线", "角", "读"],
+    literacy: ["字", "卡", "星"]
+  }[theme || "literacy"] || ["字", "卡", "星"];
+}
+
+function updateCollectBoard() {
+  const lesson = currentLesson();
+  if (!lesson) return;
+  const wordSlots = lesson.words.map((word, index) => {
+    const filled = index < state.wordIndex;
+    return `<span class="collect-slot ${filled ? "filled" : ""}">${filled ? word : index + 1}</span>`;
+  });
+  const sentenceSlots = Array.from({ length: lessonSentenceChallenges(lesson).length }, (_, index) => {
+    const filled = index < state.sentenceIndex;
+    return `<span class="collect-slot ${filled ? "filled" : ""}">${filled ? "✓" : `题${index + 1}`}</span>`;
+  });
+  document.querySelector("#collectSlots").innerHTML = state.stage < 2 ? wordSlots.join("") : sentenceSlots.join("");
+}
+
+function updateSceneRoute() {
+  const lesson = currentLesson();
+  if (!lesson) return;
+  const profile = lessonPlayProfile(lesson);
+  const stageProgress = state.stage / 3;
+  const wordProgress = state.stage === 0 ? state.wordIndex / Math.max(lesson.words.length, 1) : state.stage > 0 ? 1 : 0;
+  const sentenceTotal = lessonSentenceChallenges(lesson).length;
+  const sentenceProgress = state.stage === 2 ? state.sentenceIndex / Math.max(sentenceTotal, 1) : state.stage > 2 ? 1 : 0;
+  const routeProgress = Math.min(100, Math.round((stageProgress * 72) + (wordProgress + sentenceProgress) * 14));
+  document.querySelector("#sceneRoute").style.setProperty("--route-avatar", `${Math.min(1, Math.max(0, stageProgress))}`);
+  document.querySelector("#routeTrackFill").style.setProperty("--route-progress", `${routeProgress}%`);
+  document.querySelectorAll("#routeStations span").forEach((station, index) => {
+    station.classList.toggle("active", index === state.stage);
+    station.classList.toggle("done", index < state.stage);
+  });
+  const missionText = [
+    `${profile.tabs[0]}：收集 ${state.wordIndex}/${lesson.words.length} 张字卡。`,
+    `${profile.tabs[1]}：看笔顺、听笔画，写端正。`,
+    `${profile.tabs[2]}：完成 ${state.sentenceIndex}/${sentenceTotal} 个互动题。`,
+    `${profile.tabs[3]}：慢慢跟读，读完领取星星。`
+  ][state.stage] || "继续闯关。";
+  document.querySelector("#sceneMissionStep").textContent = state.stage + 1;
+  document.querySelector("#sceneMissionText").textContent = missionText;
+  updateReviewBag();
+}
+
+function updateCaptainBubble(text, mood = "good") {
+  const bubble = document.querySelector("#captainBubble");
+  if (!bubble) return;
+  document.querySelector("#captainText").textContent = text;
+  bubble.classList.remove("good", "try");
+  void bubble.offsetWidth;
+  bubble.classList.add(mood === "try" ? "try" : "good");
+}
+
+function bumpCurrentStation() {
+  const station = document.querySelector(`#routeStations span[data-route-stage="${state.stage}"]`);
+  if (!station) return;
+  station.classList.remove("bump");
+  void station.offsetWidth;
+  station.classList.add("bump");
+}
+
+function updateReviewBag(bump = false) {
+  const bag = document.querySelector("#reviewBag");
+  if (!bag) return;
+  const mistakeCount = Object.keys(state.progress.mistakes || {}).length;
+  bag.textContent = `复 ${mistakeCount}`;
+  if (bump) {
+    bag.classList.remove("bump");
+    void bag.offsetWidth;
+    bag.classList.add("bump");
+  }
+}
+
 function openGame(lessonIndex) {
   playSound("open");
   state.lesson = lessonIndex;
@@ -3946,6 +5737,8 @@ function openGame(lessonIndex) {
   state.sentenceIndex = 0;
   const lesson = currentLesson();
   warmLessonAudio(lesson);
+  applyLessonPlayProfile(lesson);
+  updateCaptainBubble("准备好了吗？听声音，收集第一张字卡。", "good");
   document.querySelector("#gameTitle").textContent = lesson.title;
   document.querySelector("#guideTitle").textContent = `小语队长：${lesson.title}任务`;
   document.querySelector("#guideText").textContent = lessonIntro(lesson);
@@ -3960,8 +5753,7 @@ function openGame(lessonIndex) {
   lessonAudio.classList.toggle("hidden", !lessonHasAudio(lesson));
   lessonAudio.playbackRate = .78;
   if (lessonHasAudio(lesson)) {
-    lessonAudio.src = lessonAudioPath(lesson);
-    lessonAudio.load();
+    setAudioElementWithFallback(lessonAudio, lessonAudioPath(lesson));
   } else {
     lessonAudio.removeAttribute("src");
     lessonAudio.load();
@@ -4109,11 +5901,12 @@ function renderStrokeSteps(word, count, fallbackStrokes) {
 
 function renderChoices() {
   const lesson = currentLesson();
+  const profile = lessonPlayProfile(lesson);
   const target = lesson.words[state.wordIndex] || lesson.words[0];
   const py = lesson.tonePinyin?.[state.wordIndex] || lesson.pinyin?.[state.wordIndex] || "";
   document.querySelector("#bigPinyin").textContent = py;
   document.querySelector("#bigHanzi").textContent = "？";
-  document.querySelector("#wordPrompt").textContent = `第 ${state.wordIndex + 1}/${lesson.words.length} 个：听读音 ${py}，选出正确的字。`;
+  document.querySelector("#wordPrompt").textContent = `第 ${state.wordIndex + 1}/${lesson.words.length} 个：${profile.wordPrompt} 读音 ${py}`;
   document.querySelector("#wordFeedback").textContent = "";
   const wrongPool = allLessons().flatMap(item => item.lesson.words).filter(word => word !== target);
   const wordOptions = shuffle([target, ...shuffle(wrongPool).slice(0, 3)]);
@@ -4122,16 +5915,122 @@ function renderChoices() {
 }
 
 function lessonSentenceChallenges(lesson) {
+  const profile = lessonPlayProfile(lesson);
   const secondWord = lesson.words[1] || lesson.words[0];
   const secondPinyin = lesson.tonePinyin?.[1] || lesson.pinyin?.[1] || "";
+  const firstWord = lesson.words[0];
+  const firstPinyin = lesson.tonePinyin?.[0] || lesson.pinyin?.[0] || "";
   const wordPool = shuffle([...lesson.words, ...allLessons().flatMap(item => item.lesson.words).filter(word => !lesson.words.includes(word))]).slice(0, 8);
   const readingPool = shuffle(allLessons().map(item => item.lesson.read[0]).filter(line => line !== lesson.read[0])).slice(0, 3);
+  if (lesson.title.includes("快乐读书吧") || lesson.type.includes("读书")) {
+    return [
+      {
+        prompt: "故事问答：这节课最适合读哪一句？",
+        line: "听完故事，选一句讲给家长听。",
+        answer: lesson.read[0],
+        options: shuffle([lesson.read[0], ...readingPool]),
+        interaction: "sort",
+        targetLabel: "故事线索袋",
+        decoyLabel: "不是这句"
+      },
+      {
+        prompt: `封面找字：哪个字读 ${firstPinyin}？`,
+        line: "找到故事封面里的重点字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      },
+      {
+        prompt: profile.sentencePrompt,
+        line: lesson.blank,
+        answer: lesson.answer,
+        options: lesson.options
+      }
+    ];
+  }
+  if (lesson.type.includes("儿歌")) {
+    return [
+      {
+        prompt: "押韵配对：哪一句最像本课儿歌？",
+        line: "跟着节奏读一读。",
+        answer: lesson.read[0],
+        options: shuffle([lesson.read[0], ...readingPool]),
+        interaction: "sort",
+        targetLabel: "押韵拍点",
+        decoyLabel: "节奏不对"
+      },
+      {
+        prompt: `节奏认字：哪个字读 ${secondPinyin}？`,
+        line: `拍一拍，再找 ${secondPinyin}。`,
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      },
+      {
+        prompt: profile.sentencePrompt,
+        line: lesson.blank,
+        answer: lesson.answer,
+        options: lesson.options
+      }
+    ];
+  }
+  if (lesson.title.includes("语文园地")) {
+    return [
+      {
+        prompt: "分类收纳：把正确词语放回句子。",
+        line: lesson.blank,
+        answer: lesson.answer,
+        options: lesson.options,
+        interaction: "sort",
+        targetLabel: "正确篮子",
+        decoyLabel: "再想想"
+      },
+      {
+        prompt: `拼音小篮子：哪个字读 ${secondPinyin}？`,
+        line: "把同音或近音的字分清楚。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      },
+      {
+        prompt: "朗读收纳：选出这一课要读的句子。",
+        line: "整理好，再读出来。",
+        answer: lesson.read[0],
+        options: shuffle([lesson.read[0], ...readingPool])
+      }
+    ];
+  }
+  if (lesson.type.includes("故事") || lesson.type.includes("课文") || lesson.type.includes("朗读") || lesson.type.includes("生活") || lesson.type.includes("时间") || lesson.type.includes("想象")) {
+    return [
+      {
+        prompt: "情节选择：把故事句子补完整。",
+        line: lesson.blank,
+        answer: lesson.answer,
+        options: lesson.options,
+        interaction: "sort",
+        targetLabel: "故事线索袋",
+        decoyLabel: "不是这里"
+      },
+      {
+        prompt: "关键字追踪：选出这一课最该读的一句。",
+        line: "哪一句最像故事里的话？",
+        answer: lesson.read[0],
+        options: shuffle([lesson.read[0], ...readingPool])
+      },
+      {
+        prompt: `听拼音 ${secondPinyin}，找到故事关键字。`,
+        line: `哪个字读 ${secondPinyin}？`,
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ];
+  }
   return [
     {
       prompt: "把词语放进句子里，读一读是否通顺。",
       line: lesson.blank,
       answer: lesson.answer,
-      options: lesson.options
+      options: lesson.options,
+      interaction: "sort",
+      targetLabel: "句子空格",
+      decoyLabel: "不合适"
     },
     {
       prompt: `听拼音 ${secondPinyin}，选出对应的字。`,
@@ -4150,12 +6049,60 @@ function lessonSentenceChallenges(lesson) {
 
 function renderSentenceChallenge() {
   const lesson = currentLesson();
+  const profile = lessonPlayProfile(lesson);
   const challenges = lessonSentenceChallenges(lesson);
   const challenge = challenges[state.sentenceIndex] || challenges[0];
-  document.querySelector("#sentencePrompt").textContent = `第 ${state.sentenceIndex + 1}/${challenges.length} 题：${challenge.prompt}`;
+  document.querySelector("#sentencePrompt").textContent = `第 ${state.sentenceIndex + 1}/${challenges.length} 题：${challenge.prompt || profile.sentencePrompt}`;
   document.querySelector("#sentenceLine").textContent = challenge.line;
   document.querySelector("#sentenceFeedback").textContent = "";
-  document.querySelector("#sentenceChoices").innerHTML = shuffle(challenge.options).map(option => `<button class="choice" data-sentence="${option}">${option}</button>`).join("");
+  const options = shuffle(challenge.options);
+  const sortBoard = document.querySelector("#sortBoard");
+  const sentenceChoices = document.querySelector("#sentenceChoices");
+  sortBoard.classList.toggle("hidden", challenge.interaction !== "sort");
+  sentenceChoices.classList.toggle("hidden", challenge.interaction === "sort");
+  if (challenge.interaction === "sort") {
+    document.querySelector("#sortTarget").textContent = challenge.targetLabel || "放到这里";
+    document.querySelector("#sortDecoy").textContent = challenge.decoyLabel || "再想想";
+    document.querySelector("#sortCards").innerHTML = options.map(option => `<button class="sort-card" draggable="true" data-sort-answer="${option}">${option}</button>`).join("");
+    sentenceChoices.innerHTML = "";
+    return;
+  }
+  document.querySelector("#sortCards").innerHTML = "";
+  sentenceChoices.innerHTML = options.map(option => `<button class="choice" data-sentence="${option}">${option}</button>`).join("");
+}
+
+function answerSentence(value, node) {
+  const lesson = currentLesson();
+  const challenges = lessonSentenceChallenges(lesson);
+  const challenge = challenges[state.sentenceIndex] || challenges[0];
+  const ok = value === challenge.answer;
+  node?.classList.add(ok ? "correct" : "wrong");
+  document.querySelector("#sentenceFeedback").textContent = ok ? "放对了，继续完成下一题。" : "这个位置不太合适，错题已经放进复习本。";
+  playSound(ok ? "correct" : "wrong");
+  popFeedback("#sentenceFeedback");
+  if (!ok) {
+    const mistakeWord = lesson.words[1] || lesson.words[0];
+    markMistake(mistakeWord);
+    updateCaptainBubble(`${mistakeWord} 已放进复习袋，等会儿再练一次。`, "try");
+    flyMistakeToReview(mistakeWord, "#stageSentence");
+  }
+  if (ok) {
+    popReward("#stageSentence", "✓");
+    bumpCurrentStation();
+    updateCaptainBubble("放对了！故事线索又前进了一步。", "good");
+    if (state.sentenceIndex + 1 < challenges.length) {
+      state.sentenceIndex += 1;
+      updateCollectBoard();
+      updateSceneRoute();
+      pulseScene();
+      setTimeout(() => renderSentenceChallenge(), 720);
+    } else {
+      document.querySelector("#sentenceFeedback").textContent = lessonPlayProfile(lesson).sentenceDone;
+      popFeedback("#sentenceFeedback");
+      pulseScene();
+      setTimeout(() => showStage(3), 760);
+    }
+  }
 }
 
 function showStage(stage) {
@@ -4165,11 +6112,16 @@ function showStage(stage) {
   ["stageWord","stageTrace","stageSentence","stageRead"].forEach((id, index) => {
     document.querySelector(`#${id}`).classList.toggle("hidden", index !== stage);
   });
+  updateCollectBoard();
+  updateSceneRoute();
   if (stage === 1) {
+    updateCaptainBubble("来到写字工坊，跟着笔画慢慢写。", "good");
     setTimeout(() => startTraceWriting(), 180);
   } else {
     stopTraceWriting();
   }
+  if (stage === 2) updateCaptainBubble("现在把词语放回句子里，看看读起来通不通。", "good");
+  if (stage === 3) updateCaptainBubble("最后一步，慢慢跟读，读完就能领奖啦。", "good");
 }
 
 function stopTraceWriting() {
@@ -4259,7 +6211,12 @@ async function startTraceWriting() {
 
 function markMistake(word) {
   state.progress.mistakes[word] = (state.progress.mistakes[word] || 0) + 1;
+  state.progress.mistakeLog = [
+    ...(state.progress.mistakeLog || []),
+    { date: todayKey(), word, unit: state.unit, lesson: state.lesson }
+  ].slice(-120);
   save();
+  updateReviewBag(true);
 }
 
 function showKidView() {
@@ -4321,21 +6278,20 @@ unitList.addEventListener("click", event => {
   if (!btn) return;
   playSound("tap");
   state.unit = Number(btn.dataset.unit);
+  document.querySelector("#unitFoldPanel").classList.remove("open");
   showKidView();
   renderAll();
 });
 
-document.querySelector("#prevUnitBtn").addEventListener("click", () => goUnit(-1));
-
-document.querySelector("#nextUnitBtn").addEventListener("click", () => {
-  goUnit(1);
+document.querySelector("#openUnitPickerBtn").addEventListener("click", () => {
+  playSound("tap");
+  document.querySelector("#unitFoldPanel").classList.toggle("open");
 });
 
 document.querySelector("#heroStartBtn").addEventListener("click", openNextLesson);
 document.querySelector("#heroPrevUnitBtn").addEventListener("click", () => goUnit(-1));
 document.querySelector("#heroNextUnitBtn").addEventListener("click", () => goUnit(1));
 document.querySelector("#heroParentBtn").addEventListener("click", showParentView);
-document.querySelector("#mapNextBtn").addEventListener("click", () => goUnit(1));
 
 mapNodes.addEventListener("click", event => {
   const btn = event.target.closest("[data-map-lesson]");
@@ -4353,9 +6309,23 @@ document.querySelector("#badgeGrid").addEventListener("click", event => {
   const btn = event.target.closest("[data-reward-unit]");
   if (!btn) return;
   playSound("tap");
-  state.unit = Number(btn.dataset.rewardUnit);
-  renderAll();
-  scrollToSection(".adventure-map", "navMapBtn");
+  openBadgeDetail(Number(btn.dataset.rewardUnit));
+});
+
+document.querySelector("#wordCardGrid").addEventListener("click", event => {
+  const card = event.target.closest("[data-album-word]");
+  if (!card || card.disabled) return;
+  playSound("tap");
+  openWordDetail(card.dataset.albumWord);
+});
+
+document.querySelector("#reviewBagGrid").addEventListener("click", event => {
+  const card = event.target.closest("[data-review-group]");
+  if (!card || card.disabled) return;
+  const group = reviewBagGroups().find(item => item.key === card.dataset.reviewGroup);
+  if (!group) return;
+  reviewBagShell.classList.remove("open");
+  openReviewMode({ words: group.words, mode: group.mode });
 });
 
 document.querySelectorAll(".tab").forEach(tab => {
@@ -4393,19 +6363,29 @@ document.querySelector("#choices").addEventListener("click", event => {
   if (ok) {
     document.querySelector("#bigHanzi").textContent = target;
     speakWord(lesson, target);
+    flyCardToBag(target);
+    pulseScene();
+    bumpCurrentStation();
+    updateCaptainBubble(`抓到 ${target} 了！字卡飞进背包。`, "good");
   } else {
+    document.querySelector("#wordFeedback").textContent = "这个字先飞进复习本，等会儿再练。";
+    flyMistakeToReview(target);
     speakFeedback("try-again", "再试一次");
+    updateCaptainBubble(`${target} 先放进复习袋，下一次会更稳。`, "try");
   }
   if (!ok) markMistake(target);
   if (ok) {
     if (state.wordIndex + 1 < lesson.words.length) {
       state.wordIndex += 1;
+      document.querySelector("#wordFeedback").textContent = "字卡已收进背包，马上进入下一个。";
+      setTimeout(() => updateCollectBoard(), 720);
+      setTimeout(() => updateSceneRoute(), 720);
       setTimeout(() => {
         renderChoices();
         speakWord(lesson, lesson.words[state.wordIndex]);
-      }, 720);
+      }, 1350);
     } else {
-      document.querySelector("#wordFeedback").textContent = "本课重点字收集完成，进入笔顺动画。";
+      document.querySelector("#wordFeedback").textContent = lessonPlayProfile(lesson).feedbackDone;
       popFeedback("#wordFeedback");
       setTimeout(() => showStage(1), 760);
     }
@@ -4415,25 +6395,34 @@ document.querySelector("#choices").addEventListener("click", event => {
 document.querySelector("#sentenceChoices").addEventListener("click", event => {
   const choice = event.target.closest(".choice");
   if (!choice) return;
-  const lesson = currentLesson();
-  const challenges = lessonSentenceChallenges(lesson);
-  const challenge = challenges[state.sentenceIndex] || challenges[0];
-  const ok = choice.dataset.sentence === challenge.answer;
-  choice.classList.add(ok ? "correct" : "wrong");
-  document.querySelector("#sentenceFeedback").textContent = ok ? "答对了，继续完成下一题。" : "这一题再想一想，错题已经放进复习本。";
-  playSound(ok ? "correct" : "wrong");
-  popFeedback("#sentenceFeedback");
-  if (!ok) markMistake(lesson.words[1] || lesson.words[0]);
-  if (ok) {
-    if (state.sentenceIndex + 1 < challenges.length) {
-      state.sentenceIndex += 1;
-      setTimeout(() => renderSentenceChallenge(), 720);
-    } else {
-      document.querySelector("#sentenceFeedback").textContent = "练习完成，进入朗读小舞台。";
-      popFeedback("#sentenceFeedback");
-      setTimeout(() => showStage(3), 760);
-    }
-  }
+  answerSentence(choice.dataset.sentence, choice);
+});
+
+document.querySelector("#sortCards").addEventListener("click", event => {
+  const card = event.target.closest("[data-sort-answer]");
+  if (!card) return;
+  answerSentence(card.dataset.sortAnswer, card);
+});
+
+document.querySelector("#sortCards").addEventListener("dragstart", event => {
+  const card = event.target.closest("[data-sort-answer]");
+  if (!card) return;
+  event.dataTransfer.setData("text/plain", card.dataset.sortAnswer);
+});
+
+document.querySelectorAll(".sort-basket").forEach(basket => {
+  basket.addEventListener("dragover", event => {
+    event.preventDefault();
+    basket.classList.add("active");
+  });
+  basket.addEventListener("dragleave", () => basket.classList.remove("active"));
+  basket.addEventListener("drop", event => {
+    event.preventDefault();
+    basket.classList.remove("active");
+    const value = event.dataTransfer.getData("text/plain");
+    const card = document.querySelector(`[data-sort-answer="${CSS.escape(value)}"]`);
+    answerSentence(value, card);
+  });
 });
 
 document.querySelector("#traceDone").addEventListener("click", () => {
@@ -4518,7 +6507,7 @@ document.querySelector("#closeGame").addEventListener("click", () => {
 
 document.querySelector("#resetBtn").addEventListener("click", () => {
   if (!confirm("确定清空这台设备上的语文学习进度吗？")) return;
-  state.progress = { done: {}, stars: 0, mistakes: {}, sessions: [], lastStudyDate: "", streak: 0 };
+  state.progress = { done: {}, stars: 0, mistakes: {}, mistakeLog: [], reviewClearedDate: "", sessions: [], lastStudyDate: "", streak: 0 };
   save();
   renderAll();
 });
@@ -4544,15 +6533,78 @@ function closeGameShell() {
   if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
 
+function completeRecommendation({ next, unitComplete, mistakeCount, todaySessions }) {
+  if (unitComplete) {
+    return {
+      action: "reward",
+      badge: "单元完成",
+      title: "先去奖励屋领徽章",
+      text: "这个单元已经全部完成，先让孩子看到明确奖励，再决定是否继续下一单元。"
+    };
+  }
+  if (mistakeCount >= 2) {
+    return {
+      action: "review",
+      badge: "趁热巩固",
+      title: "先复习刚才不稳的字",
+      text: `错字本里有 ${mistakeCount} 个字，马上复习一次，比继续往前冲更稳。`
+    };
+  }
+  if (todaySessions >= 2) {
+    return {
+      action: "reward",
+      badge: "今日达标",
+      title: "今天可以去奖励屋收尾",
+      text: "今天已经完成建议学习量，适合用奖励和轻松复习结束。"
+    };
+  }
+  if (next) {
+    return {
+      action: "next",
+      badge: "状态不错",
+      title: "继续下一关",
+      text: `下一站是 ${units[next.unit].name}《${units[next.unit].lessons[next.lesson].title}》，再完成一个短任务。`
+    };
+  }
+  return {
+    action: "review",
+    badge: "全部完成",
+    title: "回头复习已学内容",
+    text: "下册主线已经走完，可以从错字和朗读开始巩固。"
+  };
+}
+
+function applyCompleteRecommendation(recommendation) {
+  const actionButtons = {
+    next: document.querySelector("#completeNextBtn"),
+    review: document.querySelector("#completeReviewBtn"),
+    reward: document.querySelector("#completeRestBtn")
+  };
+  Object.values(actionButtons).forEach(button => button.classList.remove("primary-action"));
+  actionButtons[recommendation.action]?.classList.add("primary-action");
+  document.querySelector("#completeGuideBadge").textContent = recommendation.badge;
+  document.querySelector("#completeGuideTitle").textContent = recommendation.title;
+  document.querySelector("#completeGuideText").textContent = recommendation.text;
+}
+
 function showCompleteDialog(lesson, earnedStars) {
   const next = nextLessonPosition();
   const unitDone = doneCountForUnit(state.unit);
   const unitTotal = units[state.unit].lessons.length;
   const mistakeCount = Object.keys(state.progress.mistakes || {}).length;
-  document.querySelector("#completeTitle").textContent = `${lesson.title}完成啦`;
-  document.querySelector("#completeText").textContent = next
-    ? "奖励已经到账，小语队长准备带你去下一关。"
-    : "这一阶段全部完成，可以休息一下或复习错字。";
+  const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
+  const unitComplete = unitDone === unitTotal;
+  const recommendation = completeRecommendation({ next, unitComplete, mistakeCount, todaySessions });
+  const completeCard = document.querySelector(".complete-card");
+  completeCard.classList.remove("reward-ready", "unit-complete");
+  completeCard.classList.toggle("unit-complete", unitComplete);
+  document.querySelector("#completeChest span").textContent = unitComplete ? "徽" : "★";
+  document.querySelector("#completeTitle").textContent = unitComplete ? `${units[state.unit].name}徽章点亮啦` : `${lesson.title}完成啦`;
+  document.querySelector("#completeText").textContent = unitComplete
+    ? `本单元 ${unitTotal} 个关卡全部完成，奖励屋已点亮新徽章。`
+    : next
+      ? "奖励已经到账，小语队长准备带你去下一关。"
+      : "这一阶段全部完成，可以休息一下或复习错字。";
   document.querySelector("#completeStars").textContent = `+${earnedStars}`;
   document.querySelector("#completeUnit").textContent = `${unitDone}/${unitTotal}`;
   document.querySelector("#completeTotal").textContent = state.progress.stars;
@@ -4565,8 +6617,15 @@ function showCompleteDialog(lesson, earnedStars) {
     ? `错字本里还有 ${mistakeCount} 个字，趁热再练。`
     : "没有明显错字，可以抽查已学字。";
   document.querySelector("#completeRestTitle").textContent = "去奖励屋";
-  document.querySelector("#completeRestText").textContent = "看看星星、宝箱和单元徽章。";
+  document.querySelector("#completeRestText").textContent = unitComplete ? "去看看刚点亮的单元徽章。" : "看看星星、宝箱和单元徽章。";
+  document.querySelector("#completeGuideMetrics").innerHTML = `
+    <span>今日 ${todaySessions}/2</span>
+    <span>错字 ${mistakeCount}</span>
+    <span>本单元 ${unitDone}/${unitTotal}</span>
+  `;
+  applyCompleteRecommendation(recommendation);
   completeShell.classList.add("open");
+  setTimeout(() => completeCard.classList.add("reward-ready"), 650);
 }
 
 function activateBottomNav(activeId) {
@@ -4577,6 +6636,11 @@ function scrollToSection(selector, activeId) {
   if (activeId === "navHomeBtn") showAppView("home");
   if (activeId === "navMapBtn") showAppView("map");
   if (activeId === "navRewardBtn") showAppView("rewards");
+  document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function switchBottomView(view, selector) {
+  showAppView(view);
   document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -4595,25 +6659,158 @@ function unitReviewWords() {
   return uniqueWords(units[state.unit].lessons.flatMap(lesson => lesson.words));
 }
 
-function buildReviewQueue() {
-  const mistakes = Object.keys(state.progress.mistakes)
-    .sort((a, b) => (state.progress.mistakes[b] || 0) - (state.progress.mistakes[a] || 0));
-  if (mistakes.length) {
-    reviewMode = "错字";
-    return mistakes.slice(0, 8);
-  }
-  const learned = learnedReviewWords();
-  if (learned.length) {
-    reviewMode = "已学";
-    return shuffle(learned).slice(0, 8);
-  }
-  reviewMode = "本单元";
-  return shuffle(unitReviewWords()).slice(0, 8);
+function masteredLabel(count) {
+  if (count >= 3) return "待巩固";
+  if (count >= 2) return "基本会了";
+  return "快掌握";
 }
 
-function openReviewMode() {
-  reviewQueue = buildReviewQueue();
+function buildSmartReviewPlan(limit = 8) {
+  const plan = [];
+  const addWord = (word, reason) => {
+    if (!word || plan.some(item => item.word === word)) return;
+    const info = findWordInfo(word);
+    plan.push({
+      word,
+      pinyin: info.pinyin,
+      lessonTitle: info.lesson?.title || "已学内容",
+      mistakeCount: state.progress.mistakes[word] || 0,
+      reason
+    });
+  };
+  Object.keys(state.progress.mistakes || {})
+    .sort((a, b) => (state.progress.mistakes[b] || 0) - (state.progress.mistakes[a] || 0))
+    .forEach(word => addWord(word, "错字优先"));
+  learnedReviewWords().slice(-10).reverse().forEach(word => addWord(word, "近期学过"));
+  unitReviewWords().forEach(word => addWord(word, "本单元巩固"));
+  return plan.slice(0, limit);
+}
+
+function buildUnitReviewPlan(unitIndex, limit = 8) {
+  const words = uniqueWords(units[unitIndex].lessons.flatMap(lesson => lesson.words));
+  const plan = [];
+  const addWord = (word, reason) => {
+    if (!word || plan.some(item => item.word === word)) return;
+    const info = findWordInfo(word);
+    plan.push({
+      word,
+      pinyin: info.pinyin,
+      lessonTitle: info.lesson?.title || units[unitIndex].name,
+      mistakeCount: state.progress.mistakes[word] || 0,
+      reason
+    });
+  };
+  words
+    .filter(word => state.progress.mistakes[word])
+    .sort((a, b) => (state.progress.mistakes[b] || 0) - (state.progress.mistakes[a] || 0))
+    .forEach(word => addWord(word, "本单元错字"));
+  words.forEach(word => addWord(word, "本单元巩固"));
+  return plan.slice(0, limit);
+}
+
+function buildReviewQueue(options = {}) {
+  if (options.words?.length) {
+    reviewMode = options.mode || "复习袋";
+    return uniqueWords(options.words).slice(0, 8);
+  }
+  const plan = options.unitIndex === undefined ? buildSmartReviewPlan(8) : buildUnitReviewPlan(options.unitIndex, 8);
+  const hasMistake = plan.some(item => item.reason === "错字优先");
+  const hasUnitMistake = plan.some(item => item.reason === "本单元错字");
+  const hasLearned = plan.some(item => item.reason === "近期学过");
+  reviewMode = options.unitIndex === undefined
+    ? hasMistake ? "智能错字" : hasLearned ? "智能复习" : "本单元"
+    : hasUnitMistake ? "本单元错字" : "本单元精准复习";
+  return plan.map(item => item.word);
+}
+
+function buildReviewSteps(words) {
+  return words.flatMap(word => [
+    { word, type: "sound" },
+    { word, type: "pinyin" },
+    { word, type: "context" }
+  ]);
+}
+
+function reviewBagGroups() {
+  const today = todayKey();
+  const todayWords = uniqueWords((state.progress.mistakeLog || [])
+    .filter(item => item.date === today)
+    .map(item => item.word));
+  const frequentWords = Object.entries(state.progress.mistakes || {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([word]) => word);
+  const unitWords = unitReviewWords().filter(word => state.progress.mistakes[word]);
+  const fallbackWords = frequentWords.length ? frequentWords : buildSmartReviewPlan(8).map(item => item.word);
+  return [
+    {
+      key: "today",
+      icon: "今",
+      title: "今天错字",
+      text: todayWords.length ? todayWords.join("、") : "今天暂时没有新错字。",
+      words: todayWords,
+      mode: "今日错字"
+    },
+    {
+      key: "frequent",
+      icon: "高",
+      title: "高频错字",
+      text: frequentWords.length ? frequentWords.slice(0, 8).join("、") : "还没有高频错字，可以做智能复习。",
+      words: fallbackWords,
+      mode: frequentWords.length ? "高频错字" : "智能复习"
+    },
+    {
+      key: "unit",
+      icon: "单",
+      title: "本单元错字",
+      text: unitWords.length ? unitWords.join("、") : "本单元暂无错字，可做本单元巩固。",
+      words: unitWords.length ? unitWords : buildUnitReviewPlan(state.unit, 8).map(item => item.word),
+      mode: unitWords.length ? "本单元错字" : "本单元精准复习"
+    }
+  ];
+}
+
+function openReviewBag() {
+  const groups = reviewBagGroups();
+  const mistakeCount = Object.keys(state.progress.mistakes || {}).length;
+  document.querySelector("#reviewBagTitle").textContent = mistakeCount ? `复习袋里有 ${mistakeCount} 个字` : "复习袋现在很轻";
+  document.querySelector("#reviewBagText").textContent = mistakeCount
+    ? "先练今天错字，再练高频错字，最后巩固本单元。"
+    : "没有错字时，也可以从本单元字卡里做轻松复习。";
+  document.querySelector("#reviewBagGrid").innerHTML = groups.map(group => `
+    <button class="review-bag-card" data-review-group="${group.key}" ${group.words.length ? "" : "disabled"}>
+      <span class="complete-action-icon">${group.icon}</span>
+      <span><b>${group.title}</b><span>${group.text}</span></span>
+      <span class="status-chip">${group.words.length}</span>
+    </button>
+  `).join("");
+  reviewBagShell.classList.add("open");
+}
+
+function showReviewReward() {
+  const remaining = Object.keys(state.progress.mistakes || {}).length;
+  if (reviewStats.fixed > 0 || remaining === 0) {
+    state.progress.reviewClearedDate = todayKey();
+    save();
+  }
+  document.querySelector("#reviewRewardTitle").textContent = remaining
+    ? "复习完成，错字更稳了"
+    : "复习袋清理完成";
+  document.querySelector("#reviewRewardText").textContent = remaining
+    ? `这次改正 ${reviewStats.fixed} 个字，复习袋里还剩 ${remaining} 个字，明天继续会更稳。`
+    : "今天的复习袋已经清爽了，字卡从红色慢慢变稳。";
+  document.querySelector("#reviewRewardCorrect").textContent = reviewStats.correct;
+  document.querySelector("#reviewRewardFixed").textContent = reviewStats.fixed;
+  document.querySelector("#reviewRewardLeft").textContent = remaining;
+  document.querySelector("#reviewRewardBagBtn").textContent = remaining ? "继续复习袋" : "回首页";
+  reviewRewardShell.classList.add("open");
+  playSound("complete");
+}
+
+function openReviewMode(options = {}) {
+  reviewQueue = buildReviewQueue(options);
+  reviewSteps = buildReviewSteps(reviewQueue);
   reviewIndex = 0;
+  reviewStats = { correct: 0, wrong: 0, fixed: 0 };
   renderReviewQuestion();
   reviewShell.classList.add("open");
 }
@@ -4632,52 +6829,100 @@ function findWordInfo(word) {
   return { lesson: null, word, pinyin: word };
 }
 
+function reviewContextLine(info) {
+  if (!info.lesson) return `这个字是：____`;
+  const lines = [info.lesson.sentence, ...(info.lesson.read || [])].filter(Boolean);
+  const matched = lines.find(line => line.includes(info.word));
+  if (matched) return matched.replaceAll(info.word, "____");
+  return `《${info.lesson.title}》里的重点字：____`;
+}
+
+function reviewOptions(word) {
+  const wrongPool = allLessons().flatMap(item => item.lesson.words).filter(itemWord => itemWord !== word);
+  return shuffle([word, ...shuffle(wrongPool).slice(0, 3)]);
+}
+
+function renderReviewStage(type) {
+  document.querySelectorAll("#reviewStageTabs span").forEach(item => {
+    item.classList.toggle("active", item.dataset.reviewStage === type);
+  });
+}
+
 function renderReviewQuestion() {
-  const word = reviewQueue[reviewIndex];
-  const progress = Math.min(100, Math.round((reviewIndex / Math.max(reviewQueue.length, 1)) * 100));
+  const step = reviewSteps[reviewIndex];
+  const word = step?.word;
+  const progress = Math.min(100, Math.round((reviewIndex / Math.max(reviewSteps.length, 1)) * 100));
   document.querySelector("#reviewMeterFill").style.setProperty("--review-progress", `${progress}%`);
   document.querySelector("#reviewMode").textContent = reviewMode;
   if (!word) {
     document.querySelector("#reviewPrompt").textContent = "今天的复习闯关完成啦。";
-    document.querySelector("#reviewPinyin").innerHTML = "★<small>复习完成</small>";
+    const remaining = Object.keys(state.progress.mistakes || {}).length;
+    document.querySelector("#reviewPinyin").innerHTML = `
+      <span class="review-context">★ 复习完成</span>
+      <small>答对 ${reviewStats.correct} 步 · 再练 ${reviewStats.wrong} 次 · 改正 ${reviewStats.fixed} 个错字</small>
+    `;
     document.querySelector("#reviewChoices").innerHTML = "";
-    document.querySelector("#reviewFeedback").textContent = "回到首页继续闯关，或者去奖励屋看看星星。";
+    document.querySelector("#reviewFeedback").textContent = remaining
+      ? `错字本里还有 ${remaining} 个字，明天可以继续巩固。`
+      : "错字本已经清爽了，可以去奖励屋看看星星。";
     document.querySelector("#reviewMeterFill").style.setProperty("--review-progress", "100%");
+    document.querySelector("#reviewDoneBtn").textContent = remaining ? "回首页继续学习" : "去奖励屋";
+    renderReviewStage("");
     playSound("complete");
     return;
   }
   const info = findWordInfo(word);
-  const wrongPool = allLessons().flatMap(item => item.lesson.words).filter(itemWord => itemWord !== word);
-  const options = shuffle([word, ...shuffle(wrongPool).slice(0, 3)]);
+  const options = reviewOptions(word);
   const promptMap = {
     "错字": "错字再练一次",
     "已学": "已学字巩固",
-    "本单元": "本单元预热"
+    "本单元": "本单元预热",
+    "智能错字": "智能推荐错字",
+    "智能复习": "智能推荐复习",
+    "本单元错字": "本单元错字复习",
+    "本单元精准复习": "本单元精准复习"
   };
-  document.querySelector("#reviewPrompt").textContent = `第 ${reviewIndex + 1}/${reviewQueue.length} 个：${promptMap[reviewMode]}，选择读 ${info.pinyin} 的字。`;
-  document.querySelector("#reviewPinyin").innerHTML = `${info.pinyin}<small>听声音，找汉字</small>`;
+  const wordRound = Math.floor(reviewIndex / 3) + 1;
+  const stageText = {
+    sound: "听音选字",
+    pinyin: "看拼音选字",
+    context: "句子补字"
+  };
+  renderReviewStage(step.type);
+  document.querySelector("#reviewPrompt").textContent = `第 ${wordRound}/${reviewQueue.length} 个：${promptMap[reviewMode]} · ${stageText[step.type]}`;
+  if (step.type === "sound") {
+    document.querySelector("#reviewPinyin").innerHTML = `▶<small>认真听读音，选出正确汉字</small>`;
+    if (info.lesson) speakWord(info.lesson, word);
+  } else if (step.type === "pinyin") {
+    document.querySelector("#reviewPinyin").innerHTML = `${info.pinyin}<small>看拼音，找汉字</small>`;
+  } else {
+    document.querySelector("#reviewPinyin").innerHTML = `<span class="review-context">${reviewContextLine(info)}</span><small>把正确的字放回句子里</small>`;
+  }
   document.querySelector("#reviewFeedback").textContent = "";
+  document.querySelector("#reviewDoneBtn").textContent = "完成复习";
   document.querySelector("#reviewChoices").innerHTML = options.map(option => `<button class="choice" data-review-answer="${option}">${option}</button>`).join("");
-  if (info.lesson) speakWord(info.lesson, word);
 }
 
-document.querySelector("#startTodayBtn").addEventListener("click", openNextLesson);
 document.querySelector("#continueBtn").addEventListener("click", openNextLesson);
-document.querySelector("#homeStartBtn").addEventListener("click", openNextLesson);
-document.querySelector("#quickReviewBtn").addEventListener("click", openReviewMode);
+document.querySelectorAll("[data-start-today]").forEach(button => {
+  button.addEventListener("click", openNextLesson);
+});
+document.querySelector("#reviewBag").addEventListener("click", openReviewBag);
+document.querySelector("#quickReviewBtn").addEventListener("click", openReviewBag);
+document.querySelector("#startSmartReviewBtn").addEventListener("click", openReviewMode);
 document.querySelector("#quickRewardBtn").addEventListener("click", () => scrollToSection("#rewards", "navRewardBtn"));
 document.querySelector("#quickParentBtn").addEventListener("click", showParentView);
 document.querySelector("#treasureBtn").addEventListener("click", () => {
   const todaySessions = (state.progress.sessions || []).filter(session => session.date === todayKey()).length;
   if (todaySessions >= 2 && Object.keys(state.progress.mistakes).length) {
-    openReviewMode();
+    openReviewBag();
     return;
   }
   openNextLesson();
 });
-document.querySelector("#navHomeBtn").addEventListener("click", () => scrollToSection("#home", "navHomeBtn"));
-document.querySelector("#navMapBtn").addEventListener("click", () => scrollToSection(".adventure-map", "navMapBtn"));
-document.querySelector("#navRewardBtn").addEventListener("click", () => scrollToSection("#rewards", "navRewardBtn"));
+document.querySelector("#navHomeBtn").addEventListener("click", () => switchBottomView("home", "#home"));
+document.querySelector("#navMapBtn").addEventListener("click", () => switchBottomView("map", ".adventure-map"));
+document.querySelector("#navRewardBtn").addEventListener("click", () => switchBottomView("rewards", "#rewards"));
 document.querySelector("#navParentBtn").addEventListener("click", () => {
   if (!confirmParentGate()) return;
   showAppView("parent");
@@ -4717,6 +6962,58 @@ document.querySelector("#closePrivacy").addEventListener("click", () => {
   privacyShell.classList.remove("open");
 });
 
+document.querySelector("#closeBadge").addEventListener("click", () => {
+  badgeShell.classList.remove("open");
+});
+
+document.querySelector("#closeReviewBag").addEventListener("click", () => {
+  reviewBagShell.classList.remove("open");
+});
+
+document.querySelector("#closeReviewReward").addEventListener("click", () => {
+  reviewRewardShell.classList.remove("open");
+});
+
+document.querySelector("#reviewRewardBagBtn").addEventListener("click", () => {
+  reviewRewardShell.classList.remove("open");
+  if (Object.keys(state.progress.mistakes || {}).length) {
+    openReviewBag();
+    return;
+  }
+  scrollToSection("#home", "navHomeBtn");
+});
+
+document.querySelector("#reviewRewardRoomBtn").addEventListener("click", () => {
+  reviewRewardShell.classList.remove("open");
+  scrollToSection("#rewards", "navRewardBtn");
+});
+
+document.querySelector("#closeWordDetail").addEventListener("click", () => {
+  wordDetailShell.classList.remove("open");
+});
+
+document.querySelector("#wordListenBtn").addEventListener("click", () => {
+  const info = findWordInfo(wordDetailWord);
+  if (info.lesson) speakWord(info.lesson, wordDetailWord);
+});
+
+document.querySelector("#wordTraceBtn").addEventListener("click", () => {
+  openWordTracePractice(wordDetailWord);
+});
+
+document.querySelector("#badgeGoBtn").addEventListener("click", () => {
+  badgeShell.classList.remove("open");
+  state.unit = badgeDetailUnit;
+  renderAll();
+  scrollToSection(".adventure-map", "navMapBtn");
+});
+
+document.querySelector("#badgeReviewBtn").addEventListener("click", () => {
+  badgeShell.classList.remove("open");
+  state.unit = badgeDetailUnit;
+  openReviewMode({ unitIndex: badgeDetailUnit });
+});
+
 document.querySelector("#closeComplete").addEventListener("click", () => {
   completeShell.classList.remove("open");
 });
@@ -4749,17 +7046,22 @@ document.querySelector("#completeRestBtn").addEventListener("click", () => {
 document.querySelector("#reviewChoices").addEventListener("click", event => {
   const choice = event.target.closest("[data-review-answer]");
   if (!choice) return;
-  const word = reviewQueue[reviewIndex];
+  const step = reviewSteps[reviewIndex];
+  const word = step?.word;
   const ok = choice.dataset.reviewAnswer === word;
   document.querySelectorAll("#reviewChoices .choice").forEach(item => item.disabled = true);
   choice.classList.add(ok ? "correct" : "wrong");
   playSound(ok ? "correct" : "wrong");
-  document.querySelector("#reviewFeedback").textContent = ok ? "复习正确，马上进入下一个。" : "再看一眼拼音和字形，这个字会继续留在复习里。";
+  document.querySelector("#reviewFeedback").textContent = ok ? "答对了，进入下一步。" : "再看一眼读音、拼音和句子，这个字会继续留在复习里。";
   popFeedback("#reviewFeedback");
+  if (ok) popReward("#reviewShell .dialog-body", step?.type === "context" ? "★" : word);
+  if (!ok) flyMistakeToReview(word, "#reviewPinyin");
   if (ok) {
-    if (state.progress.mistakes[word]) {
+    reviewStats.correct += 1;
+    if (step?.type === "context" && state.progress.mistakes[word]) {
       state.progress.mistakes[word] = Math.max(0, state.progress.mistakes[word] - 1);
       if (state.progress.mistakes[word] === 0) delete state.progress.mistakes[word];
+      reviewStats.fixed += 1;
       save();
     }
     renderAll();
@@ -4768,6 +7070,7 @@ document.querySelector("#reviewChoices").addEventListener("click", event => {
       renderReviewQuestion();
     }, 720);
   } else {
+    reviewStats.wrong += 1;
     markMistake(word);
     speakFeedback("try-again", "再试一次");
   }
@@ -4781,6 +7084,10 @@ document.querySelector("#reviewNextBtn").addEventListener("click", () => {
 document.querySelector("#reviewDoneBtn").addEventListener("click", () => {
   reviewShell.classList.remove("open");
   renderAll();
+  if (reviewIndex >= reviewSteps.length) {
+    showReviewReward();
+    return;
+  }
   scrollToSection("#home", "navHomeBtn");
 });
 
@@ -4817,7 +7124,7 @@ if (localStorage.getItem(`${storeKey}-onboard`) !== "done") {
   onboardShell.classList.add("open");
 }
 
-if ("serviceWorker" in navigator) {
+if (location.protocol.startsWith("http") && "serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 </script>

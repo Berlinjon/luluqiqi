@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yuwen-adventure-v36';
+const CACHE_NAME = 'yuwen-adventure-v69';
 const OFFLINE_ASSETS = [
   './index.html',
   './privacy.html',
