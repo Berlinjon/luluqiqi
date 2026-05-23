@@ -5560,6 +5560,48 @@ function shuffle(items) {
 }
 
 function lessonPlayProfile(lesson) {
+  if (lesson.title === "春夏秋冬") {
+    return {
+      tabs: ["四季听音", "四季写字", "景物配对", "四季朗读"],
+      wordPrompt: "听一听四季里的声音，找到对应的汉字。",
+      tracePrompt: "把四季字写端正，注意横竖撇捺的位置。",
+      sentencePrompt: "景物配对：把春风、花儿、雪花放回句子里。",
+      readPrompt: "像在看四季图一样，慢慢读出春夏秋冬。",
+      feedbackDone: "四季字卡收集完成，进入四季写字。",
+      sentenceDone: "四季景物配对完成，进入四季朗读。",
+      collectLabel: "四季字卡",
+      theme: "literacy",
+      scene: { badge: "季", title: "四季小路", text: "听风、看花、找雪，把四季里的字收集起来。", tokens: ["春","花","雪"] }
+    };
+  }
+  if (lesson.title === "姓氏歌") {
+    return {
+      tabs: ["姓氏问答", "姓名写字", "你问我答", "拍手读姓"],
+      wordPrompt: "听一听别人姓什么，找到正确的姓氏字。",
+      tracePrompt: "把姓名里的关键字写清楚，像写自己的名字一样认真。",
+      sentencePrompt: "问答配对：你姓什么？我姓什么？",
+      readPrompt: "用拍手歌的节奏读一读姓氏歌。",
+      feedbackDone: "姓氏字卡收集完成，进入姓名写字。",
+      sentenceDone: "姓氏问答完成，进入拍手读姓。",
+      collectLabel: "姓氏名片",
+      theme: "stage",
+      scene: { badge: "姓", title: "姓氏名片站", text: "听问答、找姓氏，学会介绍自己的姓。", tokens: ["你","我","姓"] }
+    };
+  }
+  if (lesson.title === "猜字谜") {
+    return {
+      tabs: ["线索猜字", "谜底书写", "谜面选择", "谜语朗读"],
+      wordPrompt: "听线索里的读音，猜出藏起来的字。",
+      tracePrompt: "把谜底字写端正，看看线索怎么藏在字里。",
+      sentencePrompt: "谜面选择：读线索，选出最合适的答案。",
+      readPrompt: "像出谜语一样读一读，让家长来猜。",
+      feedbackDone: "谜底字卡收集完成，进入谜底书写。",
+      sentenceDone: "字谜线索完成，进入谜语朗读。",
+      collectLabel: "字谜线索",
+      theme: "garden",
+      scene: { badge: "谜", title: "字谜小屋", text: "读线索、猜谜底，把汉字里的秘密找出来。", tokens: ["猜","想","谜"] }
+    };
+  }
   if (lesson.title.includes("语文园地")) {
     return {
       tabs: ["分类收纳", "字形工坊", "词语配对", "园地朗读"],
