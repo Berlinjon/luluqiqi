@@ -1216,6 +1216,53 @@ button:active {
   font-weight: 950;
 }
 
+.unit-picker-icon {
+  width: 42px;
+  height: 42px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 50% 46%, #fef3c7 0 34%, transparent 35%),
+    linear-gradient(145deg, #5cc7f5, #3f6fe5);
+  box-shadow: inset 0 -4px 0 rgba(24,33,43,.14), 0 8px 16px rgba(63,111,229,.22);
+  border: 2px solid rgba(255,255,255,.88);
+  color: transparent;
+  overflow: hidden;
+}
+
+.unit-picker-icon::before,
+.unit-picker-icon::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #18212b;
+  box-shadow: 0 7px 0 -1px #18212b;
+}
+
+.unit-picker-icon::before { left: 14px; }
+.unit-picker-icon::after { right: 14px; }
+
+.unit-picker-icon b {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  min-width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: #7b4b00;
+  font-size: .66rem;
+  font-weight: 950;
+  border: 1px solid rgba(255,255,255,.8);
+}
+
 .unit-list {
   display: grid;
   gap: 8px;
@@ -3005,6 +3052,10 @@ button:active {
   box-shadow: 0 10px 22px rgba(47,133,90,.14);
 }
 
+.sort-basket.catch {
+  animation: basketCatch .48s ease;
+}
+
 .sort-board.classify .sort-basket {
   align-content: center;
   gap: 4px;
@@ -3029,6 +3080,23 @@ button:active {
 .sort-board.sequence #sortTarget {
   min-height: 64px;
   border-style: solid;
+}
+
+.sort-board.sequence #sortTarget {
+  position: relative;
+  overflow: hidden;
+}
+
+.sort-board.sequence #sortTarget::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green) var(--sequence-progress, 0%), rgba(47,133,90,.16) 0);
+  transition: background .24s ease;
 }
 
 .sort-board.picture .sort-baskets {
@@ -3068,6 +3136,26 @@ button:active {
   font-weight: 950;
   padding: 10px;
   box-shadow: 0 6px 0 rgba(123,75,0,.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.sort-card::after {
+  content: "";
+  position: absolute;
+  inset: -40% auto auto -40%;
+  width: 55%;
+  height: 180%;
+  background: rgba(255,255,255,.42);
+  transform: rotate(24deg) translateX(-130%);
+  transition: transform .38s ease;
+}
+
+.sort-card:hover::after,
+.sort-card.selected::after,
+.sort-card.correct::after {
+  transform: rotate(24deg) translateX(320%);
 }
 
 .sort-card:active {
@@ -3091,6 +3179,10 @@ button:active {
   background: var(--green-soft);
   color: var(--green);
   animation: correctPop .42s ease;
+}
+
+.sort-card.fly-away {
+  animation: answerFlyAway .5s ease forwards;
 }
 
 .sort-card.wrong {
@@ -3629,6 +3721,18 @@ button:active {
   0% { transform: scale(.82); }
   65% { transform: scale(1.12); }
   100% { transform: scale(1); }
+}
+
+@keyframes basketCatch {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.06) rotate(-1deg); box-shadow: 0 14px 28px rgba(47,133,90,.22); }
+  100% { transform: scale(1); }
+}
+
+@keyframes answerFlyAway {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: .78; transform: translateY(-12px) scale(.92); }
+  100% { opacity: 0; transform: translateY(-22px) scale(.82); }
 }
 
 @keyframes propFloat {
@@ -4314,7 +4418,7 @@ body.app-view-map #kidView {
     </div>
     <div class="unit-map-control">
       <button class="unit-fold-toggle" id="openUnitPickerBtn">
-        <span class="unit-index" id="compactUnitIndex">1</span>
+        <span class="unit-picker-icon" id="compactUnitIndex" aria-hidden="true"><b>1</b></span>
         <span><strong id="compactUnitName">第一单元</strong><span id="compactUnitMeta">点击展开单元</span></span>
         <span class="unit-fold-arrow">▾</span>
       </button>
@@ -4834,24 +4938,24 @@ function makeExtraLesson(id, title, type, words, tonePinyin, sentence, answer, o
     blank: sentence.includes(answer) ? sentence.replace(answer, "____") : `${sentence} ____`,
     answer,
     options: cleanOptions,
-    read: read || [sentence, "完成任务后，大声读给家长听。"]
+    read: read || [sentence, "我会读，我会说。"]
   };
 }
 
 units[0].lessons.push(
-  makeExtraLesson("kouyu_tinggushi", "听故事，讲故事", "口语交际", ["听", "讲", "故", "事", "声", "清"], ["tīng", "jiǎng", "gù", "shì", "shēng", "qīng"], "听完故事，再把故事讲清楚。", "讲清楚", ["讲清楚", "藏起来", "跳过去", "写很快"]),
-  makeExtraLesson("yuwenyuandi1", "语文园地一", "园地", ["阴", "雷", "电", "阵", "冰", "冻"], ["yīn", "léi", "diàn", "zhèn", "bīng", "dòng"], "在园地里复习天气词语。", "天气", ["天气", "颜色", "味道", "方向"]),
-  makeExtraLesson("kuaile_dushuba", "快乐读书吧", "阅读", ["读", "童", "谣", "歌", "笑", "拍"], ["dú", "tóng", "yáo", "gē", "xiào", "pāi"], "读读童谣和儿歌，跟着节奏拍一拍。", "童谣", ["童谣", "通知", "尺子", "雨点"])
+  makeExtraLesson("kouyu_tinggushi", "听故事，讲故事", "口语交际", ["听", "讲", "故", "事", "声", "清"], ["tīng", "jiǎng", "gù", "shì", "shēng", "qīng"], "听完故事，再把故事讲清楚。", "讲清楚", ["讲清楚", "藏起来", "跳过去", "写很快"], ["我听清故事。", "我能讲清楚。"]),
+  makeExtraLesson("yuwenyuandi1", "语文园地一", "园地", ["阴", "雷", "电", "阵", "冰", "冻"], ["yīn", "léi", "diàn", "zhèn", "bīng", "dòng"], "在园地里复习天气词语。", "天气", ["天气", "颜色", "味道", "方向"], ["阴天、雷雨、闪电。", "冰雪融化，春天来了。"]),
+  makeExtraLesson("kuaile_dushuba", "快乐读书吧", "阅读", ["读", "童", "谣", "歌", "笑", "拍"], ["dú", "tóng", "yáo", "gē", "xiào", "pāi"], "读读童谣和儿歌，跟着节奏拍一拍。", "童谣", ["童谣", "通知", "尺子", "雨点"], ["读童谣，唱儿歌。", "一边读，一边拍。"])
 );
 
 units[1].lessons.push(
-  makeExtraLesson("yuwenyuandi2", "语文园地二", "园地", ["辆", "匹", "册", "支", "棵", "架"], ["liàng", "pǐ", "cè", "zhī", "kē", "jià"], "一辆车，一匹马，量词要用对。", "量词", ["量词", "笔画", "故事", "天气"])
+  makeExtraLesson("yuwenyuandi2", "语文园地二", "园地", ["辆", "匹", "册", "支", "棵", "架"], ["liàng", "pǐ", "cè", "zhī", "kē", "jià"], "一辆车，一匹马，量词要用对。", "量词", ["量词", "笔画", "故事", "天气"], ["一辆车，一匹马。", "一册书，一支笔。"])
 );
 
 const lifeHabitUnit = units.pop();
 lifeHabitUnit.lessons.push(
-  makeExtraLesson("kouyu_zuoyouxi", "一起做游戏", "口语交际", ["游", "戏", "规", "则", "轮", "流"], ["yóu", "xì", "guī", "zé", "lún", "liú"], "一起做游戏，要先说清规则。", "规则", ["规则", "颜色", "梦话", "云朵"]),
-  makeExtraLesson("yuwenyuandi7", "语文园地七", "园地", ["吵", "胖", "岁", "现", "票", "交"], ["chǎo", "pàng", "suì", "xiàn", "piào", "jiāo"], "在园地里复习生活中的好习惯。", "好习惯", ["好习惯", "坏天气", "小池塘", "长尾巴"])
+  makeExtraLesson("kouyu_zuoyouxi", "一起做游戏", "口语交际", ["游", "戏", "规", "则", "轮", "流"], ["yóu", "xì", "guī", "zé", "lún", "liú"], "一起做游戏，要先说清规则。", "规则", ["规则", "颜色", "梦话", "云朵"], ["我们一起做游戏。", "先说规则，再轮流玩。"]),
+  makeExtraLesson("yuwenyuandi7", "语文园地七", "园地", ["吵", "胖", "岁", "现", "票", "交"], ["chǎo", "pàng", "suì", "xiàn", "piào", "jiāo"], "在园地里复习生活中的好习惯。", "好习惯", ["好习惯", "坏天气", "小池塘", "长尾巴"], ["文具摆整齐。", "说话有礼貌。"])
 );
 
 units.push(
@@ -4859,44 +4963,44 @@ units.push(
     name: "伙伴与快乐",
     theme: "伙伴、帮助、游戏",
     lessons: [
-      makeExtraLesson("xiaogongji_xiaoyazi", "小公鸡和小鸭子", "课文", ["他", "河", "说", "也", "地", "听"], ["tā", "hé", "shuō", "yě", "dì", "tīng"], "小伙伴互相帮助，心里很高兴。", "互相帮助", ["互相帮助", "互相争抢", "各走各的", "不说话"]),
-      makeExtraLesson("shu_he_xique", "树和喜鹊", "课文", ["单", "居", "招", "呼", "快", "乐"], ["dān", "jū", "zhāo", "hū", "kuài", "lè"], "有了邻居，树和喜鹊都快乐。", "快乐", ["快乐", "害怕", "粗心", "迟到"]),
-      makeExtraLesson("zenme_dou_kuaile", "怎么都快乐", "课文", ["玩", "很", "当", "音", "讲", "行"], ["wán", "hěn", "dāng", "yīn", "jiǎng", "xíng"], "一个人玩很好，许多人玩也快乐。", "快乐", ["快乐", "难过", "安静", "遥远"]),
-      makeExtraLesson("kouyu_bangmang", "请你帮个忙", "口语交际", ["请", "帮", "忙", "借", "谢", "礼"], ["qǐng", "bāng", "máng", "jiè", "xiè", "lǐ"], "请别人帮忙，要把话说清楚。", "说清楚", ["说清楚", "跑很远", "藏起来", "不回答"]),
-      makeExtraLesson("yuwenyuandi3", "语文园地三", "园地", ["查", "字", "典", "音", "序", "部"], ["chá", "zì", "diǎn", "yīn", "xù", "bù"], "遇到不认识的字，可以学着查字典。", "查字典", ["查字典", "扔书包", "画太阳", "数星星"])
+      makeExtraLesson("xiaogongji_xiaoyazi", "小公鸡和小鸭子", "课文", ["他", "河", "说", "也", "地", "听"], ["tā", "hé", "shuō", "yě", "dì", "tīng"], "小伙伴互相帮助，心里很高兴。", "互相帮助", ["互相帮助", "互相争抢", "各走各的", "不说话"], ["小公鸡和小鸭子是好朋友。", "你帮我，我帮你。"]),
+      makeExtraLesson("shu_he_xique", "树和喜鹊", "课文", ["单", "居", "招", "呼", "快", "乐"], ["dān", "jū", "zhāo", "hū", "kuài", "lè"], "有了邻居，树和喜鹊都快乐。", "快乐", ["快乐", "害怕", "粗心", "迟到"], ["树很孤单，喜鹊也很孤单。", "树有了邻居，喜鹊也很快乐。"]),
+      makeExtraLesson("zenme_dou_kuaile", "怎么都快乐", "课文", ["玩", "很", "当", "音", "讲", "行"], ["wán", "hěn", "dāng", "yīn", "jiǎng", "xíng"], "一个人玩很好，许多人玩也快乐。", "快乐", ["快乐", "难过", "安静", "遥远"], ["一个人玩，很好。", "许多人玩，更快乐。"]),
+      makeExtraLesson("kouyu_bangmang", "请你帮个忙", "口语交际", ["请", "帮", "忙", "借", "谢", "礼"], ["qǐng", "bāng", "máng", "jiè", "xiè", "lǐ"], "请别人帮忙，要把话说清楚。", "说清楚", ["说清楚", "跑很远", "藏起来", "不回答"], ["请你帮个忙，好吗？", "谢谢你，不客气。"]),
+      makeExtraLesson("yuwenyuandi3", "语文园地三", "园地", ["查", "字", "典", "音", "序", "部"], ["chá", "zì", "diǎn", "yīn", "xù", "bù"], "遇到不认识的字，可以学着查字典。", "查字典", ["查字典", "扔书包", "画太阳", "数星星"], ["遇到生字，我会查字典。", "先找音序，再找页码。"])
     ]
   },
   {
     name: "家人与节日",
     theme: "古诗、夜色、端午、彩虹",
     lessons: [
-      makeExtraLesson("jingyesi", "静夜思", "古诗", ["思", "床", "前", "光", "低", "故"], ["sī", "chuáng", "qián", "guāng", "dī", "gù"], "读古诗时，要读出想家的心情。", "想家", ["想家", "洗手", "打电话", "做游戏"]),
-      makeExtraLesson("yese", "夜色", "课文", ["色", "外", "看", "爸", "晚", "笑"], ["sè", "wài", "kàn", "bà", "wǎn", "xiào"], "夜晚并不可怕，外面的景色也很美。", "夜晚", ["夜晚", "中午", "早饭", "尺子"]),
-      makeExtraLesson("duanwuzong", "端午粽", "课文", ["午", "节", "叶", "米", "真", "分"], ["wǔ", "jié", "yè", "mǐ", "zhēn", "fēn"], "端午节吃粽子，也记住家人的味道。", "粽子", ["粽子", "铅笔", "月亮", "书包"]),
-      makeExtraLesson("caihong", "彩虹", "课文", ["那", "着", "到", "高", "兴", "千"], ["nà", "zhe", "dào", "gāo", "xìng", "qiān"], "彩虹像一座美丽的小桥。", "小桥", ["小桥", "尺子", "闹钟", "雪人"]),
-      makeExtraLesson("yuwenyuandi4", "语文园地四", "园地", ["胆", "粽", "虹", "据", "原", "微"], ["dǎn", "zòng", "hóng", "jù", "yuán", "wēi"], "在园地里复习节日、夜色和古诗。", "复习", ["复习", "忘记", "打翻", "迟到"])
+      makeExtraLesson("jingyesi", "静夜思", "古诗", ["思", "床", "前", "光", "低", "故"], ["sī", "chuáng", "qián", "guāng", "dī", "gù"], "读古诗时，要读出想家的心情。", "想家", ["想家", "洗手", "打电话", "做游戏"], ["床前明月光，疑是地上霜。", "举头望明月，低头思故乡。"]),
+      makeExtraLesson("yese", "夜色", "课文", ["色", "外", "看", "爸", "晚", "笑"], ["sè", "wài", "kàn", "bà", "wǎn", "xiào"], "夜晚并不可怕，外面的景色也很美。", "夜晚", ["夜晚", "中午", "早饭", "尺子"], ["我从前胆子很小很小。", "夜晚的景色也很美。"]),
+      makeExtraLesson("duanwuzong", "端午粽", "课文", ["午", "节", "叶", "米", "真", "分"], ["wǔ", "jié", "yè", "mǐ", "zhēn", "fēn"], "端午节吃粽子，也记住家人的味道。", "粽子", ["粽子", "铅笔", "月亮", "书包"], ["端午节，粽子香。", "外婆包的粽子真好吃。"]),
+      makeExtraLesson("caihong", "彩虹", "课文", ["那", "着", "到", "高", "兴", "千"], ["nà", "zhe", "dào", "gāo", "xìng", "qiān"], "彩虹像一座美丽的小桥。", "小桥", ["小桥", "尺子", "闹钟", "雪人"], ["雨停了，天上有一座美丽的桥。", "彩虹像一座美丽的小桥。"]),
+      makeExtraLesson("yuwenyuandi4", "语文园地四", "园地", ["胆", "粽", "虹", "据", "原", "微"], ["dǎn", "zòng", "hóng", "jù", "yuán", "wēi"], "在园地里复习节日、夜色和古诗。", "复习", ["复习", "忘记", "打翻", "迟到"], ["胆子、粽子、彩虹。", "夜色、端午、古诗。"])
     ]
   },
   {
     name: "识字与运动",
     theme: "动物、对子、操场、蒙学",
     lessons: [
-      makeExtraLesson("dongwu_erge", "动物儿歌", "识字", ["间", "迷", "造", "运", "池", "欢"], ["jiān", "mí", "zào", "yùn", "chí", "huān"], "读动物儿歌，找一找虫字旁的字。", "虫字旁", ["虫字旁", "木字旁", "三点水", "言字旁"]),
-      makeExtraLesson("guduijin", "古对今", "识字", ["古", "凉", "细", "夕", "李", "语"], ["gǔ", "liáng", "xì", "xī", "lǐ", "yǔ"], "古对今，圆对方，对子读起来有节奏。", "对子", ["对子", "通知", "谜语", "故事"]),
-      makeExtraLesson("caochangshang", "操场上", "识字", ["打", "拍", "跑", "足", "声", "身"], ["dǎ", "pāi", "pǎo", "zú", "shēng", "shēn"], "操场上真热闹，大家一起运动。", "运动", ["运动", "睡觉", "发呆", "下雨"]),
-      makeExtraLesson("renzhichu", "人之初", "识字", ["之", "初", "性", "善", "习", "教"], ["zhī", "chū", "xìng", "shàn", "xí", "jiào"], "读蒙学句子，明白学习和习惯很重要。", "习惯", ["习惯", "彩虹", "水杯", "闹钟"]),
-      makeExtraLesson("kouyu_dadianhua", "打电话", "口语交际", ["电", "话", "喂", "请", "再", "见"], ["diàn", "huà", "wéi", "qǐng", "zài", "jiàn"], "打电话要先问好，再把事情说清楚。", "问好", ["问好", "乱喊", "沉默", "跑开"]),
-      makeExtraLesson("yuwenyuandi5", "语文园地五", "园地", ["饭", "能", "饱", "茶", "泡", "轻"], ["fàn", "néng", "bǎo", "chá", "pào", "qīng"], "在园地里复习偏旁和生活中的字。", "偏旁", ["偏旁", "尾巴", "粽子", "云朵"])
+      makeExtraLesson("dongwu_erge", "动物儿歌", "识字", ["间", "迷", "造", "运", "池", "欢"], ["jiān", "mí", "zào", "yùn", "chí", "huān"], "读动物儿歌，找一找虫字旁的字。", "虫字旁", ["虫字旁", "木字旁", "三点水", "言字旁"], ["蜻蜓半空展翅飞。", "蚂蚁地上运食粮。"]),
+      makeExtraLesson("guduijin", "古对今", "识字", ["古", "凉", "细", "夕", "李", "语"], ["gǔ", "liáng", "xì", "xī", "lǐ", "yǔ"], "古对今，圆对方，对子读起来有节奏。", "对子", ["对子", "通知", "谜语", "故事"], ["古对今，圆对方。", "严寒对酷暑，春暖对秋凉。"]),
+      makeExtraLesson("caochangshang", "操场上", "识字", ["打", "拍", "跑", "足", "声", "身"], ["dǎ", "pāi", "pǎo", "zú", "shēng", "shēn"], "操场上真热闹，大家一起运动。", "运动", ["运动", "睡觉", "发呆", "下雨"], ["铃声响，下课了。", "操场上，真热闹。"]),
+      makeExtraLesson("renzhichu", "人之初", "识字", ["之", "初", "性", "善", "习", "教"], ["zhī", "chū", "xìng", "shàn", "xí", "jiào"], "读蒙学句子，明白学习和习惯很重要。", "习惯", ["习惯", "彩虹", "水杯", "闹钟"], ["人之初，性本善。", "性相近，习相远。"]),
+      makeExtraLesson("kouyu_dadianhua", "打电话", "口语交际", ["电", "话", "喂", "请", "再", "见"], ["diàn", "huà", "wéi", "qǐng", "zài", "jiàn"], "打电话要先问好，再把事情说清楚。", "问好", ["问好", "乱喊", "沉默", "跑开"], ["喂，你好。请问你找谁？", "谢谢，再见。"]),
+      makeExtraLesson("yuwenyuandi5", "语文园地五", "园地", ["饭", "能", "饱", "茶", "泡", "轻"], ["fàn", "néng", "bǎo", "chá", "pào", "qīng"], "在园地里复习偏旁和生活中的字。", "偏旁", ["偏旁", "尾巴", "粽子", "云朵"], ["有饭能吃饱。", "有水把茶泡。"])
     ]
   },
   {
     name: "夏天与自然",
     theme: "古诗、荷叶、天气",
     lessons: [
-      makeExtraLesson("gushi_ershou", "古诗二首", "古诗", ["首", "采", "无", "树", "爱", "尖"], ["shǒu", "cǎi", "wú", "shù", "ài", "jiān"], "读《池上》和《小池》，想象夏天的画面。", "夏天", ["夏天", "冬天", "书包", "电话"]),
-      makeExtraLesson("heye_yuanyuan", "荷叶圆圆", "课文", ["亮", "机", "台", "放", "鱼", "朵"], ["liàng", "jī", "tái", "fàng", "yú", "duǒ"], "荷叶圆圆的，像一把绿色的小伞。", "荷叶", ["荷叶", "铅笔", "钟表", "房子"]),
-      makeExtraLesson("yao_xiayu_le", "要下雨了", "课文", ["直", "呀", "边", "吗", "加", "呢"], ["zhí", "ya", "biān", "ma", "jiā", "ne"], "天快下雨了，先观察身边的变化。", "下雨", ["下雨", "过年", "跑步", "借书"]),
-      makeExtraLesson("yuwenyuandi6", "语文园地六", "园地", ["棍", "汤", "扇", "椅", "萤", "牵"], ["gùn", "tāng", "shàn", "yǐ", "yíng", "qiān"], "在园地里复习夏天和天气词语。", "天气", ["天气", "称呼", "偏旁", "通知"])
+      makeExtraLesson("gushi_ershou", "古诗二首", "古诗", ["首", "采", "无", "树", "爱", "尖"], ["shǒu", "cǎi", "wú", "shù", "ài", "jiān"], "读《池上》和《小池》，想象夏天的画面。", "夏天", ["夏天", "冬天", "书包", "电话"], ["小娃撑小艇，偷采白莲回。", "不解藏踪迹，浮萍一道开。", "泉眼无声惜细流，树阴照水爱晴柔。", "小荷才露尖尖角，早有蜻蜓立上头。"]),
+      makeExtraLesson("heye_yuanyuan", "荷叶圆圆", "课文", ["亮", "机", "台", "放", "鱼", "朵"], ["liàng", "jī", "tái", "fàng", "yú", "duǒ"], "荷叶圆圆的，像一把绿色的小伞。", "荷叶", ["荷叶", "铅笔", "钟表", "房子"], ["荷叶圆圆的，绿绿的。", "小水珠躺在荷叶上。"]),
+      makeExtraLesson("yao_xiayu_le", "要下雨了", "课文", ["直", "呀", "边", "吗", "加", "呢"], ["zhí", "ya", "biān", "ma", "jiā", "ne"], "天快下雨了，先观察身边的变化。", "下雨", ["下雨", "过年", "跑步", "借书"], ["燕子低飞，小鱼游出水面。", "蚂蚁搬家，要下雨了。"]),
+      makeExtraLesson("yuwenyuandi6", "语文园地六", "园地", ["棍", "汤", "扇", "椅", "萤", "牵"], ["gùn", "tāng", "shàn", "yǐ", "yíng", "qiān"], "在园地里复习夏天和天气词语。", "天气", ["天气", "称呼", "偏旁", "通知"], ["小扇子，凉风来。", "萤火虫，夜里亮。"])
     ]
   },
   lifeHabitUnit,
@@ -4904,15 +5008,16 @@ units.push(
     name: "问号与故事",
     theme: "照顾、声音、尾巴",
     lessons: [
-      makeExtraLesson("mianhua_guniang", "棉花姑娘", "课文", ["病", "医", "别", "干", "奇", "星"], ["bìng", "yī", "bié", "gàn", "qí", "xīng"], "棉花姑娘生病了，大家想办法帮助她。", "帮助", ["帮助", "吵闹", "睡懒觉", "忘记"]),
-      makeExtraLesson("gudong", "咕咚", "课文", ["吓", "怕", "跟", "家", "羊", "象"], ["xià", "pà", "gēn", "jiā", "yáng", "xiàng"], "听到声音先观察，不要慌张。", "观察", ["观察", "乱跑", "大喊", "躲藏"]),
-      makeExtraLesson("xiaobihu_jieweiba", "小壁虎借尾巴", "课文", ["捉", "条", "爬", "姐", "您", "草"], ["zhuō", "tiáo", "pá", "jiě", "nín", "cǎo"], "小壁虎去借尾巴，最后发现自己的尾巴会长出来。", "尾巴", ["尾巴", "电话", "粽子", "雨伞"]),
-      makeExtraLesson("yuwenyuandi8", "语文园地八", "园地", ["卫", "巾", "刷", "梳", "澡", "盆"], ["wèi", "jīn", "shuā", "shū", "zǎo", "pén"], "在最后的园地里复习卫生、故事和识字方法。", "复习", ["复习", "忘记", "跳过", "打翻"])
+      makeExtraLesson("mianhua_guniang", "棉花姑娘", "课文", ["病", "医", "别", "干", "奇", "星"], ["bìng", "yī", "bié", "gàn", "qí", "xīng"], "棉花姑娘生病了，大家想办法帮助她。", "帮助", ["帮助", "吵闹", "睡懒觉", "忘记"], ["棉花姑娘生病了。", "七星瓢虫治好了她的病。"]),
+      makeExtraLesson("gudong", "咕咚", "课文", ["吓", "怕", "跟", "家", "羊", "象"], ["xià", "pà", "gēn", "jiā", "yáng", "xiàng"], "听到声音先观察，不要慌张。", "观察", ["观察", "乱跑", "大喊", "躲藏"], ["咕咚一声，大家吓了一跳。", "看清楚以后，大家都笑了。"]),
+      makeExtraLesson("xiaobihu_jieweiba", "小壁虎借尾巴", "课文", ["捉", "条", "爬", "姐", "您", "草"], ["zhuō", "tiáo", "pá", "jiě", "nín", "cǎo"], "小壁虎去借尾巴，最后发现自己的尾巴会长出来。", "尾巴", ["尾巴", "电话", "粽子", "雨伞"], ["小壁虎爬呀爬。", "小壁虎的尾巴长出来了。"]),
+      makeExtraLesson("yuwenyuandi8", "语文园地八", "园地", ["卫", "巾", "刷", "梳", "澡", "盆"], ["wèi", "jīn", "shuā", "shū", "zǎo", "pén"], "在最后的园地里复习卫生、故事和识字方法。", "复习", ["复习", "忘记", "跳过", "打翻"], ["牙刷、毛巾、脸盆。", "讲卫生，爱整洁。"])
     ]
   }
 );
 
 const storeKey = "hangzhou-yuwen-adventure-v1";
+const audioVersion = "v95";
 const state = {
   unit: 0,
   lesson: null,
@@ -4968,6 +5073,7 @@ let audioContext;
 let voiceAudio;
 let strokeAudio;
 const audioBufferCache = new Map();
+let audioUnlocked = false;
 let traceTimer;
 let hanziWriter;
 let traceToken = 0;
@@ -4993,6 +5099,23 @@ function getAudioContext() {
   if (!audioContext) audioContext = new AudioCtx();
   if (audioContext.state === "suspended") audioContext.resume();
   return audioContext;
+}
+
+function unlockAudioForIOS() {
+  if (!state.sound || audioUnlocked) return;
+  const ctx = getAudioContext();
+  if (ctx) {
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + .02);
+    audioUnlocked = true;
+    return;
+  }
+  audioUnlocked = true;
 }
 
 function playTone(frequency, duration = .12, type = "sine", volume = .08, delay = 0) {
@@ -5149,6 +5272,7 @@ function playRecordedAudio(src, fallbackText, options = {}) {
   }
   voiceAudio = new Audio(first);
   voiceAudio.preload = "auto";
+  voiceAudio.playsInline = true;
   voiceAudio.playbackRate = options.playbackRate || 1;
   voiceAudio.onended = () => {};
   voiceAudio.onerror = () => rest.length ? playRecordedAudio(rest, fallbackText, options) : speakWithSystemVoice(fallbackText);
@@ -5171,7 +5295,8 @@ function wordAudioPath(lesson, word) {
 }
 
 function lessonAudioPath(lesson) {
-  return voicePathCandidates(`audio/lessons/${lesson.id}.mp3`);
+  const mp3Path = `audio/lessons/${lesson.id}.mp3`;
+  return [`${mp3Path}?${audioVersion}`, `${xiaoxiaoPath(mp3Path)}?${audioVersion}`];
 }
 
 const availableLessonAudio = new Set([
@@ -5330,6 +5455,28 @@ function flyMistakeToReview(label, fromSelector = "#bigWord") {
   card.style.setProperty("--review-y", `${targetRect.top + targetRect.height / 2 - 24}px`);
   document.body.appendChild(card);
   setTimeout(() => card.remove(), 820);
+}
+
+function animateBasketCatch(targetSelector = "#sortTarget") {
+  const target = document.querySelector(targetSelector);
+  if (!target) return;
+  target.classList.remove("catch");
+  void target.offsetWidth;
+  target.classList.add("catch");
+}
+
+function sparkleAtNode(node, label = "★") {
+  if (!node) return;
+  const rect = node.getBoundingClientRect();
+  const spark = document.createElement("span");
+  spark.className = "reward-pop";
+  spark.textContent = label;
+  spark.style.position = "fixed";
+  spark.style.left = `${rect.left + rect.width / 2 - 10}px`;
+  spark.style.top = `${rect.top + 4}px`;
+  spark.style.zIndex = 40;
+  document.body.appendChild(spark);
+  setTimeout(() => spark.remove(), 900);
 }
 
 function celebrate() {
@@ -5529,7 +5676,7 @@ function renderLessons() {
   const unit = units[state.unit];
   lessonTitle.textContent = `${unit.name}关卡`;
   const unitDone = doneCountForUnit(state.unit);
-  document.querySelector("#compactUnitIndex").textContent = state.unit + 1;
+  document.querySelector("#compactUnitIndex").innerHTML = `<b>${state.unit + 1}</b>`;
   document.querySelector("#compactUnitName").textContent = unit.name;
   document.querySelector("#compactUnitMeta").textContent = `${unit.theme} · ${unitDone}/${unit.lessons.length}`;
   lessonGrid.innerHTML = unit.lessons.map((lesson, index) => {
@@ -6608,6 +6755,20 @@ function updateCaptainBubble(text, mood = "good") {
   bubble.classList.add(mood === "try" ? "try" : "good");
 }
 
+function renderReadStage(lesson = currentLesson()) {
+  if (!lesson) return;
+  document.querySelector("#readLines").innerHTML = lesson.read.map(line => `<div class="read-line">${line}</div>`).join("");
+  const lessonAudio = document.querySelector("#lessonAudio");
+  lessonAudio.classList.toggle("hidden", !lessonHasAudio(lesson));
+  lessonAudio.playbackRate = .78;
+  if (lessonHasAudio(lesson)) {
+    setAudioElementWithFallback(lessonAudio, lessonAudioPath(lesson));
+  } else {
+    lessonAudio.removeAttribute("src");
+    lessonAudio.load();
+  }
+}
+
 function bumpCurrentStation() {
   const station = document.querySelector(`#routeStations span[data-route-stage="${state.stage}"]`);
   if (!station) return;
@@ -6647,16 +6808,7 @@ function openGame(lessonIndex) {
   renderTraceVector(lesson.words[0]);
   document.querySelector("#strokeList").innerHTML = lesson.strokes.map(item => `<span class="stroke">${item}</span>`).join("");
   document.querySelector("#sentenceLine").textContent = lesson.blank;
-  document.querySelector("#readLines").innerHTML = lesson.read.map(line => `<div class="read-line">${line}</div>`).join("");
-  const lessonAudio = document.querySelector("#lessonAudio");
-  lessonAudio.classList.toggle("hidden", !lessonHasAudio(lesson));
-  lessonAudio.playbackRate = .78;
-  if (lessonHasAudio(lesson)) {
-    setAudioElementWithFallback(lessonAudio, lessonAudioPath(lesson));
-  } else {
-    lessonAudio.removeAttribute("src");
-    lessonAudio.load();
-  }
+  renderReadStage(lesson);
   document.querySelector("#wordFeedback").textContent = "";
   document.querySelector("#traceFeedback").textContent = "";
   document.querySelector("#sentenceFeedback").textContent = "";
@@ -6866,6 +7018,36 @@ function lessonSentenceChallenges(lesson) {
         "小猴子摘桃": "桃",
         "文具回到家": "笔"
       }
+    }
+  };
+  const oralScenarioMap = {
+    "听故事，讲故事": {
+      prompt: "情景选择：讲故事时最重要的是什么？",
+      line: "你要把刚听完的故事讲给家长听。",
+      answer: "按顺序讲清楚",
+      options: ["按顺序讲清楚", "越快越好", "只说最后一句", "声音很小"],
+      icons: { "按顺序讲清楚": "讲", "越快越好": "快", "只说最后一句": "末", "声音很小": "小" }
+    },
+    "请你帮个忙": {
+      prompt: "情景选择：想借同学的橡皮，怎么说更合适？",
+      line: "你写字时发现橡皮不见了。",
+      answer: "请问可以借我用一下橡皮吗？",
+      options: ["请问可以借我用一下橡皮吗？", "快给我橡皮", "我不说话直接拿", "你的橡皮真好看"],
+      icons: { "请问可以借我用一下橡皮吗？": "请", "快给我橡皮": "急", "我不说话直接拿": "拿", "你的橡皮真好看": "看" }
+    },
+    "打电话": {
+      prompt: "情景选择：打电话一开始应该怎么说？",
+      line: "你给同学打电话，想告诉他明天带书。",
+      answer: "喂，你好，我是小语。",
+      options: ["喂，你好，我是小语。", "你快点听我说", "我挂了", "你在哪里玩"],
+      icons: { "喂，你好，我是小语。": "喂", "你快点听我说": "急", "我挂了": "挂", "你在哪里玩": "玩" }
+    },
+    "一起做游戏": {
+      prompt: "情景选择：一起做游戏前要先说清什么？",
+      line: "几个小朋友准备玩一个新游戏。",
+      answer: "先说清游戏规则。",
+      options: ["先说清游戏规则。", "谁大声谁先玩", "不用排队", "输了就不玩了"],
+      icons: { "先说清游戏规则。": "规", "谁大声谁先玩": "吵", "不用排队": "乱", "输了就不玩了": "输" }
     }
   };
   const gardenSortMap = {
@@ -7425,6 +7607,546 @@ function lessonSentenceChallenges(lesson) {
     ]
   };
   if (fourthUnitChallengeMap[lesson.title]) return fourthUnitChallengeMap[lesson.title];
+  const fifthUnitChallengeMap = {
+    "动物儿歌": [
+      {
+        prompt: "动物找偏旁：下面哪个字和小虫子有关？",
+        line: "虫字旁常常出现在昆虫名字里。",
+        answer: "蜻蜓",
+        options: ["蜻蜓", "铅笔", "彩虹", "电话"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "蜻蜓": "虫", "铅笔": "笔", "彩虹": "虹", "电话": "话" }
+      },
+      {
+        prompt: "儿歌动作排序：先看动物，再看它在做什么。",
+        line: "把动物儿歌里的观察顺序点出来。",
+        answer: "找到小动物|看清动作|拍着节奏读",
+        options: shuffle(["找到小动物", "看清动作", "拍着节奏读"]),
+        interaction: "sequence",
+        targetLabel: "儿歌节奏线",
+        targetHint: "动物、动作、节奏"
+      },
+      {
+        prompt: `动物找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到动物儿歌里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "古对今": [
+      {
+        prompt: "对子配对：古对今，圆对什么？",
+        line: "对子要一组一组读。",
+        answer: "方",
+        options: ["方", "电话", "粽子", "小桥"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "方": "□", "电话": "话", "粽子": "粽", "小桥": "桥" }
+      },
+      {
+        prompt: "对子节奏：读对子时先做什么？",
+        line: "把对子朗读步骤排好。",
+        answer: "读上句|找下句|拍手成对",
+        options: shuffle(["读上句", "找下句", "拍手成对"]),
+        interaction: "sequence",
+        targetLabel: "对子节奏",
+        targetHint: "上句、下句、拍手"
+      },
+      {
+        prompt: `对子找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到对子里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "操场上": [
+      {
+        prompt: "运动分类：下面哪一项是在操场上做的？",
+        line: "把运动项目放进操场。",
+        answer: "拍球",
+        options: ["拍球", "睡觉", "包粽子", "查字典"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "拍球": "球", "睡觉": "床", "包粽子": "粽", "查字典": "典" }
+      },
+      {
+        prompt: "下课路线：铃声响以后，大家怎么做？",
+        line: "按操场活动顺序点出来。",
+        answer: "铃声响|来到操场|一起运动",
+        options: shuffle(["铃声响", "来到操场", "一起运动"]),
+        interaction: "sequence",
+        targetLabel: "操场路线",
+        targetHint: "铃声、操场、运动"
+      },
+      {
+        prompt: `运动找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到操场上的动作字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "人之初": [
+      {
+        prompt: "蒙学选择：哪一句是《人之初》里的句子？",
+        line: "慢慢读，听出节奏。",
+        answer: "人之初，性本善",
+        options: ["人之初，性本善", "彩虹像小桥", "端午粽子香", "小猴子下山"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "人之初，性本善": "善", "彩虹像小桥": "虹", "端午粽子香": "粽", "小猴子下山": "猴" }
+      },
+      {
+        prompt: "诵读步骤：蒙学句子怎么读更稳？",
+        line: "先慢读，再拍节奏。",
+        answer: "慢慢读准|拍出节奏|记住好习惯",
+        options: shuffle(["慢慢读准", "拍出节奏", "记住好习惯"]),
+        interaction: "sequence",
+        targetLabel: "蒙学节奏",
+        targetHint: "读准、节奏、习惯"
+      },
+      {
+        prompt: `蒙学找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到蒙学句里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "打电话": [
+      {
+        prompt: "电话情景：打电话开头应该先说什么？",
+        line: "把礼貌问候放进电话亭。",
+        answer: "喂，你好",
+        options: ["喂，你好", "你快点", "我不听", "别说了"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "喂，你好": "话", "你快点": "急", "我不听": "错", "别说了": "停" }
+      },
+      {
+        prompt: "电话顺序：先问好，再说什么？",
+        line: "把打电话的礼貌顺序点出来。",
+        answer: "先问好|说清事情|礼貌再见",
+        options: shuffle(["先问好", "说清事情", "礼貌再见"]),
+        interaction: "sequence",
+        targetLabel: "电话流程",
+        targetHint: "问好、事情、再见"
+      },
+      {
+        prompt: `电话找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到电话里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "语文园地五": [
+      {
+        prompt: "偏旁厨房：哪个字和吃饭有关？",
+        line: "食字旁常常和吃的东西有关。",
+        answer: "饭",
+        options: ["饭", "虹", "尾", "典"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "饭": "食", "虹": "虫", "尾": "尾", "典": "书" }
+      },
+      {
+        prompt: "偏旁分类：有饭能吃饱，有水能做什么？",
+        line: "把生活偏旁放进正确小篮子。",
+        answer: "泡茶",
+        options: ["泡茶", "拍球", "看月亮", "借尾巴"],
+        interaction: "sort",
+        targetLabel: "生活字",
+        decoyLabel: "不是这一类",
+        targetHint: "吃喝生活",
+        decoyHint: "换个主题"
+      },
+      {
+        prompt: `偏旁找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到园地里的偏旁字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ]
+  };
+  if (fifthUnitChallengeMap[lesson.title]) return fifthUnitChallengeMap[lesson.title];
+  const sixthUnitChallengeMap = {
+    "古诗二首": [
+      {
+        prompt: "古诗画面：哪幅画最像“小荷才露尖尖角”？",
+        line: "看夏天画面，找到诗句里的景色。",
+        answer: "小荷露尖角",
+        options: ["小荷露尖角", "电话说再见", "操场拍皮球", "文具回到家"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "小荷露尖角": "荷", "电话说再见": "话", "操场拍皮球": "球", "文具回到家": "笔" }
+      },
+      {
+        prompt: "诗意排序：从小娃撑船到浮萍露出踪迹。",
+        line: "把《池上》的画面顺序点出来。",
+        answer: "小娃撑小艇|偷采白莲回|浮萍一道开",
+        options: shuffle(["小娃撑小艇", "偷采白莲回", "浮萍一道开"]),
+        interaction: "sequence",
+        targetLabel: "古诗画面线",
+        targetHint: "撑船、采莲、浮萍"
+      },
+      {
+        prompt: `古诗找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到夏天古诗里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "荷叶圆圆": [
+      {
+        prompt: "荷叶伙伴：谁最喜欢圆圆的荷叶？",
+        line: "把荷叶伙伴放到池塘里。",
+        answer: "小水珠",
+        options: ["小水珠", "闹钟", "粽子", "电话"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "小水珠": "珠", "闹钟": "钟", "粽子": "粽", "电话": "话" }
+      },
+      {
+        prompt: "荷叶位置：先看到荷叶，再看到谁？",
+        line: "按池塘画面顺序点出来。",
+        answer: "荷叶圆圆|小水珠躺着|小鱼儿游来",
+        options: shuffle(["荷叶圆圆", "小水珠躺着", "小鱼儿游来"]),
+        interaction: "sequence",
+        targetLabel: "池塘路线",
+        targetHint: "荷叶、水珠、小鱼"
+      },
+      {
+        prompt: `荷叶找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到荷叶池里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "要下雨了": [
+      {
+        prompt: "天气预警：要下雨时，谁可能飞得低？",
+        line: "观察小动物，判断天气变化。",
+        answer: "燕子",
+        options: ["燕子", "铅笔", "彩虹", "字典"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "燕子": "燕", "铅笔": "笔", "彩虹": "虹", "字典": "典" }
+      },
+      {
+        prompt: "下雨信号：先观察，再判断什么？",
+        line: "把天气预警步骤点出来。",
+        answer: "燕子低飞|鱼儿出水|快要下雨",
+        options: shuffle(["燕子低飞", "鱼儿出水", "快要下雨"]),
+        interaction: "sequence",
+        targetLabel: "天气信号",
+        targetHint: "燕子、鱼儿、下雨"
+      },
+      {
+        prompt: `天气找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到下雨故事里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "语文园地六": [
+      {
+        prompt: "夏天词语：哪一个最像夏夜里的光？",
+        line: "把夏天词语放进夜晚草地。",
+        answer: "萤火虫",
+        options: ["萤火虫", "电话机", "挖井人", "小闹钟"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "萤火虫": "萤", "电话机": "话", "挖井人": "井", "小闹钟": "钟" }
+      },
+      {
+        prompt: "夏日分类：扇子、椅子、萤火虫属于什么主题？",
+        line: "把夏天词语放进正确篮子。",
+        answer: "夏天",
+        options: ["夏天", "电话", "端午", "字典"],
+        interaction: "sort",
+        targetLabel: "夏天词语",
+        decoyLabel: "不是夏天",
+        targetHint: "清凉、夏夜",
+        decoyHint: "换个主题"
+      },
+      {
+        prompt: `夏词找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到园地里的夏天字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ]
+  };
+  if (sixthUnitChallengeMap[lesson.title]) return sixthUnitChallengeMap[lesson.title];
+  const seventhUnitChallengeMap = {
+    "文具的家": [
+      {
+        prompt: "文具收纳：用完铅笔应该放到哪里？",
+        line: "帮文具找到自己的家。",
+        answer: "文具盒",
+        options: ["文具盒", "池塘", "彩虹桥", "小闹钟"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "文具盒": "盒", "池塘": "池", "彩虹桥": "虹", "小闹钟": "钟" }
+      },
+      {
+        prompt: "收纳顺序：用完文具后怎么做？",
+        line: "把好习惯顺序点出来。",
+        answer: "用完文具|放回家里|桌面整齐",
+        options: shuffle(["用完文具", "放回家里", "桌面整齐"]),
+        interaction: "sequence",
+        targetLabel: "收纳路线",
+        targetHint: "用完、放回、整齐"
+      },
+      {
+        prompt: `文具找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到文具里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "一分钟": [
+      {
+        prompt: "时间挑战：一分钟可以认真做好什么？",
+        line: "把珍惜时间的行动放进小闹钟。",
+        answer: "洗脸整理",
+        options: ["洗脸整理", "赖床拖拉", "乱扔书包", "一直发呆"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "洗脸整理": "钟", "赖床拖拉": "床", "乱扔书包": "乱", "一直发呆": "呆" }
+      },
+      {
+        prompt: "一分钟路线：迟到以后，元元明白了什么？",
+        line: "把时间故事顺序点出来。",
+        answer: "多睡一分钟|路上很着急|知道时间珍贵",
+        options: shuffle(["多睡一分钟", "路上很着急", "知道时间珍贵"]),
+        interaction: "sequence",
+        targetLabel: "时间路线",
+        targetHint: "拖拉、着急、珍惜"
+      },
+      {
+        prompt: `时间找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到时间里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "动物王国开大会": [
+      {
+        prompt: "通知要素：开大会的通知必须说清什么？",
+        line: "帮动物王国补全通知。",
+        answer: "时间和地点",
+        options: ["时间和地点", "颜色和味道", "玩具和零食", "月亮和星星"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "时间和地点": "会", "颜色和味道": "色", "玩具和零食": "玩", "月亮和星星": "月" }
+      },
+      {
+        prompt: "通知修正：第一次没说清，后来要怎样？",
+        line: "把通知故事顺序点出来。",
+        answer: "要开大会|通知没说清|重新说清楚",
+        options: shuffle(["要开大会", "通知没说清", "重新说清楚"]),
+        interaction: "sequence",
+        targetLabel: "通知路线",
+        targetHint: "开会、说清、通知"
+      },
+      {
+        prompt: `通知找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到通知里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "小猴子下山": [
+      {
+        prompt: "专心选择：小猴子最后为什么空着手？",
+        line: "做事要一心一意。",
+        answer: "见一样丢一样",
+        options: ["见一样丢一样", "一直很专心", "文具没收好", "电话没说清"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "见一样丢一样": "猴", "一直很专心": "专", "文具没收好": "笔", "电话没说清": "话" }
+      },
+      {
+        prompt: "下山路线：小猴子先看见什么，后来怎样？",
+        line: "把故事里的路线点出来。",
+        answer: "看见玉米|又去摘桃|最后空着手",
+        options: shuffle(["看见玉米", "又去摘桃", "最后空着手"]),
+        interaction: "sequence",
+        targetLabel: "下山路线",
+        targetHint: "玉米、桃子、空手"
+      },
+      {
+        prompt: `小猴找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到小猴下山里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "一起做游戏": [
+      {
+        prompt: "规则选择：一起做游戏前要先说清什么？",
+        line: "把游戏规则放进小操场。",
+        answer: "先说清规则",
+        options: ["先说清规则", "谁大声谁先玩", "不用排队", "输了就生气"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "先说清规则": "规", "谁大声谁先玩": "吵", "不用排队": "乱", "输了就生气": "气" }
+      },
+      {
+        prompt: "游戏顺序：先说规则，再怎么做？",
+        line: "把一起做游戏的顺序点出来。",
+        answer: "说清规则|轮流参与|开心游戏",
+        options: shuffle(["说清规则", "轮流参与", "开心游戏"]),
+        interaction: "sequence",
+        targetLabel: "游戏路线",
+        targetHint: "规则、轮流、开心"
+      },
+      {
+        prompt: `游戏找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到游戏规则里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "语文园地七": [
+      {
+        prompt: "好习惯判断：下面哪一个是好习惯？",
+        line: "把生活好习惯放进星星盒。",
+        answer: "文具摆整齐",
+        options: ["文具摆整齐", "大声吵闹", "乱扔东西", "忘记排队"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "文具摆整齐": "星", "大声吵闹": "吵", "乱扔东西": "乱", "忘记排队": "队" }
+      },
+      {
+        prompt: "习惯分类：礼貌、整理、排队属于什么？",
+        line: "把好习惯放进正确篮子。",
+        answer: "好习惯",
+        options: ["好习惯", "坏天气", "小池塘", "长尾巴"],
+        interaction: "sort",
+        targetLabel: "好习惯",
+        decoyLabel: "不是好习惯",
+        targetHint: "礼貌整理",
+        decoyHint: "不是生活习惯"
+      },
+      {
+        prompt: `习惯找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到园地里的习惯字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ]
+  };
+  if (seventhUnitChallengeMap[lesson.title]) return seventhUnitChallengeMap[lesson.title];
+  const eighthUnitChallengeMap = {
+    "棉花姑娘": [
+      {
+        prompt: "医生选择：谁能帮助棉花姑娘治害虫？",
+        line: "帮棉花姑娘找到合适的医生。",
+        answer: "七星瓢虫",
+        options: ["七星瓢虫", "小闹钟", "彩虹桥", "电话机"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "七星瓢虫": "虫", "小闹钟": "钟", "彩虹桥": "虹", "电话机": "话" }
+      },
+      {
+        prompt: "治病顺序：棉花姑娘先怎么了，后来怎样？",
+        line: "把故事顺序点出来。",
+        answer: "棉花生病|请医生帮忙|病好了",
+        options: shuffle(["棉花生病", "请医生帮忙", "病好了"]),
+        interaction: "sequence",
+        targetLabel: "治病路线",
+        targetHint: "生病、医生、康复"
+      },
+      {
+        prompt: `棉花找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到棉花故事里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "咕咚": [
+      {
+        prompt: "声音真相：听到“咕咚”以后，应该先做什么？",
+        line: "遇到事情先观察，不要跟着乱跑。",
+        answer: "看清真相",
+        options: ["看清真相", "马上乱跑", "大声吵闹", "闭眼害怕"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "看清真相": "看", "马上乱跑": "跑", "大声吵闹": "吵", "闭眼害怕": "怕" }
+      },
+      {
+        prompt: "咕咚路线：先听到声音，再发生什么？",
+        line: "把故事变化顺序点出来。",
+        answer: "听见咕咚|大家害怕乱跑|看清真相不怕了",
+        options: shuffle(["听见咕咚", "大家害怕乱跑", "看清真相不怕了"]),
+        interaction: "sequence",
+        targetLabel: "真相路线",
+        targetHint: "听见、害怕、看清"
+      },
+      {
+        prompt: `咕咚找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到咕咚故事里的字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ],
+    "小壁虎借尾巴": [
+      {
+        prompt: "尾巴配对：小壁虎最后发现了什么？",
+        line: "把尾巴秘密放进故事盒。",
+        answer: "自己的尾巴会长出来",
+        options: ["自己的尾巴会长出来", "电话能借尾巴", "粽子有尾巴", "闹钟会爬墙"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "自己的尾巴会长出来": "尾", "电话能借尾巴": "话", "粽子有尾巴": "粽", "闹钟会爬墙": "钟" }
+      },
+      {
+        prompt: "借尾巴路线：小壁虎先借尾巴，后来怎样？",
+        line: "把故事顺序点出来。",
+        answer: "小壁虎借尾巴|问了几个朋友|尾巴长出来",
+        options: shuffle(["小壁虎借尾巴", "问了几个朋友", "尾巴长出来"]),
+        interaction: "sequence",
+        targetLabel: "尾巴路线",
+        targetHint: "借、问、长出"
+      },
+      {
+        prompt: `壁虎找字：哪个字读 ${firstPinyin}？`,
+        line: "听读音，找到小壁虎故事里的字。",
+        answer: firstWord,
+        options: shuffle([firstWord, ...wordPool.filter(word => word !== firstWord).slice(0, 3)])
+      }
+    ],
+    "语文园地八": [
+      {
+        prompt: "卫生用品：下面哪一个可以用来刷牙？",
+        line: "把卫生用品放进清洁篮。",
+        answer: "牙刷",
+        options: ["牙刷", "彩虹", "小猴子", "电话"],
+        interaction: "picture",
+        mode: "picture",
+        cardIcons: { "牙刷": "刷", "彩虹": "虹", "小猴子": "猴", "电话": "话" }
+      },
+      {
+        prompt: "卫生分类：牙刷、毛巾、脸盆属于什么？",
+        line: "把清洁用品放进正确篮子。",
+        answer: "卫生用品",
+        options: ["卫生用品", "天气词语", "动物故事", "古诗画面"],
+        interaction: "sort",
+        targetLabel: "卫生用品",
+        decoyLabel: "不是卫生用品",
+        targetHint: "刷牙洗脸",
+        decoyHint: "换个主题"
+      },
+      {
+        prompt: `卫生找字：哪个字读 ${secondPinyin}？`,
+        line: "听读音，找到园地里的卫生字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      }
+    ]
+  };
+  if (eighthUnitChallengeMap[lesson.title]) return eighthUnitChallengeMap[lesson.title];
   if (lesson.title.includes("快乐读书吧") || lesson.type.includes("读书")) {
     return [
       {
@@ -7536,6 +8258,38 @@ function lessonSentenceChallenges(lesson) {
       }
     ];
   }
+  if (lesson.type.includes("口语交际")) {
+    const scenario = oralScenarioMap[lesson.title] || {
+      prompt: "情景选择：遇到这个场景应该怎么说？",
+      line: "想一想，说清楚，有礼貌。",
+      answer: lesson.answer,
+      options: lesson.options,
+      icons: {}
+    };
+    return [
+      {
+        prompt: scenario.prompt,
+        line: scenario.line,
+        answer: scenario.answer,
+        options: scenario.options,
+        interaction: "picture",
+        mode: "oral",
+        cardIcons: scenario.icons
+      },
+      {
+        prompt: `礼貌用字：哪个字读 ${secondPinyin}？`,
+        line: "从表达里找出关键字。",
+        answer: secondWord,
+        options: shuffle([secondWord, ...wordPool.filter(word => word !== secondWord).slice(0, 3)])
+      },
+      {
+        prompt: profile.sentencePrompt,
+        line: lesson.blank,
+        answer: lesson.answer,
+        options: lesson.options
+      }
+    ];
+  }
   if (lesson.type.includes("故事") || lesson.type.includes("课文") || lesson.type.includes("朗读") || lesson.type.includes("生活") || lesson.type.includes("时间") || lesson.type.includes("想象")) {
     const sequence = sequenceMap[lesson.title];
     return [
@@ -7617,6 +8371,7 @@ function renderSentenceChallenge() {
   if (usesSortBoard) {
     document.querySelector("#sortTarget").textContent = challenge.targetLabel || "放到这里";
     document.querySelector("#sortDecoy").textContent = challenge.decoyLabel || "再想想";
+    document.querySelector("#sortTarget").style.setProperty("--sequence-progress", "0%");
     document.querySelector("#sortTarget").dataset.hint = challenge.targetHint || "正确答案";
     document.querySelector("#sortDecoy").dataset.hint = challenge.decoyHint || "不选这里";
     document.querySelector("#sortCards").innerHTML = options.map(option => `<button class="sort-card" draggable="true" data-sort-answer="${option}" data-card-icon="${challenge.cardIcons?.[option] || "图"}">${option}</button>`).join("");
@@ -7642,12 +8397,15 @@ function handleSequenceCard(card) {
   selectedSequenceAnswers.push(value);
   card.classList.add("selected");
   card.disabled = true;
+  sparkleAtNode(card, selectedSequenceAnswers.length);
+  const total = challenge.answer.split("|").length;
+  document.querySelector("#sortTarget").style.setProperty("--sequence-progress", `${Math.round(selectedSequenceAnswers.length / total * 100)}%`);
   document.querySelector("#sortTarget").textContent = `已选：${selectedSequenceAnswers.join(" → ")}`;
-  document.querySelector("#sentenceFeedback").textContent = selectedSequenceAnswers.length < challenge.answer.split("|").length
+  document.querySelector("#sentenceFeedback").textContent = selectedSequenceAnswers.length < total
     ? "继续点下一张情节卡。"
     : "正在检查故事顺序。";
   popFeedback("#sentenceFeedback");
-  if (selectedSequenceAnswers.length >= challenge.answer.split("|").length) {
+  if (selectedSequenceAnswers.length >= total) {
     setTimeout(() => answerSentence(selectedSequenceAnswers.join("|"), card), 260);
   }
 }
@@ -7668,6 +8426,11 @@ function answerSentence(value, node) {
     flyMistakeToReview(mistakeWord, "#stageSentence");
   }
   if (ok) {
+    if (node?.classList?.contains("sort-card")) {
+      node.classList.add("fly-away");
+      animateBasketCatch("#sortTarget");
+      sparkleAtNode(node, "✓");
+    }
     popReward("#stageSentence", "✓");
     bumpCurrentStation();
     updateCaptainBubble("放对了！故事线索又前进了一步。", "good");
@@ -7702,7 +8465,10 @@ function showStage(stage) {
     stopTraceWriting();
   }
   if (stage === 2) updateCaptainBubble("现在把词语放回句子里，看看读起来通不通。", "good");
-  if (stage === 3) updateCaptainBubble("最后一步，慢慢跟读，读完就能领奖啦。", "good");
+  if (stage === 3) {
+    renderReadStage();
+    updateCaptainBubble("最后一步，慢慢跟读，读完就能领奖啦。", "good");
+  }
 }
 
 function stopTraceWriting() {
@@ -7928,7 +8694,11 @@ soundBtn.addEventListener("click", () => {
   state.sound = !state.sound;
   localStorage.setItem(`${storeKey}-sound`, state.sound ? "on" : "off");
   updateSoundButton();
-  if (state.sound) playSound("correct");
+  if (state.sound) {
+    audioUnlocked = false;
+    unlockAudioForIOS();
+    playSound("correct");
+  }
 });
 
 document.querySelector("#choices").addEventListener("click", event => {
@@ -8769,6 +9539,10 @@ document.querySelector("#parentOnboard").addEventListener("click", () => {
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   deferredInstallPrompt = event;
+});
+
+["touchstart", "pointerdown", "click"].forEach(eventName => {
+  document.addEventListener(eventName, unlockAudioForIOS, { passive: true });
 });
 
 renderAll();
