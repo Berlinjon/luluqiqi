@@ -2211,6 +2211,10 @@ button:active {
   overflow: hidden;
 }
 
+.complete-hero.reward-burst {
+  animation: completeHeroPulse .76s ease both;
+}
+
 .complete-hero::before,
 .complete-hero::after {
   content: "★";
@@ -2289,8 +2293,65 @@ button:active {
   animation: starBurst .9s .55s ease both;
 }
 
+.complete-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.complete-burst span {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff8e5;
+  border: 2px solid rgba(123,75,0,.18);
+  color: #7b4b00;
+  font-weight: 950;
+  opacity: 0;
+  animation: completeStarPop .9s ease forwards;
+}
+
+.complete-progress {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: #fff8e5;
+  border: 1px solid rgba(123,75,0,.14);
+  text-align: left;
+}
+
+.complete-progress span {
+  color: #7b4b00;
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.complete-progress-track {
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(123,75,0,.12);
+}
+
+.complete-progress-track b {
+  display: block;
+  width: var(--complete-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--yellow));
+  transition: width .7s cubic-bezier(.2, .85, .22, 1.05);
+}
+
 .complete-card.reward-ready .complete-actions,
-.complete-card.reward-ready .complete-stats {
+.complete-card.reward-ready .complete-stats,
+.complete-card.reward-ready .complete-progress {
   animation: rewardPanelIn .36s ease both;
 }
 
@@ -2818,6 +2879,14 @@ button:active {
   border-radius: inherit;
   background: linear-gradient(90deg, #2f855a, #f6c85f);
   transition: width .45s ease;
+}
+
+.scene-route.route-advance .route-track span {
+  animation: routeFlash .58s ease;
+}
+
+.scene-route.route-advance .route-avatar {
+  animation: routeHop .58s ease, guideBounce 2.4s ease-in-out infinite .58s;
 }
 
 .route-avatar {
@@ -3476,9 +3545,7 @@ button:active {
 }
 
 .lesson-audio {
-  width: 100%;
-  margin: 12px 0 0;
-  display: block;
+  display: none;
 }
 
 .read-line {
@@ -3655,6 +3722,18 @@ button:active {
   to { stroke-dashoffset: -28; }
 }
 
+@keyframes routeFlash {
+  0% { filter: brightness(1); box-shadow: none; }
+  45% { filter: brightness(1.22); box-shadow: 0 0 16px rgba(246,200,95,.65); }
+  100% { filter: brightness(1); box-shadow: none; }
+}
+
+@keyframes routeHop {
+  0% { transform: translateX(-50%) translateY(0) scale(1); }
+  45% { transform: translateX(-50%) translateY(-7px) scale(1.08); }
+  100% { transform: translateX(-50%) translateY(0) scale(1); }
+}
+
 @keyframes nodeFloat {
   0%, 100% { transform: translate(-50%, -50%); }
   50% { transform: translate(-50%, calc(-50% - 5px)); }
@@ -3778,6 +3857,27 @@ button:active {
   0% { opacity: 0; transform: translateY(18px) scale(.6) rotate(-12deg); }
   70% { opacity: 1; transform: translateY(-12px) scale(1.2) rotate(8deg); }
   100% { opacity: 1; transform: translateY(-4px) scale(1) rotate(0); }
+}
+
+@keyframes completeHeroPulse {
+  0% { transform: scale(.98); }
+  55% { transform: scale(1.015); box-shadow: 0 18px 42px rgba(246,200,95,.18); }
+  100% { transform: scale(1); }
+}
+
+@keyframes completeStarPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.35);
+  }
+  24% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform:
+      translate(calc(-50% + var(--burst-x, 0px)), calc(-50% + var(--burst-y, -70px)))
+      scale(.86)
+      rotate(var(--burst-r, 0deg));
+  }
 }
 
 @keyframes rewardPanelIn {
@@ -4709,10 +4809,15 @@ body.app-view-map #kidView {
     </div>
     <div class="dialog-body">
       <div class="complete-hero">
+        <div class="complete-burst" id="completeBurst" aria-hidden="true"></div>
         <div class="complete-chest" id="completeChest"><span>★</span></div>
       </div>
       <h2 class="complete-title" id="completeTitle">完成一课啦</h2>
       <p class="complete-text" id="completeText">点亮课文星，继续下一关吧。</p>
+      <div class="complete-progress">
+        <span id="completeProgressText">本单元进度 0/0</span>
+        <div class="complete-progress-track"><b id="completeProgressFill"></b></div>
+      </div>
       <div class="complete-guide" id="completeGuide">
         <span class="status-chip" id="completeGuideBadge">小语队长推荐</span>
         <h3 id="completeGuideTitle">继续下一课</h3>
@@ -4873,7 +4978,7 @@ body.app-view-map #kidView {
           <div class="read-check" id="followCheck">2 跟读</div>
           <div class="read-check" id="finishReadCheck">3 完成</div>
         </div>
-        <audio class="lesson-audio" id="lessonAudio" controls preload="auto"></audio>
+        <audio class="lesson-audio" id="lessonAudio" preload="auto" aria-hidden="true"></audio>
         <div class="action-row">
           <button class="primary-btn" id="speakBtn">播放示范</button>
           <button class="ghost-btn" id="followReadBtn">我跟读了</button>
@@ -5017,7 +5122,7 @@ units.push(
 );
 
 const storeKey = "hangzhou-yuwen-adventure-v1";
-const audioVersion = "v95";
+const audioVersion = "v97";
 const state = {
   unit: 0,
   lesson: null,
@@ -5421,6 +5526,14 @@ function pulseScene() {
   scene.classList.remove("stage-glow");
   void scene.offsetWidth;
   scene.classList.add("stage-glow");
+}
+
+function pulseRouteAdvance() {
+  const route = document.querySelector("#sceneRoute");
+  if (!route) return;
+  route.classList.remove("route-advance");
+  void route.offsetWidth;
+  route.classList.add("route-advance");
 }
 
 function flyCardToBag(label, fromSelector = "#bigWord") {
@@ -8439,11 +8552,13 @@ function answerSentence(value, node) {
       updateCollectBoard();
       updateSceneRoute();
       pulseScene();
+      pulseRouteAdvance();
       setTimeout(() => renderSentenceChallenge(), 720);
     } else {
       document.querySelector("#sentenceFeedback").textContent = lessonPlayProfile(lesson).sentenceDone;
       popFeedback("#sentenceFeedback");
       pulseScene();
+      pulseRouteAdvance();
       setTimeout(() => showStage(3), 760);
     }
   }
@@ -8458,6 +8573,7 @@ function showStage(stage) {
   });
   updateCollectBoard();
   updateSceneRoute();
+  pulseRouteAdvance();
   if (stage === 1) {
     updateCaptainBubble("来到写字工坊，跟着笔画慢慢写。", "good");
     setTimeout(() => startTraceWriting(), 180);
@@ -8985,6 +9101,28 @@ function applyCompleteRecommendation(recommendation) {
   document.querySelector("#completeGuideText").textContent = recommendation.text;
 }
 
+function playCompleteRewardBurst(earnedStars, unitComplete) {
+  const hero = document.querySelector(".complete-hero");
+  const burst = document.querySelector("#completeBurst");
+  if (!hero || !burst) return;
+  hero.classList.remove("reward-burst");
+  void hero.offsetWidth;
+  hero.classList.add("reward-burst");
+  burst.innerHTML = "";
+  const count = unitComplete ? 10 : Math.max(4, earnedStars + 3);
+  for (let index = 0; index < count; index += 1) {
+    const star = document.createElement("span");
+    star.textContent = index % 3 === 0 && unitComplete ? "徽" : "★";
+    const angle = (-150 + (300 / Math.max(count - 1, 1)) * index) * Math.PI / 180;
+    const distance = 58 + (index % 3) * 18;
+    star.style.setProperty("--burst-x", `${Math.cos(angle) * distance}px`);
+    star.style.setProperty("--burst-y", `${Math.sin(angle) * distance - 42}px`);
+    star.style.setProperty("--burst-r", `${-28 + index * 9}deg`);
+    star.style.animationDelay = `${index * .045}s`;
+    burst.appendChild(star);
+  }
+}
+
 function showCompleteDialog(lesson, earnedStars) {
   const next = nextLessonPosition();
   const unitDone = doneCountForUnit(state.unit);
@@ -9006,6 +9144,8 @@ function showCompleteDialog(lesson, earnedStars) {
   document.querySelector("#completeStars").textContent = `+${earnedStars}`;
   document.querySelector("#completeUnit").textContent = `${unitDone}/${unitTotal}`;
   document.querySelector("#completeTotal").textContent = state.progress.stars;
+  document.querySelector("#completeProgressText").textContent = `本单元进度 ${unitDone}/${unitTotal}`;
+  document.querySelector("#completeProgressFill").style.setProperty("--complete-progress", `${Math.round(unitDone / Math.max(unitTotal, 1) * 100)}%`);
   document.querySelector("#completeNextTitle").textContent = next ? "继续下一课" : "回到闯关地图";
   document.querySelector("#completeNextText").textContent = next
     ? `下一站：${units[next.unit].name} · ${units[next.unit].lessons[next.lesson].title}`
@@ -9023,6 +9163,7 @@ function showCompleteDialog(lesson, earnedStars) {
   `;
   applyCompleteRecommendation(recommendation);
   completeShell.classList.add("open");
+  playCompleteRewardBurst(earnedStars, unitComplete);
   setTimeout(() => completeCard.classList.add("reward-ready"), 650);
 }
 
