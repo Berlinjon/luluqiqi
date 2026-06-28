@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#eef8ff">
+<title>听句子选图片</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<style>
+  :root {
+    --bg: #f7fbff;
+    --surface: #ffffff;
+    --ink: #172033;
+    --muted: #6a7688;
+    --line: #dbe8ef;
+    --blue: #287ec7;
+    --blue-soft: #dff1ff;
+    --green: #2f9b6f;
+    --green-soft: #e3f7ed;
+    --coral: #f46f5d;
+    --sun: #ffd36a;
+    --shadow: 0 18px 44px rgba(39, 86, 123, .14);
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      linear-gradient(180deg, #eef8ff 0%, #f9fcff 44%, #f5fbf7 100%);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  button {
+    font: inherit;
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app {
+    width: min(430px, 100%);
+    min-height: 100svh;
+    margin: 0 auto;
+    padding: max(14px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 14px;
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .learn-toolbar {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 8px;
+    margin: -4px -4px 0;
+    border-radius: var(--radius);
+    background: rgba(217, 240, 255, .78);
+    border: 1px solid rgba(173, 218, 241, .78);
+  }
+  .topbar.learning .brand,
+  .topbar.learning #parentBtn { display: none; }
+  .topbar.learning .learn-toolbar {
+    display: flex;
+    flex: 1;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .brand strong {
+    font-size: 1.3rem;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+  .brand span, .mini {
+    color: var(--muted);
+    font-weight: 800;
+    font-size: .78rem;
+  }
+  .icon-btn, .text-btn {
+    height: 42px;
+    min-width: 42px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.72);
+    border: 1px solid rgba(188, 214, 226, .72);
+    box-shadow: 0 8px 24px rgba(39, 86, 123, .08);
+    font-weight: 900;
+  }
+  .text-btn { padding: 0 14px; }
+  .tool-btn, .tool-pill, .tool-select {
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(188, 214, 226, .9);
+    box-shadow: 0 8px 20px rgba(39, 86, 123, .08);
+    color: #163766;
+    font-weight: 1000;
+    font-size: .82rem;
+    white-space: nowrap;
+  }
+  .tool-btn.icon-only {
+    width: 38px;
+    padding: 0;
+    color: var(--blue);
+  }
+  .tool-btn.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+  .tool-pill.level {
+    background: linear-gradient(180deg, #5eaaef, #2f86db);
+    color: #fff;
+    border-color: transparent;
+  }
+  .tool-pill.progress-pill, .tool-pill.star-pill {
+    margin-left: auto;
+    min-width: 70px;
+    font-size: 1rem;
+  }
+  .tool-pill.star-pill { margin-left: 0; }
+  .tool-select {
+    appearance: none;
+    color: #163766;
+    padding-right: 26px;
+    background-image: linear-gradient(45deg, transparent 50%, #2864a0 50%), linear-gradient(135deg, #2864a0 50%, transparent 50%);
+    background-position: calc(100% - 15px) 16px, calc(100% - 10px) 16px;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .home.active {
+    min-height: calc(100svh - 92px);
+    display: grid;
+    align-content: center;
+    gap: 18px;
+  }
+  .kid-grid, .lesson-list {
+    display: grid;
+    gap: 12px;
+  }
+  .kid-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kid-card, .lesson-card, .parent-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .kid-card {
+    min-height: 136px;
+    padding: 14px;
+    text-align: left;
+    display: grid;
+    align-content: space-between;
+    gap: 16px;
+  }
+  .kid-face {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--blue-soft);
+    font-size: 2rem;
+  }
+  .kid-card:nth-child(2) .kid-face { background: var(--green-soft); }
+  .kid-card:nth-child(3) .kid-face { background: #fff2d8; }
+  .kid-card strong, .lesson-card strong {
+    display: block;
+    font-size: 1.24rem;
+    line-height: 1.2;
+  }
+  .lesson-card {
+    width: 100%;
+    min-height: 104px;
+    padding: 16px;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .lesson-card span {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: .82rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .lesson-badge {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius);
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-weight: 1000;
+  }
+
+  .learn.active {
+    min-height: calc(100svh - 92px);
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 14px;
+  }
+  .progress-row {
+    display: grid;
+    gap: 8px;
+  }
+  .progress-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-weight: 900;
+  }
+  .progress-track {
+    height: 10px;
+    border-radius: 999px;
+    background: #dfeef7;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    transition: width .22s ease;
+  }
+  .listen-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .prompt-panel {
+    display: none;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1px dashed #bdd3e2;
+    background: #f7fcff;
+    color: #163766;
+    font-weight: 900;
+    line-height: 1.45;
+    text-align: center;
+  }
+  .prompt-panel.visible { display: grid; gap: 4px; }
+  .prompt-panel .zh { color: var(--muted); font-size: .86rem; }
+  .play-btn {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    background: radial-gradient(circle at 35% 25%, #6bb9ef, var(--blue));
+    box-shadow: 0 18px 34px rgba(40,126,199,.28);
+  }
+  .play-btn svg { width: 42px; height: 42px; margin-left: 5px; fill: currentColor; }
+  .wave {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .wave i {
+    display: block;
+    width: 6px;
+    border-radius: 999px;
+    background: #88bee5;
+    animation: pulse 1.05s ease-in-out infinite;
+  }
+  .wave i:nth-child(1){height:12px;animation-delay:.05s}
+  .wave i:nth-child(2){height:24px;animation-delay:.12s}
+  .wave i:nth-child(3){height:30px;animation-delay:.2s}
+  .wave i:nth-child(4){height:18px;animation-delay:.28s}
+  .wave i:nth-child(5){height:28px;animation-delay:.36s}
+  .wave i:nth-child(6){height:14px;animation-delay:.44s}
+  .wave.idle i { animation-play-state: paused; opacity: .62; }
+  @keyframes pulse { 0%,100%{transform:scaleY(.72)} 50%{transform:scaleY(1.15)} }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-content: start;
+  }
+  .choice {
+    min-height: 168px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 26px rgba(39,86,123,.1);
+    overflow: hidden;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  .choice:active { transform: scale(.98); }
+  .choice.correct {
+    border-color: var(--green);
+    background: var(--green-soft);
+  }
+  .choice.wrong {
+    border-color: var(--coral);
+    background: #fff0ed;
+    animation: shake .24s ease;
+  }
+  .choice-img {
+    width: 100%;
+    height: 100%;
+    min-height: 164px;
+    object-fit: cover;
+    display: block;
+    background: #f7fbff;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    33% { transform: translateX(-5px); }
+    66% { transform: translateX(5px); }
+  }
+  .scene {
+    height: 100%;
+    min-height: 164px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--sky, #dff1ff) 0 62%, var(--ground, #dff4df) 62% 100%);
+  }
+  .scene::before {
+    content: "";
+    position: absolute;
+    inset: 12px 12px auto auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--sun);
+    box-shadow: 0 0 0 9px rgba(255,211,106,.18);
+  }
+  .scene .main {
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    filter: drop-shadow(0 10px 10px rgba(45,84,102,.16));
+  }
+  .scene .sub {
+    position: absolute;
+    left: 18px;
+    bottom: 16px;
+    font-size: 2.1rem;
+  }
+  .scene .sub.right { left: auto; right: 18px; }
+  .scene .shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,.7);
+  }
+  .scene .shape.one { width: 52px; height: 18px; left: 16px; top: 24px; }
+  .scene .shape.two { width: 38px; height: 14px; left: 70px; top: 36px; }
+  .scene.homey { --sky:#f5ecff; --ground:#efe5d6; }
+  .scene.food { --sky:#fff4dc; --ground:#e5f5e6; }
+  .scene.water { --sky:#dff6ff; --ground:#bfe8fa; }
+  .scene.night { --sky:#dce7ff; --ground:#dae7dc; }
+  .scene.school { --sky:#e8f3ff; --ground:#f6e3ba; }
+
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .primary, .secondary {
+    height: 48px;
+    border-radius: var(--radius);
+    font-weight: 1000;
+  }
+  .primary { color: white; background: var(--green); }
+  .secondary { color: var(--ink); background: #e9f2f7; }
+
+  .complete.active {
+    min-height: calc(100svh - 92px);
+    display: grid;
+    align-content: center;
+    gap: 14px;
+  }
+  .parent.active {
+    min-height: calc(100svh - 92px);
+    display: grid;
+    align-content: start;
+    gap: 14px;
+  }
+  .result {
+    padding: 22px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .result .big { font-size: 4rem; line-height: 1; margin-bottom: 12px; }
+  .result h2 { margin: 0 0 8px; font-size: 1.75rem; }
+  .result p { margin: 0; color: var(--muted); font-weight: 800; line-height: 1.6; }
+  .parent-panel {
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+  }
+  .parent-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .parent-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+  .parent-header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: .84rem;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .parent-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .summary-tile, .kid-report, .mistake-item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #f8fcff;
+  }
+  .summary-tile {
+    min-height: 72px;
+    padding: 10px;
+    display: grid;
+    align-content: center;
+    gap: 4px;
+  }
+  .summary-tile strong {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .summary-tile span, .kid-report span, .mistake-item span {
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .kid-report {
+    padding: 12px;
+    display: grid;
+    gap: 10px;
+  }
+  .kid-report-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 1000;
+  }
+  .kid-report-head strong {
+    font-size: 1.06rem;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .metric {
+    padding: 8px;
+    border-radius: var(--radius);
+    background: #fff;
+    border: 1px solid #e6f0f6;
+  }
+  .metric strong {
+    display: block;
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+  .parent-section-title {
+    margin: 4px 0 0;
+    color: #163766;
+    font-weight: 1000;
+  }
+  .mistake-list {
+    display: grid;
+    gap: 8px;
+  }
+  .mistake-item {
+    padding: 10px;
+    display: grid;
+    gap: 4px;
+  }
+  .mistake-item strong {
+    line-height: 1.35;
+  }
+  .empty-note {
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--green-soft);
+    color: #1f6a4c;
+    font-weight: 900;
+    line-height: 1.45;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 900;
+  }
+  .stat-row:last-child { border-bottom: 0; }
+  .stat-row span { color: var(--muted); }
+  .hidden { display: none !important; }
+
+  @media (min-width: 760px) {
+    body { display: grid; place-items: center; padding: 28px; }
+    .app {
+      min-height: 844px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,.54);
+      box-shadow: 0 30px 80px rgba(20, 63, 98, .16);
+    }
+  }
+  @media (max-width: 390px) {
+    .app { padding-left: 10px; padding-right: 10px; }
+    .kid-grid { grid-template-columns: 1fr; }
+    .parent-summary, .metric-grid { grid-template-columns: 1fr; }
+    .tool-btn, .tool-pill, .tool-select { font-size: .76rem; padding-left: 9px; padding-right: 9px; }
+    .tool-pill.progress-pill { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <strong id="screenTitle">听句子选图片</strong>
+      <span id="screenSub">Lulu</span>
+    </div>
+    <button class="text-btn" id="parentBtn" type="button">家长</button>
+    <div class="learn-toolbar" id="learnToolbar">
+      <button class="tool-btn icon-only" id="learnBackBtn" type="button" aria-label="返回">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.7 6.3a1 1 0 0 1 0 1.4L10.42 12l4.3 4.3a1 1 0 1 1-1.42 1.4l-5-5a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.42 0Z"/></svg>
+      </button>
+      <span class="tool-pill level" id="levelPill">★ Level 1</span>
+      <button class="tool-btn" id="englishHintBtn" type="button">英文提示：关</button>
+      <button class="tool-btn" id="chineseHintBtn" type="button">中文提示：关</button>
+      <select class="tool-select" id="speedSelect" aria-label="语速">
+        <option value="0.68">慢速</option>
+        <option value="0.82" selected>正常</option>
+        <option value="1">快速</option>
+      </select>
+      <span class="tool-pill progress-pill" id="toolbarProgress">1/15</span>
+      <span class="tool-pill star-pill" id="starPill">★ 0</span>
+    </div>
+  </header>
+
+  <section class="screen home active" id="homeScreen">
+    <div class="kid-grid" id="kidGrid"></div>
+    <div class="lesson-list" id="lessonList"></div>
+  </section>
+
+  <section class="screen learn" id="learnScreen">
+    <div class="progress-row">
+      <div class="progress-meta">
+        <span id="lessonTitle">Animals 1</span>
+        <span id="progressText">1/15</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="listen-panel">
+      <button class="play-btn" id="playBtn" type="button" aria-label="播放">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 9.5c0-2.2 2.4-3.6 4.3-2.4l21 13.2c1.7 1.1 1.7 3.5 0 4.6l-21 13.2c-1.9 1.2-4.3-.2-4.3-2.4V9.5z"/></svg>
+      </button>
+      <div class="wave idle" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="prompt-panel" id="promptPanel">
+        <div id="englishPrompt"></div>
+        <div class="zh" id="chinesePrompt"></div>
+      </div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="action-row">
+      <button class="secondary" id="replayBtn" type="button">重听</button>
+      <button class="secondary" id="exitBtn" type="button">退出</button>
+    </div>
+  </section>
+
+  <section class="screen complete" id="completeScreen">
+    <div class="result">
+      <div class="big">✓</div>
+      <h2>完成一关</h2>
+      <p id="completeText">今天听懂了 15 句话。</p>
+    </div>
+    <button class="primary" id="nextLessonBtn" type="button">下一关</button>
+    <button class="secondary" id="homeBtn" type="button">回首页</button>
+  </section>
+
+  <section class="screen parent" id="parentScreen">
+    <div class="parent-panel" id="parentStats"></div>
+    <button class="secondary" id="parentBackBtn" type="button">返回</button>
+  </section>
+</main>
+
+<script>
+(() => {
+  const KIDS = [
+    { id: 'lulu', name: 'Lulu', face: '🌼' },
+    { id: 'qiqi', name: 'Qiqi', face: '🌱' },
+    { id: 'mimi', name: 'Mimi', face: '🌟' }
+  ];
+
+  const SENTENCE_ZH = {
+    'The cat is sleeping.': '猫正在睡觉。',
+    'The dog is running.': '狗正在奔跑。',
+    'The bird is flying.': '鸟正在飞。',
+    'The fish is swimming.': '鱼正在游泳。',
+    'The cat is on the bed.': '猫在床上。',
+    'The dog is under the table.': '狗在桌子下面。',
+    'The rabbit is in the box.': '兔子在盒子里。',
+    'The bag is next to the chair.': '书包在椅子旁边。',
+    'The bird is near the cloud.': '鸟在云朵附近。',
+    'The fish is in the water.': '鱼在水里。',
+    'The cat is quiet.': '猫很安静。',
+    'The dog is fast.': '狗跑得很快。',
+    'The bird is small.': '鸟很小。',
+    'The fish is blue.': '鱼是蓝色的。',
+    'The animal is sleeping.': '动物正在睡觉。',
+    'The apple is red.': '苹果是红色的。',
+    'The banana is yellow.': '香蕉是黄色的。',
+    'The girl drinks milk.': '女孩喝牛奶。',
+    'The boy eats cake.': '男孩吃蛋糕。',
+    'Dad is cooking.': '爸爸正在做饭。',
+    'The cake is on the plate.': '蛋糕在盘子上。',
+    'The apple is in the basket.': '苹果在篮子里。',
+    'The milk is white.': '牛奶是白色的。',
+    'The banana is on the table.': '香蕉在桌子上。',
+    'The food is hot.': '食物是热的。',
+    'She wants milk.': '她想要牛奶。',
+    'He wants cake.': '他想要蛋糕。',
+    'The red fruit is an apple.': '红色水果是苹果。',
+    'The yellow fruit is a banana.': '黄色水果是香蕉。',
+    'The family cooks dinner.': '一家人在做晚饭。',
+    'The boy is running.': '男孩正在跑步。',
+    'The girl is reading.': '女孩正在读书。',
+    'She is brushing her teeth.': '她正在刷牙。',
+    'He is washing his hands.': '他正在洗手。',
+    'Open the door.': '打开门。',
+    'Close the window.': '关上窗户。',
+    'Put on the hat.': '戴上帽子。',
+    'The child plays in the rain.': '孩子在雨中玩。',
+    'The child touches the snow.': '孩子摸雪。',
+    'The kite is in the wind.': '风筝在风中。',
+    'Count the stars.': '数星星。',
+    'The ball is red.': '球是红色的。',
+    'The bag is blue.': '书包是蓝色的。',
+    'The tree is green.': '树是绿色的。',
+    'The sun is yellow.': '太阳是黄色的。',
+    'The red ball is small.': '红球很小。',
+    'The blue bag is big.': '蓝色书包很大。',
+    'The green tree is tall.': '绿色的树很高。',
+    'The yellow sun is bright.': '黄色的太阳很亮。',
+    'The apple is red and round.': '苹果又红又圆。',
+    'The banana is long and yellow.': '香蕉又长又黄。',
+    'The snow is white.': '雪是白色的。',
+    'The star is yellow.': '星星是黄色的。',
+    'The cake is sweet.': '蛋糕是甜的。',
+    'The bag is next to the ball.': '书包在球旁边。',
+    'The green tree is outside.': '绿色的树在外面。',
+    'The white milk is in the cup.': '白色牛奶在杯子里。',
+    'The cat is on a blue bed.': '猫在蓝色床上。',
+    'The dog runs under the sun.': '狗在太阳下奔跑。',
+    'The cat sits on the bed.': '猫坐在床上。',
+    'The dog is below the table.': '狗在桌子下面。',
+    'The rabbit sits in the box.': '兔子坐在盒子里。',
+    'The bag is beside the chair.': '书包在椅子旁边。',
+    'The apple sits in the basket.': '苹果在篮子里。',
+    'The banana sits on the table.': '香蕉在桌子上。',
+    'The cake sits on the plate.': '蛋糕在盘子上。',
+    'The bird flies near the cloud.': '鸟在云朵附近飞。',
+    'The fish swims in the water.': '鱼在水里游。',
+    'The kite flies in the wind.': '风筝在风中飞。',
+    'The child stands in the rain.': '孩子站在雨中。',
+    'The child stands in the snow.': '孩子站在雪中。',
+    'The star is in the sky.': '星星在天空中。',
+    'The bag is near the chair.': '书包在椅子附近。',
+    'The door is beside the window.': '门在窗户旁边。',
+    'It is raining.': '正在下雨。',
+    'It is snowing.': '正在下雪。',
+    'It is windy.': '刮风了。',
+    'The sun is bright.': '太阳很亮。',
+    'The tree is tall.': '树很高。',
+    'The bird is in the sky.': '鸟在天空中。',
+    'The fish is in water.': '鱼在水里。',
+    'The cloud is near the bird.': '云朵在鸟附近。',
+    'The child has an umbrella.': '孩子有一把伞。',
+    'The kite is high.': '风筝飞得很高。',
+    'The stars are in the sky.': '星星在天空中。',
+    'The snow is cold.': '雪很冷。',
+    'The rain is wet.': '雨是湿的。',
+    'The sun is hot.': '太阳很热。',
+    'The tree is outside.': '树在外面。'
+  };
+
+  const GENERATED_IMAGES = {
+    cat_sleep: './assets/illustrations/generated/cat-sleeping.png',
+    dog_run: './assets/illustrations/generated/dog-running.png',
+    bird_fly: './assets/illustrations/generated/bird-flying.png',
+    fish_swim: './assets/illustrations/generated/fish-swimming.png',
+    apple_red: './assets/illustrations/generated/apple-red.png',
+    banana_yellow: './assets/illustrations/generated/banana-yellow.png',
+    milk_drink: './assets/illustrations/generated/girl-drinks-milk.png',
+    cake_eat: './assets/illustrations/generated/boy-eats-cake.png',
+    boy_run: './assets/illustrations/generated/boy-running.png',
+    girl_read: './assets/illustrations/generated/girl-reading.png',
+    brush_teeth: './assets/illustrations/generated/brushing-teeth.png',
+    cook_food: './assets/illustrations/generated/dad-cooking.png',
+    open_door: './assets/illustrations/generated/open-door.png',
+    close_window: './assets/illustrations/generated/close-window.png',
+    wash_hands: './assets/illustrations/generated/washing-hands.png',
+    wear_hat: './assets/illustrations/generated/wear-hat.png',
+    red_ball: './assets/illustrations/generated/red-ball.png',
+    blue_bag: './assets/illustrations/generated/blue-bag.png',
+    green_tree: './assets/illustrations/generated/green-tree.png',
+    yellow_sun: './assets/illustrations/generated/yellow-sun.png',
+    on_bed: './assets/illustrations/generated/cat-on-bed.png',
+    under_table: './assets/illustrations/generated/dog-under-table.png',
+    in_box: './assets/illustrations/generated/rabbit-in-box.png',
+    next_chair: './assets/illustrations/generated/bag-next-chair.png',
+    rain_play: './assets/illustrations/generated/child-rain.png',
+    snow_touch: './assets/illustrations/generated/child-snow.png',
+    windy_kite: './assets/illustrations/generated/kite-wind.png',
+    star_count: './assets/illustrations/generated/count-stars.png',
+    red_ball_small: './assets/illustrations/generated/red-ball-small.png',
+    blue_bag_big: './assets/illustrations/generated/blue-bag-big.png',
+    green_tree_tall: './assets/illustrations/generated/green-tree-tall.png',
+    yellow_sun_bright: './assets/illustrations/generated/yellow-sun-bright.png',
+    apple_red_round: './assets/illustrations/generated/apple-red-round.png',
+    banana_long_yellow: './assets/illustrations/generated/banana-long-yellow.png',
+    snow_white: './assets/illustrations/generated/snow-white.png',
+    star_yellow: './assets/illustrations/generated/star-yellow.png',
+    cake_sweet: './assets/illustrations/generated/cake-sweet.png',
+    bag_next_ball: './assets/illustrations/generated/bag-next-ball.png',
+    tree_outside_green: './assets/illustrations/generated/tree-outside-green.png',
+    milk_white_cup: './assets/illustrations/generated/milk-white-cup.png',
+    cat_blue_bed: './assets/illustrations/generated/cat-blue-bed.png',
+    dog_under_sun: './assets/illustrations/generated/dog-under-sun.png',
+    fish_blue: './assets/illustrations/generated/fish-blue.png',
+    cat_sits_on_bed: './assets/illustrations/generated/cat-sits-on-bed.png',
+    dog_below_table: './assets/illustrations/generated/dog-below-table.png',
+    rabbit_sits_in_box: './assets/illustrations/generated/rabbit-sits-in-box.png',
+    bag_beside_chair: './assets/illustrations/generated/bag-beside-chair.png',
+    apple_in_basket_new: './assets/illustrations/generated/apple-in-basket.png',
+    banana_on_table_new: './assets/illustrations/generated/banana-on-table.png',
+    cake_on_plate_new: './assets/illustrations/generated/cake-on-plate.png',
+    bird_near_cloud_new: './assets/illustrations/generated/bird-near-cloud.png',
+    fish_swims_water: './assets/illustrations/generated/fish-swims-water.png',
+    kite_flies_wind: './assets/illustrations/generated/kite-flies-wind.png',
+    child_stands_rain: './assets/illustrations/generated/child-stands-rain.png',
+    child_stands_snow: './assets/illustrations/generated/child-stands-snow.png',
+    star_in_sky: './assets/illustrations/generated/star-in-sky.png',
+    bag_near_chair: './assets/illustrations/generated/bag-near-chair.png',
+    door_beside_window: './assets/illustrations/generated/door-beside-window.png',
+    weather_raining: './assets/illustrations/generated/weather-raining.png',
+    weather_snowing: './assets/illustrations/generated/weather-snowing.png',
+    weather_windy: './assets/illustrations/generated/weather-windy.png',
+    sun_bright_weather: './assets/illustrations/generated/sun-bright-weather.png',
+    tree_tall_weather: './assets/illustrations/generated/tree-tall-weather.png',
+    bird_in_sky: './assets/illustrations/generated/bird-in-sky.png',
+    fish_in_water_weather: './assets/illustrations/generated/fish-in-water-weather.png',
+    cloud_near_bird: './assets/illustrations/generated/cloud-near-bird.png',
+    child_has_umbrella: './assets/illustrations/generated/child-has-umbrella.png',
+    kite_high: './assets/illustrations/generated/kite-high.png',
+    stars_in_sky: './assets/illustrations/generated/stars-in-sky.png',
+    snow_cold: './assets/illustrations/generated/snow-cold.png',
+    rain_wet: './assets/illustrations/generated/rain-wet.png',
+    sun_hot: './assets/illustrations/generated/sun-hot.png',
+    tree_outside_weather: './assets/illustrations/generated/tree-outside-weather.png'
+  };
+
+  const VOICE_PROFILES = {
+    ava: ['Ava', 'Allison', 'Victoria', 'Samantha', 'Google US English', 'Microsoft Aria', 'Microsoft Jenny'],
+    allison: ['Allison', 'Ava', 'Victoria', 'Samantha', 'Google US English', 'Microsoft Aria', 'Microsoft Jenny'],
+    victoria: ['Victoria', 'Ava', 'Allison', 'Samantha', 'Google US English', 'Microsoft Aria', 'Microsoft Jenny'],
+    samantha: ['Samantha', 'Ava', 'Allison', 'Victoria', 'Google US English', 'Microsoft Aria', 'Microsoft Jenny']
+  };
+  const DEFAULT_VOICE_PROFILE = 'ava';
+
+  let currentAudio = null;
+
+  const VISUALS = {
+    cat_sleep: ['homey','🐈','🌙','right'],
+    dog_run: ['school','🐕','💨','right'],
+    bird_fly: ['water','🐦','☁️','right'],
+    fish_swim: ['water','🐟','🌊','right'],
+    apple_red: ['food','🍎','🧺',''],
+    banana_yellow: ['food','🍌','🧺',''],
+    milk_drink: ['food','🥛','😊','right'],
+    cake_eat: ['food','🍰','🍽️','right'],
+    boy_run: ['school','🏃','🎒','right'],
+    girl_read: ['homey','📖','👧','right'],
+    brush_teeth: ['homey','🪥','😊','right'],
+    cook_food: ['food','🍳','👨‍🍳','right'],
+    open_door: ['homey','🚪','👋','right'],
+    close_window: ['homey','🪟','🌙','right'],
+    wash_hands: ['water','🧼','👐','right'],
+    wear_hat: ['school','🧢','🙂','right'],
+    red_ball: ['school','🔴','⚽','right'],
+    blue_bag: ['school','🎒','🔵','right'],
+    green_tree: ['school','🌳','🟢','right'],
+    yellow_sun: ['food','☀️','🟡','right'],
+    on_bed: ['homey','🛏️','🐈','right'],
+    under_table: ['homey','🍽️','🐕','right'],
+    in_box: ['homey','📦','🐰','right'],
+    next_chair: ['homey','🪑','🎒','right'],
+    rain_play: ['water','🌧️','☂️','right'],
+    snow_touch: ['night','❄️','🧤','right'],
+    windy_kite: ['school','🪁','💨','right'],
+    star_count: ['night','⭐','👀','right']
+  };
+
+  const LESSONS = [
+    {
+      id: 'animals-1', topic: 'Animals', level: 'L1', name: '动物 1',
+      items: [
+        ['The cat is sleeping.', 'cat_sleep', ['cat_sleep','dog_run','bird_fly','fish_swim']],
+        ['The dog is running.', 'dog_run', ['dog_run','cat_sleep','fish_swim','bird_fly']],
+        ['The bird is flying.', 'bird_fly', ['bird_fly','fish_swim','cat_sleep','dog_run']],
+        ['The fish is swimming.', 'fish_swim', ['fish_swim','bird_fly','dog_run','cat_sleep']],
+        ['The cat is on the bed.', 'on_bed', ['on_bed','under_table','in_box','next_chair']],
+        ['The dog is under the table.', 'under_table', ['under_table','on_bed','next_chair','in_box']],
+        ['The rabbit is in the box.', 'in_box', ['in_box','next_chair','cat_sleep','bird_fly']],
+        ['The bag is next to the chair.', 'next_chair', ['next_chair','blue_bag','open_door','close_window']],
+        ['The bird is near the cloud.', 'bird_fly', ['bird_fly','yellow_sun','green_tree','rain_play']],
+        ['The fish is in the water.', 'fish_swim', ['fish_swim','rain_play','snow_touch','apple_red']],
+        ['The cat is quiet.', 'cat_sleep', ['cat_sleep','dog_run','windy_kite','cake_eat']],
+        ['The dog is fast.', 'dog_run', ['dog_run','brush_teeth','milk_drink','star_count']],
+        ['The bird is small.', 'bird_fly', ['bird_fly','red_ball','banana_yellow','cook_food']],
+        ['The fish is blue.', 'fish_swim', ['fish_swim','blue_bag','yellow_sun','green_tree']],
+        ['The animal is sleeping.', 'cat_sleep', ['cat_sleep','dog_run','bird_fly','fish_swim']]
+      ]
+    },
+    {
+      id: 'food-1', topic: 'Food', level: 'L1', name: '食物 1',
+      items: [
+        ['The apple is red.', 'apple_red', ['apple_red','banana_yellow','milk_drink','cake_eat']],
+        ['The banana is yellow.', 'banana_yellow', ['banana_yellow','apple_red','yellow_sun','red_ball']],
+        ['The girl drinks milk.', 'milk_drink', ['milk_drink','cake_eat','girl_read','brush_teeth']],
+        ['The boy eats cake.', 'cake_eat', ['cake_eat','milk_drink','boy_run','cook_food']],
+        ['Dad is cooking.', 'cook_food', ['cook_food','brush_teeth','open_door','wash_hands']],
+        ['The cake is on the plate.', 'cake_eat', ['cake_eat','apple_red','banana_yellow','red_ball']],
+        ['The apple is in the basket.', 'apple_red', ['apple_red','in_box','blue_bag','green_tree']],
+        ['The milk is white.', 'milk_drink', ['milk_drink','snow_touch','yellow_sun','red_ball']],
+        ['The banana is on the table.', 'banana_yellow', ['banana_yellow','under_table','next_chair','on_bed']],
+        ['The food is hot.', 'cook_food', ['cook_food','snow_touch','fish_swim','star_count']],
+        ['She wants milk.', 'milk_drink', ['milk_drink','girl_read','wear_hat','rain_play']],
+        ['He wants cake.', 'cake_eat', ['cake_eat','boy_run','dog_run','bird_fly']],
+        ['The red fruit is an apple.', 'apple_red', ['apple_red','red_ball','banana_yellow','blue_bag']],
+        ['The yellow fruit is a banana.', 'banana_yellow', ['banana_yellow','yellow_sun','apple_red','green_tree']],
+        ['The family cooks dinner.', 'cook_food', ['cook_food','girl_read','wash_hands','open_door']]
+      ]
+    },
+    {
+      id: 'daily-1', topic: 'Daily', level: 'L2', name: '日常 1',
+      items: [
+        ['The boy is running.', 'boy_run', ['boy_run','girl_read','brush_teeth','cook_food']],
+        ['The girl is reading.', 'girl_read', ['girl_read','boy_run','wear_hat','wash_hands']],
+        ['She is brushing her teeth.', 'brush_teeth', ['brush_teeth','wash_hands','milk_drink','close_window']],
+        ['He is washing his hands.', 'wash_hands', ['wash_hands','brush_teeth','cook_food','open_door']],
+        ['Open the door.', 'open_door', ['open_door','close_window','next_chair','in_box']],
+        ['Close the window.', 'close_window', ['close_window','open_door','star_count','on_bed']],
+        ['Put on the hat.', 'wear_hat', ['wear_hat','blue_bag','red_ball','yellow_sun']],
+        ['The child plays in the rain.', 'rain_play', ['rain_play','snow_touch','windy_kite','fish_swim']],
+        ['The child touches the snow.', 'snow_touch', ['snow_touch','rain_play','star_count','milk_drink']],
+        ['The kite is in the wind.', 'windy_kite', ['windy_kite','bird_fly','yellow_sun','green_tree']],
+        ['Count the stars.', 'star_count', ['star_count','yellow_sun','close_window','snow_touch']],
+        ['The ball is red.', 'red_ball', ['red_ball','apple_red','blue_bag','green_tree']],
+        ['The bag is blue.', 'blue_bag', ['blue_bag','red_ball','banana_yellow','wear_hat']],
+        ['The tree is green.', 'green_tree', ['green_tree','yellow_sun','blue_bag','apple_red']],
+        ['The sun is yellow.', 'yellow_sun', ['yellow_sun','green_tree','red_ball','snow_touch']]
+      ]
+    },
+    {
+      id: 'colors-1', topic: 'Colors', level: 'L2', name: '颜色形状 1',
+      items: [
+        ['The red ball is small.', 'red_ball_small', ['red_ball_small','blue_bag_big','green_tree_tall','yellow_sun_bright']],
+        ['The blue bag is big.', 'blue_bag_big', ['blue_bag_big','red_ball_small','banana_long_yellow','apple_red_round']],
+        ['The green tree is tall.', 'green_tree_tall', ['green_tree_tall','yellow_sun_bright','red_ball_small','blue_bag_big']],
+        ['The yellow sun is bright.', 'yellow_sun_bright', ['yellow_sun_bright','green_tree_tall','snow_white','blue_bag_big']],
+        ['The apple is red and round.', 'apple_red_round', ['apple_red_round','banana_long_yellow','red_ball_small','cake_sweet']],
+        ['The banana is long and yellow.', 'banana_long_yellow', ['banana_long_yellow','apple_red_round','yellow_sun_bright','blue_bag_big']],
+        ['The milk is white.', 'milk_white_cup', ['milk_white_cup','snow_white','yellow_sun_bright','red_ball_small']],
+        ['The fish is blue.', 'fish_blue', ['fish_blue','blue_bag_big','yellow_sun_bright','green_tree_tall']],
+        ['The snow is white.', 'snow_white', ['snow_white','milk_white_cup','weather_raining','yellow_sun_bright']],
+        ['The star is yellow.', 'star_yellow', ['star_yellow','yellow_sun_bright','red_ball_small','green_tree_tall']],
+        ['The cake is sweet.', 'cake_sweet', ['cake_sweet','banana_long_yellow','milk_white_cup','apple_red_round']],
+        ['The bag is next to the ball.', 'bag_next_ball', ['bag_next_ball','blue_bag_big','red_ball_small','bag_beside_chair']],
+        ['The green tree is outside.', 'tree_outside_green', ['tree_outside_green','green_tree_tall','door_beside_window','cat_blue_bed']],
+        ['The white milk is in the cup.', 'milk_white_cup', ['milk_white_cup','cake_sweet','apple_red_round','banana_long_yellow']],
+        ['The cat is on a blue bed.', 'cat_blue_bed', ['cat_blue_bed','cat_sits_on_bed','dog_below_table','blue_bag_big']]
+      ]
+    },
+    {
+      id: 'places-1', topic: 'Places', level: 'L2', name: '位置空间 1',
+      items: [
+        ['The cat sits on the bed.', 'cat_sits_on_bed', ['cat_sits_on_bed','dog_below_table','rabbit_sits_in_box','bag_beside_chair']],
+        ['The dog is below the table.', 'dog_below_table', ['dog_below_table','cat_sits_on_bed','bag_beside_chair','rabbit_sits_in_box']],
+        ['The rabbit sits in the box.', 'rabbit_sits_in_box', ['rabbit_sits_in_box','bag_beside_chair','cat_sits_on_bed','bird_near_cloud_new']],
+        ['The bag is beside the chair.', 'bag_beside_chair', ['bag_beside_chair','blue_bag_big','door_beside_window','rabbit_sits_in_box']],
+        ['The apple sits in the basket.', 'apple_in_basket_new', ['apple_in_basket_new','rabbit_sits_in_box','blue_bag_big','tree_outside_green']],
+        ['The banana sits on the table.', 'banana_on_table_new', ['banana_on_table_new','dog_below_table','bag_beside_chair','cat_sits_on_bed']],
+        ['The cake sits on the plate.', 'cake_on_plate_new', ['cake_on_plate_new','apple_in_basket_new','banana_on_table_new','red_ball_small']],
+        ['The bird flies near the cloud.', 'bird_near_cloud_new', ['bird_near_cloud_new','yellow_sun_bright','tree_outside_green','child_stands_rain']],
+        ['The fish swims in the water.', 'fish_swims_water', ['fish_swims_water','child_stands_rain','child_stands_snow','apple_in_basket_new']],
+        ['The kite flies in the wind.', 'kite_flies_wind', ['kite_flies_wind','bird_near_cloud_new','yellow_sun_bright','tree_outside_green']],
+        ['The child stands in the rain.', 'child_stands_rain', ['child_stands_rain','child_stands_snow','kite_flies_wind','fish_swims_water']],
+        ['The child stands in the snow.', 'child_stands_snow', ['child_stands_snow','child_stands_rain','star_in_sky','milk_white_cup']],
+        ['The star is in the sky.', 'star_in_sky', ['star_in_sky','yellow_sun_bright','door_beside_window','child_stands_snow']],
+        ['The bag is near the chair.', 'bag_near_chair', ['bag_near_chair','bag_beside_chair','blue_bag_big','red_ball_small']],
+        ['The door is beside the window.', 'door_beside_window', ['door_beside_window','bag_beside_chair','rabbit_sits_in_box','cat_sits_on_bed']]
+      ]
+    },
+    {
+      id: 'weather-1', topic: 'Weather', level: 'L2', name: '天气自然 1',
+      items: [
+        ['It is raining.', 'weather_raining', ['weather_raining','weather_snowing','weather_windy','sun_bright_weather']],
+        ['It is snowing.', 'weather_snowing', ['weather_snowing','weather_raining','stars_in_sky','milk_white_cup']],
+        ['It is windy.', 'weather_windy', ['weather_windy','weather_raining','bird_in_sky','tree_tall_weather']],
+        ['The sun is bright.', 'sun_bright_weather', ['sun_bright_weather','tree_tall_weather','red_ball_small','snow_cold']],
+        ['The tree is tall.', 'tree_tall_weather', ['tree_tall_weather','sun_bright_weather','blue_bag_big','apple_red_round']],
+        ['The bird is in the sky.', 'bird_in_sky', ['bird_in_sky','fish_in_water_weather','cat_sits_on_bed','dog_under_sun']],
+        ['The fish is in water.', 'fish_in_water_weather', ['fish_in_water_weather','weather_raining','weather_snowing','apple_in_basket_new']],
+        ['The cloud is near the bird.', 'cloud_near_bird', ['cloud_near_bird','sun_bright_weather','tree_tall_weather','weather_raining']],
+        ['The child has an umbrella.', 'child_has_umbrella', ['child_has_umbrella','weather_snowing','wear_hat','door_beside_window']],
+        ['The kite is high.', 'kite_high', ['kite_high','bird_in_sky','sun_bright_weather','tree_tall_weather']],
+        ['The stars are in the sky.', 'stars_in_sky', ['stars_in_sky','sun_bright_weather','door_beside_window','weather_snowing']],
+        ['The snow is cold.', 'snow_cold', ['snow_cold','rain_wet','milk_white_cup','sun_hot']],
+        ['The rain is wet.', 'rain_wet', ['rain_wet','wash_hands','fish_in_water_weather','snow_cold']],
+        ['The sun is hot.', 'sun_hot', ['sun_hot','cake_sweet','snow_cold','tree_tall_weather']],
+        ['The tree is outside.', 'tree_outside_weather', ['tree_outside_weather','door_beside_window','cat_blue_bed','tree_tall_weather']]
+      ]
+    }
+  ];
+
+  const state = {
+    kid: 'lulu',
+    lessonIndex: 0,
+    itemIndex: 0,
+    locked: false,
+    lastScreen: 'home',
+    englishHint: false,
+    chineseHint: false,
+    speed: 0.82
+  };
+
+  const $ = id => document.getElementById(id);
+  const screens = ['homeScreen','learnScreen','completeScreen','parentScreen'];
+  const storageKey = suffix => `englishListening.${suffix}`;
+  const readJSON = (key, fallback) => {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e) { return fallback; }
+  };
+  const writeJSON = (key, value) => {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) {}
+  };
+  let voicesReady = false;
+  const progress = () => readJSON(storageKey('progress'), {});
+  const mistakes = () => readJSON(storageKey('mistakes'), []);
+  const stars = () => readJSON(storageKey('stars'), {});
+
+  function show(screen, title = '听句子选图片') {
+    screens.forEach(id => $(id).classList.toggle('active', id === screen));
+    $('screenTitle').textContent = title;
+    $('screenSub').textContent = KIDS.find(k => k.id === state.kid)?.name || 'Lulu';
+    $('parentBtn').classList.toggle('hidden', screen === 'learnScreen');
+    document.querySelector('.topbar').classList.toggle('learning', screen === 'learnScreen');
+  }
+
+  function renderHome() {
+    $('kidGrid').innerHTML = KIDS.map(k => `
+      <button class="kid-card" type="button" data-kid="${k.id}">
+        <span class="kid-face">${k.face}</span>
+        <span><strong>${k.name}</strong><span class="mini">${completedCount(k.id)} 关完成</span></span>
+      </button>
+    `).join('');
+    $('lessonList').innerHTML = LESSONS.map((lesson, index) => {
+      const done = isLessonDone(state.kid, lesson.id);
+      return `
+        <button class="lesson-card" type="button" data-lesson="${index}">
+          <span><strong>${lesson.name}</strong><span>${lesson.level} · ${lesson.items.length} 句${done ? ' · 已完成' : ''}</span></span>
+          <span class="lesson-badge">${done ? '✓' : index + 1}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function renderLearn() {
+    const lesson = LESSONS[state.lessonIndex];
+    const item = lesson.items[state.itemIndex];
+    const pct = ((state.itemIndex) / lesson.items.length) * 100;
+    $('lessonTitle').textContent = `${lesson.name}`;
+    $('progressText').textContent = `${state.itemIndex + 1}/${lesson.items.length}`;
+    $('toolbarProgress').textContent = `${state.itemIndex + 1}/${lesson.items.length}`;
+    $('levelPill').textContent = `★ Level ${lesson.level.replace('L', '')}`;
+    $('starPill').textContent = `★ ${starCount(state.kid)}`;
+    $('progressFill').style.width = `${pct}%`;
+    $('choices').innerHTML = shuffle(item[2]).map(key => renderChoice(key, key === item[1])).join('');
+    renderPrompt();
+    state.locked = false;
+    show('learnScreen', '听句子选图片');
+  }
+
+  function renderPrompt() {
+    const sentence = LESSONS[state.lessonIndex].items[state.itemIndex][0];
+    $('englishHintBtn').textContent = `英文提示：${state.englishHint ? '开' : '关'}`;
+    $('chineseHintBtn').textContent = `中文提示：${state.chineseHint ? '开' : '关'}`;
+    $('englishHintBtn').classList.toggle('active', state.englishHint);
+    $('chineseHintBtn').classList.toggle('active', state.chineseHint);
+    $('promptPanel').classList.toggle('visible', state.englishHint || state.chineseHint);
+    $('englishPrompt').textContent = state.englishHint ? sentence : '';
+    $('chinesePrompt').textContent = state.chineseHint ? (SENTENCE_ZH[sentence] || '') : '';
+  }
+
+  function renderChoice(key, correct) {
+    if (GENERATED_IMAGES[key]) {
+      return `
+        <button class="choice" type="button" data-correct="${correct ? '1' : '0'}" data-visual="${key}" aria-label="图片选项">
+          <img class="choice-img" src="${GENERATED_IMAGES[key]}" alt="">
+        </button>
+      `;
+    }
+    const v = VISUALS[key] || VISUALS.apple_red;
+    return `
+      <button class="choice" type="button" data-correct="${correct ? '1' : '0'}" data-visual="${key}" aria-label="图片选项">
+        <div class="scene ${v[0]}">
+          <span class="shape one"></span><span class="shape two"></span>
+          <span class="main">${v[1]}</span>
+          <span class="sub ${v[3] || ''}">${v[2]}</span>
+        </div>
+      </button>
+    `;
+  }
+
+  function playSentence() {
+    const lesson = LESSONS[state.lessonIndex];
+    const sentence = lesson.items[state.itemIndex][0];
+    $('wave').classList.remove('idle');
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+    }
+    playLocalAudio(sentence);
+  }
+
+  function sentenceAudioSrc(sentence) {
+    const slug = sentence.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return `./audio/sentences/${slug}.wav`;
+  }
+
+  function playLocalAudio(sentence) {
+    currentAudio = new Audio(sentenceAudioSrc(sentence));
+    currentAudio.playbackRate = Math.max(0.75, Math.min(1.2, state.speed / 0.82));
+    currentAudio.onended = () => $('wave').classList.add('idle');
+    currentAudio.onerror = () => {
+      currentAudio = null;
+      playWithBrowserVoice(sentence);
+    };
+    currentAudio.play().catch(() => {
+      currentAudio = null;
+      playWithBrowserVoice(sentence);
+    });
+  }
+
+  function prepareVoices() {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.getVoices();
+    voicesReady = true;
+  }
+
+  function playWithBrowserVoice(sentence, retried = false) {
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+      setTimeout(() => $('wave').classList.add('idle'), 900);
+      return;
+    }
+    prepareVoices();
+    if (!retried && window.speechSynthesis.getVoices().length === 0) {
+      setTimeout(() => playWithBrowserVoice(sentence, true), 180);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(sentence);
+    const en = pickLearningVoice();
+    if (en) utter.voice = en;
+    utter.lang = 'en-US';
+    utter.rate = state.speed;
+    utter.pitch = 1.04;
+    utter.onend = () => $('wave').classList.add('idle');
+    utter.onerror = () => $('wave').classList.add('idle');
+    window.speechSynthesis.speak(utter);
+  }
+
+  function pickLearningVoice() {
+    const voices = window.speechSynthesis.getVoices() || [];
+    const profileId = localStorage.getItem(storageKey('voiceProfile')) || DEFAULT_VOICE_PROFILE;
+    const names = VOICE_PROFILES[profileId] || VOICE_PROFILES[DEFAULT_VOICE_PROFILE];
+    return names
+      .map(name => voices.find(voice => voice.name.toLowerCase().includes(name.toLowerCase())))
+      .find(Boolean) || voices.find(voice => /^en-US/i.test(voice.lang)) || voices.find(voice => /^en/i.test(voice.lang)) || null;
+  }
+
+  function answer(btn) {
+    if (state.locked) return;
+    const ok = btn.dataset.correct === '1';
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    if (!ok) {
+      recordMistake();
+      playSentence();
+      return;
+    }
+    state.locked = true;
+    addStar(state.kid);
+    $('starPill').textContent = `★ ${starCount(state.kid)}`;
+    setTimeout(nextItem, 520);
+  }
+
+  function nextItem() {
+    const lesson = LESSONS[state.lessonIndex];
+    if (state.itemIndex < lesson.items.length - 1) {
+      state.itemIndex += 1;
+      renderLearn();
+      return;
+    }
+    completeLesson();
+  }
+
+  function completeLesson() {
+    const lesson = LESSONS[state.lessonIndex];
+    const data = progress();
+    data[state.kid] = data[state.kid] || {};
+    data[state.kid][lesson.id] = new Date().toISOString().slice(0, 10);
+    writeJSON(storageKey('progress'), data);
+    $('progressFill').style.width = '100%';
+    $('completeText').textContent = `${KIDS.find(k => k.id === state.kid).name} 今天听懂了 ${lesson.items.length} 句话。`;
+    show('completeScreen', '完成一关');
+  }
+
+  function recordMistake() {
+    const lesson = LESSONS[state.lessonIndex];
+    const item = lesson.items[state.itemIndex];
+    const list = mistakes();
+    list.unshift({
+      kid: state.kid,
+      lesson: lesson.id,
+      sentence: item[0],
+      date: new Date().toISOString().slice(0, 10)
+    });
+    writeJSON(storageKey('mistakes'), list.slice(0, 80));
+  }
+
+  function isLessonDone(kid, lessonId) {
+    return Boolean(progress()[kid]?.[lessonId]);
+  }
+
+  function completedCount(kid) {
+    return Object.keys(progress()[kid] || {}).length;
+  }
+
+  function mistakeCount(kid) {
+    return mistakes().filter(item => item.kid === kid).length;
+  }
+
+  function latestMistake(kid) {
+    return mistakes().find(item => item.kid === kid) || null;
+  }
+
+  function latestCompletion(kid) {
+    const entries = Object.entries(progress()[kid] || {});
+    if (!entries.length) return null;
+    return entries.sort((a, b) => b[1].localeCompare(a[1]))[0];
+  }
+
+  function lessonName(lessonId) {
+    return LESSONS.find(lesson => lesson.id === lessonId)?.name || lessonId;
+  }
+
+  function shortDate(date) {
+    if (!date) return '还没有';
+    const [, month, day] = date.match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
+    return month && day ? `${Number(month)}/${Number(day)}` : date;
+  }
+
+  function starCount(kid) {
+    return Number(stars()[kid] || 0);
+  }
+
+  function addStar(kid) {
+    const data = stars();
+    data[kid] = starCount(kid) + 1;
+    writeJSON(storageKey('stars'), data);
+  }
+
+  function renderParent() {
+    const allMistakes = mistakes();
+    const totalDone = KIDS.reduce((sum, kid) => sum + completedCount(kid.id), 0);
+    const totalStars = KIDS.reduce((sum, kid) => sum + starCount(kid.id), 0);
+    const recentMistakes = allMistakes.slice(0, 5);
+    $('parentStats').innerHTML = `
+      <div class="parent-header">
+        <div>
+          <h2>学习概览</h2>
+          <p>查看孩子进度、错题和最近需要复习的句子。</p>
+        </div>
+      </div>
+      <div class="parent-summary">
+        <div class="summary-tile"><strong>${totalDone}/${KIDS.length * LESSONS.length}</strong><span>总完成关卡</span></div>
+        <div class="summary-tile"><strong>★ ${totalStars}</strong><span>累计星星</span></div>
+        <div class="summary-tile"><strong>${allMistakes.length}</strong><span>错题记录</span></div>
+      </div>
+      ${KIDS.map(k => {
+        const done = completedCount(k.id);
+        const latestDone = latestCompletion(k.id);
+        const lastMistake = latestMistake(k.id);
+        return `
+          <div class="kid-report">
+            <div class="kid-report-head"><strong>${k.face} ${k.name}</strong><span>${done === LESSONS.length ? '已完成全部' : '进行中'}</span></div>
+            <div class="metric-grid">
+              <div class="metric"><strong>${done}/${LESSONS.length}</strong><span>完成关卡</span></div>
+              <div class="metric"><strong>★ ${starCount(k.id)}</strong><span>星星</span></div>
+              <div class="metric"><strong>${mistakeCount(k.id)}</strong><span>错题</span></div>
+            </div>
+            <div class="mistake-item">
+              <strong>最近完成：${latestDone ? lessonName(latestDone[0]) : '暂无'}</strong>
+              <span>${latestDone ? shortDate(latestDone[1]) : '先完成一关后这里会更新。'}</span>
+            </div>
+            <div class="mistake-item">
+              <strong>最近错题：${lastMistake ? lastMistake.sentence : '暂无'}</strong>
+              <span>${lastMistake ? `${lessonName(lastMistake.lesson)} · ${shortDate(lastMistake.date)}` : '暂时没有错题记录。'}</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+      <div class="parent-section-title">最近错题</div>
+      <div class="mistake-list">
+        ${recentMistakes.length ? recentMistakes.map(item => `
+          <div class="mistake-item">
+            <strong>${item.sentence}</strong>
+            <span>${KIDS.find(k => k.id === item.kid)?.name || item.kid} · ${lessonName(item.lesson)} · ${shortDate(item.date)}</span>
+          </div>
+        `).join('') : '<div class="empty-note">目前没有错题。继续保持，完成练习后这里会自动记录。</div>'}
+      </div>
+    `;
+    show('parentScreen', '家长');
+  }
+
+  function shuffle(arr) {
+    return [...arr].sort(() => Math.random() - .5);
+  }
+
+  document.addEventListener('click', event => {
+    if (!voicesReady) prepareVoices();
+    const kid = event.target.closest('[data-kid]');
+    if (kid) {
+      state.kid = kid.dataset.kid;
+      renderHome();
+      return;
+    }
+    const lesson = event.target.closest('[data-lesson]');
+    if (lesson) {
+      state.lessonIndex = Number(lesson.dataset.lesson);
+      state.itemIndex = 0;
+      renderLearn();
+      return;
+    }
+    const choice = event.target.closest('.choice');
+    if (choice) answer(choice);
+  });
+
+  $('playBtn').addEventListener('click', playSentence);
+  $('replayBtn').addEventListener('click', playSentence);
+  $('exitBtn').addEventListener('click', () => { renderHome(); show('homeScreen'); });
+  $('learnBackBtn').addEventListener('click', () => { renderHome(); show('homeScreen'); });
+  $('homeBtn').addEventListener('click', () => { renderHome(); show('homeScreen'); });
+  $('nextLessonBtn').addEventListener('click', () => {
+    state.lessonIndex = Math.min(state.lessonIndex + 1, LESSONS.length - 1);
+    state.itemIndex = 0;
+    renderLearn();
+  });
+  $('parentBtn').addEventListener('click', renderParent);
+  $('parentBackBtn').addEventListener('click', () => { renderHome(); show('homeScreen'); });
+  $('englishHintBtn').addEventListener('click', () => { state.englishHint = !state.englishHint; renderPrompt(); });
+  $('chineseHintBtn').addEventListener('click', () => { state.chineseHint = !state.chineseHint; renderPrompt(); });
+  $('speedSelect').addEventListener('change', event => { state.speed = Number(event.target.value) || 0.82; playSentence(); });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  }
+  renderHome();
+})();
+</script>
+</body>
+</html>
