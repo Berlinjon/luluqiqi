@@ -32,3 +32,15 @@
 `tools/generate-voicebox-af-alloy-audio.cjs`
 
 默认只生成缺失音频；如需强制重生成全部音频，可追加 `--force`。
+
+## 题库质量检查
+
+基础素材检查：
+
+`node tools/validate-course-data.mjs`
+
+干扰项语义审计：
+
+`node tools/audit-distractors.mjs`
+
+干扰项规则见 `docs/distractor-design-rules.md`。

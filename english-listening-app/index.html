@@ -157,6 +157,54 @@
     gap: 12px;
   }
   .kid-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .route-summary {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.72);
+  }
+  .route-summary-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+  .route-summary-head strong {
+    font-size: 1.08rem;
+    line-height: 1.2;
+  }
+  .route-summary-head span, .route-next {
+    color: var(--muted);
+    font-size: .8rem;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .route-next {
+    padding: 10px;
+    border-radius: var(--radius);
+    background: #f6fbff;
+    border: 1px solid #e4f0f7;
+  }
+  .route-group {
+    display: grid;
+    gap: 8px;
+  }
+  .route-group-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+    padding: 4px 2px 0;
+    color: #163766;
+    font-weight: 1000;
+  }
+  .route-group-title span {
+    color: var(--muted);
+    font-size: .76rem;
+    font-weight: 900;
+  }
   .kid-card, .lesson-card, .parent-panel {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -214,6 +262,28 @@
     background: var(--blue-soft);
     color: var(--blue);
     font-weight: 1000;
+  }
+  .lesson-card.current {
+    border-color: #8ec8ef;
+    background: #f7fcff;
+  }
+  .lesson-card.done .lesson-badge {
+    background: var(--green-soft);
+    color: var(--green);
+  }
+  .lesson-card small {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 22px;
+    margin-bottom: 8px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--blue-soft);
+    color: #1f5f8d;
+    font-size: .7rem;
+    font-weight: 1000;
+    line-height: 1;
   }
 
   .learn.active {
@@ -691,6 +761,7 @@
     .tool-pill.progress-pill { margin-left: 0; }
     .choices.mode-2 .choice { min-height: 210px; }
     .choices.mode-2 .choice-img, .choices.mode-2 .scene { min-height: 206px; }
+    .route-summary-head, .route-group-title { align-items: flex-start; flex-direction: column; }
     .stage-row { grid-template-columns: 1fr auto; }
     .stage-bar { grid-column: 1 / -1; }
   }
@@ -784,8 +855,9 @@
     LESSONS = []
   } = courseData;
   const CONFIG = {
-    AUTO_PLAY_DELAY: 1800,
-    CORRECT_ADVANCE_DELAY: 520
+    AUTO_PLAY_DELAY: 900,
+    NEXT_QUESTION_DELAY: 850,
+    NEXT_AUDIO_DELAY: 650
   };
   let currentAudio = null;
   let autoPlayTimer = null;
@@ -879,14 +951,14 @@
     $('autoPlayBtn').classList.toggle('active', state.autoPlay);
   }
 
-  function scheduleAutoPlay() {
+  function scheduleAutoPlay(delayOverride) {
     clearAutoPlayTimer();
     updateAutoPlayControl();
     if (!state.autoPlay) return;
 
     setAutoPlayWaiting(true);
     const lesson = LESSONS[state.lessonIndex];
-    const delay = Number(lesson.autoPlayDelay) || CONFIG.AUTO_PLAY_DELAY;
+    const delay = Number(delayOverride ?? lesson.autoPlayDelay) || CONFIG.AUTO_PLAY_DELAY;
     autoPlayTimer = setTimeout(() => {
       autoPlayTimer = null;
       setAutoPlayWaiting(false);
@@ -895,33 +967,31 @@
   }
 
   function renderHome() {
+    const completed = completedLessonIds(state.kid);
+    const nextIndex = nextLessonIndexForKid(state.kid);
     $('kidGrid').innerHTML = KIDS.map(k => `
       <button class="kid-card" type="button" data-kid="${k.id}">
         <span class="kid-face">${k.face}</span>
         <span><strong>${k.name}</strong><span class="mini">${completedCount(k.id)} 关完成</span></span>
       </button>
     `).join('');
-    $('lessonList').innerHTML = LESSONS.map((lesson, index) => {
-      const done = isLessonDone(state.kid, lesson.id);
-      const choiceLabel = choiceModeLabel(lesson);
-      return `
-        <button class="lesson-card" type="button" data-lesson="${index}">
-          <span><strong>${lesson.name}</strong><span>${lesson.level} · ${choiceLabel.stage} · ${choiceLabel.mode} · ${lesson.items.length} 句${done ? ' · 已完成' : ''}</span></span>
-          <span class="lesson-badge">${done ? '✓' : index + 1}</span>
-        </button>
-      `;
-    }).join('');
+    $('lessonList').innerHTML = `
+      ${renderRouteSummary(state.kid, nextIndex)}
+      ${renderRouteGroup('入门路线', 'Level 1-3 · 二选一打基础', 'L1', completed, nextIndex)}
+      ${renderRouteGroup('进阶路线', 'Level 4-7 · 四选一抗干扰', 'L2', completed, nextIndex)}
+    `;
   }
 
   function renderLearn() {
     clearAutoPlayTimer();
+    clearAdvanceTimer();
     const lesson = LESSONS[state.lessonIndex];
     const item = lesson.items[state.itemIndex];
     const pct = ((state.itemIndex) / lesson.items.length) * 100;
     $('lessonTitle').textContent = `${lesson.name}`;
     $('progressText').textContent = `${state.itemIndex + 1}/${lesson.items.length}`;
     $('toolbarProgress').textContent = `${state.itemIndex + 1}/${lesson.items.length}`;
-    $('levelPill').textContent = `★ Level ${lesson.level.replace('L', '')}`;
+    $('levelPill').textContent = `★ Level ${routeLevelNumber(state.lessonIndex)}`;
     $('starPill').textContent = `★ ${starCount(state.kid)}`;
     $('progressFill').style.width = `${pct}%`;
     const renderChoices = getRenderChoices(item, lesson);
@@ -983,6 +1053,68 @@
     return count === 2
       ? { stage: '入门', mode: '二选一' }
       : { stage: '进阶', mode: '四选一' };
+  }
+
+  function routeLevelNumber(index) {
+    return index + 1;
+  }
+
+  function routeCycleLabel(index) {
+    return ['新内容', '强化', '混合复习', '场景练习', '挑战复习'][index % 5];
+  }
+
+  function nextLessonIndexForKid(kid) {
+    const completed = completedLessonIds(kid);
+    const nextIndex = LESSONS.findIndex(lesson => !completed.has(lesson.id));
+    return nextIndex === -1 ? LESSONS.length - 1 : nextIndex;
+  }
+
+  function renderRouteSummary(kid, nextIndex) {
+    const kidName = KIDS.find(k => k.id === kid)?.name || '小朋友';
+    const done = completedCount(kid);
+    const nextLesson = LESSONS[nextIndex];
+    const nextLabel = nextLesson ? `下一关：Level ${routeLevelNumber(nextIndex)} · ${nextLesson.name}` : '已经完成全部关卡';
+    return `
+      <div class="route-summary">
+        <div class="route-summary-head">
+          <strong>${kidName} 的听力路线</strong>
+          <span>${done}/${LESSONS.length} 关完成</span>
+        </div>
+        ${renderStageProgress(kid)}
+        <div class="route-next">${nextLabel}</div>
+      </div>
+    `;
+  }
+
+  function renderRouteGroup(title, detail, level, completed, nextIndex) {
+    return `
+      <div class="route-group">
+        <div class="route-group-title">
+          <strong>${title}</strong>
+          <span>${detail}</span>
+        </div>
+        ${LESSONS.map((lesson, index) => ({ lesson, index }))
+          .filter(entry => entry.lesson.level === level)
+          .map(({ lesson, index }) => renderLessonCard(lesson, index, completed, nextIndex))
+          .join('')}
+      </div>
+    `;
+  }
+
+  function renderLessonCard(lesson, index, completed, nextIndex) {
+    const done = completed.has(lesson.id);
+    const choiceLabel = choiceModeLabel(lesson);
+    const current = index === nextIndex && !done;
+    return `
+      <button class="lesson-card ${done ? 'done' : ''} ${current ? 'current' : ''}" type="button" data-lesson="${index}">
+        <span>
+          <small>Level ${routeLevelNumber(index)} · ${routeCycleLabel(index)}</small>
+          <strong>${lesson.name}</strong>
+          <span>${choiceLabel.stage} · ${choiceLabel.mode} · ${lesson.items.length} 句${done ? ' · 已完成' : current ? ' · 下一关' : ''}</span>
+        </span>
+        <span class="lesson-badge">${done ? '✓' : routeLevelNumber(index)}</span>
+      </button>
+    `;
   }
 
   function getRenderChoices(item, lesson) {
@@ -1064,6 +1196,7 @@
     const ok = btn.dataset.correct === '1';
     btn.classList.add(ok ? 'correct' : 'wrong');
     if (!ok) {
+      btn.disabled = true;
       const item = LESSONS[state.lessonIndex].items[state.itemIndex];
       state.sessionErrors.add(item.id);
       recordMistake();
@@ -1071,13 +1204,20 @@
       return;
     }
     state.locked = true;
+    setChoicesLocked(true);
     stopPracticeFlow();
     addStar(state.kid);
     $('starPill').textContent = `★ ${starCount(state.kid)}`;
     advanceTimer = setTimeout(() => {
       advanceTimer = null;
       nextItem();
-    }, CONFIG.CORRECT_ADVANCE_DELAY);
+    }, CONFIG.NEXT_QUESTION_DELAY);
+  }
+
+  function setChoicesLocked(locked) {
+    document.querySelectorAll('#choices .choice').forEach(choice => {
+      choice.disabled = locked;
+    });
   }
 
   function nextItem() {
@@ -1085,7 +1225,7 @@
     if (state.itemIndex < lesson.items.length - 1) {
       state.itemIndex += 1;
       renderLearn();
-      scheduleAutoPlay();
+      scheduleAutoPlay(CONFIG.NEXT_AUDIO_DELAY);
       return;
     }
     completeLesson();

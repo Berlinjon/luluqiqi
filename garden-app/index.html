@@ -3,9 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#fff8ed">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="每日花园">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-v2.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192-v2.png">
 <title>每日花园 🌱</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0..1&display=swap" rel="stylesheet">
 <style>
 :root {
   --cream: #fff8ed;
@@ -31,6 +37,11 @@
   --shadow-sm: 0 2px 12px rgba(44,31,0,0.07);
   --shadow-md: 0 6px 28px rgba(44,31,0,0.10);
   --shadow-lg: 0 16px 48px rgba(44,31,0,0.14);
+  --card-border: rgba(44,31,0,0.08);
+  --card-border-strong: rgba(44,31,0,0.12);
+  --card-soft-bg: linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,248,237,0.96));
+  --card-soft-fill: #fffdf8;
+  --card-subtle-fill: #fff7e8;
   --radius-sm: 16px;
   --radius-md: 24px;
   --radius-lg: 32px;
@@ -38,6 +49,9 @@
   --accent: var(--lulu);
   --accent-light: var(--lulu-light);
   --accent-mid: var(--lulu-mid);
+  --header-stack-top: 92px;
+  --identity-stick-top: 148px;
+  --selector-compact-top: 80px;
 }
 body.kid-qiqi {
   --accent: var(--qiqi);
@@ -67,6 +81,11 @@ body.kid-mimi {
     --shadow-sm: 0 2px 12px rgba(0,0,0,0.35);
     --shadow-md: 0 6px 28px rgba(0,0,0,0.45);
     --shadow-lg: 0 16px 48px rgba(0,0,0,0.55);
+    --card-border: rgba(240,224,200,0.10);
+    --card-border-strong: rgba(240,224,200,0.16);
+    --card-soft-bg: linear-gradient(180deg,rgba(38,26,16,0.98),rgba(30,21,16,0.96));
+    --card-soft-fill: #2a1e14;
+    --card-subtle-fill: #312215;
     /* kid 颜色在深色下略微提亮 */
     --lulu: #f07aaa;
     --lulu-light: #2e1020;
@@ -156,8 +175,16 @@ body.kid-mimi {
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
+html{
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  height:100%;
+  height:-webkit-fill-available;
+}
 body{
+  min-height:100vh;
+  min-height:-webkit-fill-available;
   min-height:100dvh;
   background:var(--cream);
   font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
@@ -165,6 +192,7 @@ body{
   overflow-x:hidden;
   touch-action:manipulation;
   padding-bottom:100px;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom));
 }
 
 /* ── Decorative BG ── */
@@ -178,23 +206,50 @@ body{
 /* ── Header ── */
 header{
   position:fixed;top:0;left:0;right:0;z-index:50;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 20px;
+  display:block;
+  padding:12px 20px 10px;
+  padding-top:calc(12px + env(safe-area-inset-top));
   background:rgba(255,248,237,0.85);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border-bottom:1.5px solid rgba(247,181,0,0.18);
+  box-shadow:0 8px 24px rgba(44,31,0,0.04);
 }
-.header-left{display:flex;align-items:center;gap:10px;}
+.header-shell{display:flex;flex-direction:column;gap:8px;max-width:560px;margin:0 auto;}
+.header-topline,.header-bottomline{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.header-left{display:flex;align-items:center;gap:10px;min-width:0;}
 .header-logo{
   width:38px;height:38px;border-radius:12px;
   background:linear-gradient(135deg,var(--warm-green),var(--warm-green-mid));
   display:flex;align-items:center;justify-content:center;
   font-size:20px;box-shadow:var(--shadow-sm);
 }
-.header-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.15rem;color:var(--on-surface);letter-spacing:-0.3px;}
-.header-date{font-size:0.72rem;color:var(--text-mid);font-weight:500;margin-top:1px;}
-.header-right{display:flex;align-items:center;gap:8px;}
+.header-branding{min-width:0;}
+.header-eyebrow{
+  font-size:0.64rem;font-weight:900;color:var(--text-light);
+  letter-spacing:0.16em;text-transform:uppercase;
+}
+.header-page-title{
+  margin-top:2px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.2rem;
+  color:var(--on-surface);letter-spacing:-0.4px;line-height:1.05;
+}
+.header-date{
+  font-size:0.72rem;color:var(--text-mid);font-weight:700;
+  margin-top:1px;text-align:right;white-space:nowrap;
+}
+.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.header-meta-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  max-width:100%;
+  padding:6px 12px;border-radius:999px;
+  background:linear-gradient(135deg,var(--accent-light),rgba(255,255,255,0.94));
+  border:1.5px solid var(--accent-mid);
+  box-shadow:var(--shadow-sm);
+  font-size:0.76rem;font-weight:900;color:var(--on-surface);
+}
 
 .streak-pill{
   display:flex;align-items:center;gap:5px;
@@ -206,16 +261,19 @@ header{
 
 /* ── Collapsible Kid Selector ── */
 #charSelector{
-  position:sticky;top:72px;z-index:40;
+  position:sticky;top:calc(var(--header-stack-top) + env(safe-area-inset-top));z-index:40;
   padding:12px 16px;
   background:rgba(255,248,237,0.9);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(247,181,0,0.08);
+  transition:padding 0.22s ease, background 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 }
 .selector-toggle{
-  width:100%;border:2px solid var(--accent);border-radius:16px;padding:12px 14px;
-  background:var(--card-bg);box-shadow:var(--shadow-sm);
+  width:100%;border:1.5px solid color-mix(in srgb, var(--accent-mid) 65%, white 35%);border-radius:18px;padding:12px 14px;
+  background:linear-gradient(135deg,var(--accent-light),rgba(255,255,255,0.98));box-shadow:var(--shadow-sm);
   display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  transition:padding 0.22s ease, border-radius 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
 }
 .selector-current{display:flex;align-items:center;gap:10px;min-width:0;}
 .selector-mini-ring{width:46px;height:46px;position:relative;flex-shrink:0;}
@@ -226,16 +284,16 @@ header{
 }
 .selector-main-text{min-width:0;text-align:left;}
 .selector-name{font-size:0.95rem;font-weight:900;line-height:1.1;color:var(--on-surface);}
-.selector-sub{font-size:0.74rem;font-weight:700;color:var(--text-mid);margin-top:2px;}
+.selector-sub{font-size:0.74rem;font-weight:800;color:var(--text-mid);margin-top:2px;}
 .selector-arrow{font-size:1rem;color:var(--text-mid);transition:transform .22s ease;}
 #charSelector.open .selector-arrow{transform:rotate(180deg);}
 .selector-menu{
-  display:none;margin-top:10px;padding:10px;background:var(--card-bg);
-  border-radius:16px;box-shadow:var(--shadow-sm);
+  display:none;margin-top:10px;padding:10px;background:rgba(255,255,255,0.98);
+  border-radius:18px;box-shadow:var(--shadow-sm);border:1.5px solid var(--card-border);
 }
 #charSelector.open .selector-menu{display:flex;gap:8px;}
 .selector-option{
-  flex:1;min-width:0;border:2px solid transparent;border-radius:14px;background:#fff;
+  flex:1;min-width:0;border:1.5px solid transparent;border-radius:16px;background:var(--card-soft-fill);
   padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
 }
 .selector-option.active{transform:translateY(-1px);}
@@ -244,12 +302,217 @@ header{
 .selector-option[data-kid="lulu"].active{border-color:var(--lulu);background:var(--lulu-light);}
 .selector-option[data-kid="qiqi"].active{border-color:var(--qiqi);background:var(--qiqi-light);}
 .selector-option[data-kid="mimi"].active{border-color:var(--mimi);background:var(--mimi-light);}
+#charSelector.compact{
+  position:fixed;
+  top:calc(var(--selector-compact-top) + env(safe-area-inset-top));
+  left:50%;
+  transform:translateX(-50%);
+  width:min(calc(100% - 24px), 560px);
+  padding:6px 0 0;
+  background:transparent;
+  box-shadow:none;
+  z-index:46;
+}
+#charSelector.compact .selector-toggle{
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 10px 24px rgba(44,31,0,0.12);
+}
+#charSelector.compact .selector-current{gap:7px;}
+#charSelector.compact .selector-mini-ring{width:32px;height:32px;}
+#charSelector.compact .selector-mini-ring svg{width:32px;height:32px;}
+#charSelector.compact .selector-mini-ring b{font-size:0.54rem;}
+#charSelector.compact .selector-name{font-size:0.86rem;line-height:1;}
+#charSelector.compact .selector-sub{display:none;}
+#charSelector.compact .selector-arrow{font-size:0.82rem;}
+#charSelector.compact .selector-menu{margin-top:8px;}
 
 /* ── Main Content ── */
 main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .kid-panel{display:none;}
-.kid-panel.active{display:block;animation:slideUp 0.35s cubic-bezier(.36,1.1,.64,1) both;}
+.kid-panel.active{display:block;}
+.kid-panel,
+#progress-view,
+#rewards-view{
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+  will-change:transform,opacity;
+}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}};
+
+.kid-identity-bar{
+  position:sticky;top:calc(var(--identity-stick-top) + env(safe-area-inset-top));z-index:28;
+  display:flex;align-items:center;gap:10px;
+  margin:8px 0 12px;padding:8px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.72);
+  border:1px solid rgba(44,31,0,0.05);
+  box-shadow:none;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0.92;
+}
+.kid-identity-bar.kid-lulu{
+  background:rgba(253,232,240,0.74);
+  border-color:rgba(242,168,196,0.45);
+}
+.kid-identity-bar.kid-qiqi{
+  background:rgba(228,245,254,0.76);
+  border-color:rgba(143,207,234,0.44);
+}
+.kid-identity-bar.kid-mimi{
+  background:rgba(240,233,255,0.76);
+  border-color:rgba(201,182,242,0.46);
+}
+.kid-identity-emoji{
+  width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.08rem;
+  background:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.85);
+  flex-shrink:0;
+}
+.kid-identity-bar.kid-lulu .kid-identity-emoji{
+  background:#fff6fa;
+  box-shadow:inset 0 0 0 1px #f7c7d9, 0 4px 10px rgba(224,90,138,0.10);
+}
+.kid-identity-bar.kid-qiqi .kid-identity-emoji{
+  background:#f4fbff;
+  box-shadow:inset 0 0 0 1px #b9e2f4, 0 4px 10px rgba(26,156,200,0.10);
+}
+.kid-identity-bar.kid-mimi .kid-identity-emoji{
+  background:#faf7ff;
+  box-shadow:inset 0 0 0 1px #d7caf8, 0 4px 10px rgba(142,107,216,0.10);
+}
+.kid-identity-text{min-width:0;}
+.kid-identity-label{
+  font-size:0.62rem;font-weight:900;color:var(--text-mid);
+  letter-spacing:0.35px;text-transform:uppercase;
+}
+.kid-identity-bar.kid-lulu .kid-identity-label{color:#b44f74;}
+.kid-identity-bar.kid-qiqi .kid-identity-label{color:#2f7da0;}
+.kid-identity-bar.kid-mimi .kid-identity-label{color:#7256b6;}
+.kid-identity-name{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.92rem;font-weight:900;color:var(--on-surface);line-height:1.1;
+}
+body.is-old-iphone .kid-identity-bar{top:128px;padding:7px 10px;}
+.kid-home-group{
+  margin:0 0 18px;
+  padding:14px 14px 12px;
+  border-radius:20px;
+  border:1.5px solid rgba(44,31,0,0.07);
+  box-shadow:var(--shadow-sm);
+}
+.kid-home-group.tasks{
+  background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(255,248,237,0.94));
+}
+.kid-home-group.feedback{
+  background:linear-gradient(180deg,#f6fbf1,rgba(255,255,255,0.96));
+  border-color:rgba(114,168,52,0.14);
+}
+.kid-home-group.review{
+  background:linear-gradient(180deg,#fffdf7,rgba(255,255,255,0.97));
+  border-color:rgba(232,168,0,0.14);
+}
+.kid-home-group-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  margin-bottom:12px;
+}
+.kid-home-group-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:1rem;font-weight:900;color:var(--on-surface);line-height:1.1;
+}
+.kid-home-group-sub{
+  margin-top:3px;
+  font-size:0.72rem;font-weight:700;color:var(--text-mid);line-height:1.45;
+}
+.kid-home-group-tag{
+  flex-shrink:0;
+  border-radius:999px;
+  padding:4px 10px;
+  font-size:0.66rem;font-weight:900;letter-spacing:0.35px;
+  text-transform:uppercase;
+}
+.kid-home-group-copy-kid{display:none;}
+.kid-home-group.tasks .kid-home-group-tag{
+  background:#fff0d0;color:#a07000;
+}
+.kid-home-group.feedback .kid-home-group-tag{
+  background:#e8f5e9;color:#2e7d32;
+}
+.kid-home-group.review .kid-home-group-tag{
+  background:#fff8dc;color:#8d6e00;
+}
+.kid-home-group .section-title:first-of-type{margin-top:0;}
+.yesterday-review-card{
+  margin:0 0 14px;
+  padding:14px 14px 12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff8e8,rgba(255,255,255,0.98));
+  border:1.5px solid rgba(247,181,0,0.26);
+  box-shadow:var(--shadow-sm);
+}
+.yesterday-review-card.hidden{display:none;}
+.yesterday-review-top{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.yesterday-review-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.95rem;font-weight:900;color:#8d6e00;
+}
+.yesterday-review-summary{
+  margin-top:4px;
+  font-size:0.82rem;font-weight:700;color:var(--on-surface);line-height:1.5;
+}
+.yesterday-review-meta{
+  margin-top:8px;
+  font-size:0.72rem;font-weight:700;color:var(--text-mid);line-height:1.45;
+}
+.yesterday-review-actions{
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.yesterday-review-btn{
+  border:none;border-radius:999px;padding:7px 12px;
+  font-size:0.72rem;font-weight:900;font-family:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.yesterday-review-btn.toggle{
+  background:#fff3cd;color:#8d6e00;
+}
+.yesterday-review-btn.dismiss{
+  background:transparent;color:#a1887f;padding:4px 6px;font-size:0.88rem;
+}
+.yesterday-review-detail{
+  margin-top:10px;padding-top:10px;border-top:1px dashed rgba(247,181,0,0.28);
+  display:none;
+}
+.yesterday-review-card.open .yesterday-review-detail{display:block;}
+.yesterday-review-grid{
+  display:grid;gap:8px;
+}
+.yesterday-review-item{
+  background:rgba(255,255,255,0.82);
+  border-radius:14px;
+  padding:10px 12px;
+}
+.yesterday-review-item-label{
+  font-size:0.68rem;font-weight:900;color:var(--text-mid);letter-spacing:0.3px;text-transform:uppercase;
+}
+.yesterday-review-item-text{
+  margin-top:4px;
+  font-size:0.8rem;font-weight:700;color:var(--on-surface);line-height:1.5;
+}
+.yesterday-review-encourage{
+  margin-top:8px;
+  font-size:0.78rem;font-weight:800;color:#5d8a24;
+}
+body.is-old-iphone #charSelector.compact{
+  top:calc(var(--selector-compact-top) + env(safe-area-inset-top));
+  width:min(calc(100% - 20px), 560px);
+}
 
 /* ── Section Title ── */
 .section-title{
@@ -286,6 +549,95 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .hero-info{flex:1;}
 .hero-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.5rem;color:var(--on-surface);line-height:1.1;}
 .hero-sub{font-size:0.85rem;color:var(--text-mid);font-weight:500;margin-top:4px;}
+.hero-status-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
+}
+.hero-status-item{
+  background:var(--card-soft-fill);
+  border:1.5px solid var(--card-border);
+  border-radius:18px;
+  padding:10px 8px;
+  text-align:center;
+}
+.hero-status-label{
+  font-size:0.66rem;
+  font-weight:900;
+  color:var(--text-mid);
+  letter-spacing:0.3px;
+  text-transform:uppercase;
+}
+.hero-status-value{
+  margin-top:5px;
+  font-size:0.84rem;
+  font-weight:900;
+  color:var(--on-surface);
+  line-height:1.2;
+}
+.hero-tip{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:18px;
+  background:linear-gradient(135deg,var(--warm-green-light),rgba(255,255,255,0.92));
+  border:1.5px solid rgba(132,200,64,0.22);
+  font-size:0.78rem;
+  font-weight:800;
+  color:var(--on-surface);
+  line-height:1.5;
+}
+
+/* ── Unified Card System ── */
+.study-face,
+.tv-card,
+.wallet-card,
+.super-card,
+.growth-card,
+.stats-card,
+.heatmap-card,
+.store-header-card,
+.store-item,
+.badge-mindmap-wrapper,
+.correlation-wrapper,
+.report-wrapper,
+.beanstalk-wrapper,
+.map-header{
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  border:1.5px solid var(--card-border);
+}
+
+.weekly-review-card,
+.activity-menu-card,
+.badge-roadmap,
+.parent-growth-stat,
+.parent-growth-list,
+.report-stat,
+.report-top-habits,
+.report-cheer,
+.history-item,
+.wallet-stat,
+.wallet-row,
+.badge-branch{
+  border-radius:18px;
+  border:1.5px solid var(--card-border);
+}
+
+.tv-card-title,
+.wallet-title,
+.stats-title,
+.heatmap-title,
+.growth-title,
+.store-sec-title,
+.map-title,
+.beanstalk-title,
+.correlation-title,
+.report-title,
+.badge-mindmap-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  letter-spacing:-0.2px;
+}
 
 /* ── Study Card ── */
 /* ── 翻卡学习卡片 ── */
@@ -310,11 +662,9 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 }
 .study-face{
   position:absolute;top:0;right:0;bottom:0;left:0;
-  background:var(--card-bg);
-  border-radius:var(--radius-lg);
-  border:1.5px solid var(--accent-mid);
+  background:var(--card-soft-bg);
+  border-color:color-mix(in srgb, var(--accent-mid) 72%, white 28%);
   padding:20px;
-  box-shadow:var(--shadow-sm);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
   overflow:hidden;
@@ -406,9 +756,8 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 /* ── TV Energy Card & Rabbit Animation ── */
 .tv-card{
-  background:var(--card-bg);border-radius:var(--radius-lg);
-  padding:20px;box-shadow:var(--shadow-sm);
-  border:1.5px solid rgba(44,31,0,0.07);
+  background:var(--card-soft-bg);
+  padding:20px;
 }
 .tv-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .tv-card-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1rem;color:var(--on-surface);}
@@ -451,9 +800,8 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 /* ── Wallet Card ── */
 .wallet-card{
-  background:var(--card-bg);border-radius:var(--radius-lg);
-  padding:20px;box-shadow:var(--shadow-sm);
-  border:1.5px solid rgba(44,31,0,0.07);
+  background:var(--card-soft-bg);
+  padding:20px;
 }
 .wallet-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1rem;color:var(--on-surface);margin-bottom:14px;cursor:pointer;}
 .wallet-history{margin-top:14px;}
@@ -461,7 +809,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .wallet-history-title::before{content:'';width:3px;height:12px;border-radius:2px;background:var(--accent);display:inline-block;}
 .history-timeline{position:relative;padding-left:20px;}
 .history-timeline::before{content:'';position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:linear-gradient(to bottom,var(--accent-mid),var(--cream-dark));border-radius:1px;}
-.history-item{position:relative;margin-bottom:12px;background:var(--cream);border-radius:var(--radius-sm);padding:10px 12px;}
+.history-item{position:relative;margin-bottom:12px;background:var(--card-soft-fill);padding:10px 12px;}
 .history-item::before{content:'';position:absolute;left:-17px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--card-bg);box-shadow:0 0 0 2px var(--accent-mid);}
 .history-month{font-size:0.72rem;font-weight:900;color:var(--text-mid);margin-bottom:4px;}
 .history-stats{display:flex;gap:10px;align-items:center;}
@@ -471,16 +819,16 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .history-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-mid));}
 .wallet-stats{display:flex;gap:12px;margin-bottom:14px;}
 .wallet-stat{
-  flex:1;background:var(--cream-dark);border-radius:var(--radius-sm);
+  flex:1;background:var(--card-subtle-fill);
   padding:10px 12px;text-align:center;
 }
 .wallet-stat-label{font-size:0.7rem;color:var(--text-mid);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
 .wallet-stat-val{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.2rem;color:var(--on-surface);margin-top:2px;}
 .wallet-row{
   display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(135deg,var(--warm-green-light),var(--gold-light));
-  border-radius:var(--radius-sm);padding:14px 16px;
-  border:1.5px solid rgba(42,105,0,0.15);
+  background:linear-gradient(135deg,var(--warm-green-light),rgba(255,243,192,0.72));
+  padding:14px 16px;
+  border-color:rgba(42,105,0,0.13);
 }
 .wallet-balance-label{font-size:0.72rem;color:var(--text-mid);font-weight:700;}
 .wallet-balance{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.5rem;color:var(--warm-green);}
@@ -496,17 +844,18 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 /* ── Super Challenges ── */
 .super-card{
-  background:linear-gradient(135deg,#fff8e8,#fff0d0);
-  border-radius:var(--radius-lg);padding:20px;
-  box-shadow:var(--shadow-sm);border:2px solid var(--gold);
+  background:linear-gradient(135deg,#fffaf0,#fff3de);
+  padding:20px;
+  border-color:rgba(247,181,0,0.45);
 }
 .super-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1rem;color:#a07000;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
 .super-list{display:flex;flex-direction:column;gap:10px;}
 .super-item{
   display:flex;align-items:center;gap:12px;
-  background:#fff;border-radius:var(--radius-sm);padding:12px 14px;
+  background:var(--card-soft-fill);padding:12px 14px;
   cursor:pointer;transition:transform 0.15s;-webkit-tap-highlight-color:transparent;
-  box-shadow:var(--shadow-sm);
+  box-shadow:none;
+  border:1.5px solid rgba(247,181,0,0.14);
 }
 .super-item:active{transform:scale(0.98);}
 .super-check{
@@ -524,9 +873,9 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 .badge-roadmap{
   margin-top:12px;
-  background:linear-gradient(120deg,#fffaf0,#fff4dc);
-  border:1.5px dashed #ffd180;
-  border-radius:14px;
+  background:linear-gradient(120deg,#fffdf6,#fff6e6);
+  border-style:solid;
+  border-color:rgba(247,181,0,0.20);
   padding:10px 10px 8px;
 }
 .badge-roadmap-title{font-size:0.72rem;font-weight:900;color:#a07000;margin-bottom:8px;}
@@ -543,11 +892,11 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .badge-label{font-size:0.68rem;font-weight:900;color:var(--on-surface);line-height:1.2;}
 .badge-need{font-size:0.62rem;font-weight:800;color:var(--text-mid);margin-top:2px;}
 
-.weekly-review-card{margin-top:10px;background:linear-gradient(135deg,#eefaf3,#ffffff);border:1.5px solid #b9e3c8;border-radius:14px;padding:10px 12px;}
+.weekly-review-card{margin-top:10px;background:linear-gradient(135deg,#f2fbf5,#ffffff);border-color:rgba(110,182,133,0.28);padding:10px 12px;}
 .weekly-review-title{font-size:0.76rem;font-weight:900;color:#1f7a36;margin-bottom:4px;}
 .weekly-review-line{font-size:0.7rem;font-weight:700;color:#35584a;line-height:1.5;}
 
-.activity-menu-card{margin-top:8px;background:#fff;border:1.5px solid #e6f2dc;border-radius:12px;padding:8px 10px;}
+.activity-menu-card{margin-top:8px;background:var(--card-soft-fill);border-color:rgba(132,200,64,0.18);padding:8px 10px;}
 .activity-menu-title{font-size:0.72rem;font-weight:900;color:#517a2f;margin-bottom:6px;}
 .activity-menu-item{display:flex;justify-content:space-between;gap:8px;padding:4px 0;font-size:0.7rem;font-weight:700;color:#34503a;border-bottom:1px dashed #e8efe0;}
 .activity-menu-item:last-child{border-bottom:none;}
@@ -559,11 +908,11 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 
 
-.badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#f8fbff,#eef7ff);border:1.5px solid #c6ddff;border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm);}
+.badge-mindmap-wrapper{margin-top:24px;background:linear-gradient(160deg,#fbfdff,#f2f8ff);border-color:rgba(112,156,222,0.24);padding:16px 14px;}
 .badge-mindmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:0.95rem;font-weight:900;color:#2157a3;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .badge-mindmap-sub{font-size:0.72rem;font-weight:700;color:#5f789d;margin-bottom:12px;}
 .badge-mindmap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
-.badge-branch{background:#fff;border:1.5px solid #d8e6ff;border-radius:12px;padding:10px 10px 8px;}
+.badge-branch{background:var(--card-soft-fill);border-color:rgba(112,156,222,0.16);padding:10px 10px 8px;}
 .badge-branch-title{font-size:0.76rem;font-weight:900;color:#24456e;margin-bottom:6px;display:flex;align-items:center;gap:4px;}
 .badge-branch-item{font-size:0.69rem;font-weight:700;color:#3b4f68;line-height:1.5;}
 .badge-branch-item.done{color:#1f7a36;}
@@ -575,9 +924,9 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .habits-grid{display:flex;flex-direction:column;gap:10px;}
 .habit-item{
   display:flex;align-items:center;gap:12px;
-  background:var(--card-bg);border-radius:var(--radius-md);
+  background:var(--card-soft-bg);border-radius:var(--radius-md);
   padding:14px 16px;box-shadow:var(--shadow-sm);
-  border:2px solid transparent;
+  border:1.5px solid var(--card-border);
   transition:border-color 0.25s,background 0.25s;
   animation:slideUp 0.4s cubic-bezier(.36,1.1,.64,1) both;
 }
@@ -688,9 +1037,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 
 /* ── Growth Card ── */
 .growth-card{
-  background:var(--card-bg);border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-sm);overflow:hidden;
-  border:1.5px solid rgba(44,31,0,0.07);
+  background:var(--card-soft-bg);overflow:hidden;
 }
 .growth-remind{
   display:none;background:#fff3e0;border:2px solid #ffb74d;
@@ -745,10 +1092,10 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .reset-btn:hover{border-color:var(--text-light);color:var(--text-mid);}
 
 /* ── Rewards Store UI ── */
-#rewards-view { display:none; animation: slideUp 0.35s both; }
+#rewards-view { display:none; }
 .store-header-card {
-  background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px 20px;
-  box-shadow: var(--shadow-sm); border: 1.5px solid var(--accent-mid);
+  background: var(--card-soft-bg); padding: 18px 20px;
+  border-color: color-mix(in srgb, var(--accent-mid) 62%, white 38%);
   display: flex; justify-content: space-around; align-items: center; margin-bottom: 24px;
 }
 .store-bal-item { text-align: center; }
@@ -760,8 +1107,8 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .store-sec-title { font-weight: 900; font-size: 1.05rem; color: var(--text-mid); margin-bottom: 12px; }
 .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .store-item {
-  background: var(--card-bg); border-radius: var(--radius-md); padding: 16px 12px 14px;
-  box-shadow: var(--shadow-sm); border: 2px solid transparent;
+  background: var(--card-soft-bg); border-radius: var(--radius-md); padding: 16px 12px 14px;
+  border: 1.5px solid var(--card-border);
   display: flex; flex-direction: column; align-items: center; text-align: center;
   transition: transform 0.15s, border-color 0.2s; cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
@@ -800,10 +1147,10 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .store-edit-type-tag.star{background:#fff9c4;color:#f57f17;}
 .store-edit-actions{display:flex;gap:10px;margin-top:16px;}
 /* Stats card */
-.stats-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(44,31,0,0.07);}
+.stats-card{background:var(--card-soft-bg);padding:18px 20px;}
 .stats-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;color:var(--on-surface);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
 .stats-row{display:flex;gap:10px;margin-bottom:12px;}
-.stats-pill{flex:1;text-align:center;background:var(--cream-dark);border-radius:var(--radius-sm);padding:10px 8px;}
+.stats-pill{flex:1;text-align:center;background:var(--card-subtle-fill);border-radius:var(--radius-sm);padding:10px 8px;border:1.5px solid var(--card-border);}
 .stats-pill-label{font-size:0.68rem;color:var(--text-mid);font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
 .stats-pill-val{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.15rem;color:var(--on-surface);margin-top:2px;}
 .stats-bar-row{margin-bottom:8px;}
@@ -812,21 +1159,41 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .stats-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--warm-green),var(--warm-green-mid));transition:width 0.6s cubic-bezier(.36,1.56,.64,1);}
 
 /* ── Habit Heatmap ── */
-.heatmap-card{background:var(--card-bg);border-radius:var(--radius-lg);padding:18px 16px;box-shadow:var(--shadow-sm);border:1.5px solid rgba(44,31,0,0.07);}
+.heatmap-card{background:var(--card-soft-bg);padding:18px 16px;}
 .heatmap-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;color:var(--on-surface);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
 .heatmap-sub{font-size:0.72rem;color:var(--text-mid);font-weight:600;margin-bottom:12px;}
+.heatmap-grid{display:flex;align-items:flex-start;gap:6px;}
+.heatmap-weekdays{display:flex;flex-direction:column;gap:3px;padding-top:16px;flex-shrink:0;}
+.heatmap-weekday{width:18px;height:16px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:var(--text-light);}
 .heatmap-months{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px;}
-.heatmap-month-col{display:flex;flex-direction:column;gap:2px;flex-shrink:0;}
-.heatmap-month-label{font-size:0.62rem;font-weight:900;color:var(--text-light);text-align:center;margin-bottom:2px;height:12px;}
+.heatmap-month-col{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.heatmap-month-col.month-start{margin-left:10px;padding-left:10px;border-left:2px solid rgba(247,181,0,0.18);}
+.heatmap-month-col.month-start:first-child{margin-left:0;padding-left:0;border-left:none;}
+.heatmap-month-label{font-size:0.66rem;font-weight:900;color:var(--text-mid);text-align:center;margin-bottom:3px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.heatmap-month-label.has-label{background:var(--gold-light);border:1px solid rgba(247,181,0,0.35);border-radius:999px;color:#a07000;}
+.heatmap-month-label.current-month{
+  background:linear-gradient(135deg,#ffe082,#ffd54f);
+  border-color:rgba(255,179,0,0.55);
+  color:#7a5200;
+  box-shadow:0 4px 10px rgba(255,179,0,0.18);
+}
 .heatmap-week{display:flex;flex-direction:column;gap:2px;}
-.heatmap-day{width:13px;height:13px;border-radius:3px;background:var(--cream-dark);}
+.heatmap-day{width:16px;height:16px;border-radius:4px;background:var(--cream-dark);position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .heatmap-day.done{background:var(--warm-green);opacity:0.9;}
 .heatmap-day.today{outline:2px solid var(--gold);outline-offset:1px;}
-.heatmap-day.future{background:transparent;}
+.heatmap-day.future{
+  background:rgba(255,248,237,0.75);
+  border:1px dashed rgba(176,141,87,0.35);
+}
+.heatmap-day.future .heatmap-day-anchor{color:rgba(120,96,58,0.58);}
+.heatmap-day.partial{background:#9ccc65;opacity:0.85;}
+.heatmap-day-anchor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.5rem;font-weight:900;color:rgba(44,31,0,0.72);line-height:1;pointer-events:none;}
+.heatmap-day.done .heatmap-day-anchor,
+.heatmap-day.partial .heatmap-day-anchor{color:rgba(255,255,255,0.92);}
 .heatmap-legend{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:0.68rem;color:var(--text-light);font-weight:700;}
 .heatmap-legend-box{width:11px;height:11px;border-radius:2px;}
-#progress-view { display:none; animation: slideUp 0.35s both; padding-bottom: 40px;}
-.map-header { background: var(--card-bg); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow-sm); border: 1.5px solid var(--accent-mid); margin-bottom: 24px; text-align: center; }
+#progress-view { display:none; padding-bottom: 40px;}
+.map-header { background: var(--card-soft-bg); padding: 18px 20px; border-color: color-mix(in srgb, var(--accent-mid) 62%, white 38%); margin-bottom: 24px; text-align: center; }
 .map-title { font-size: 1.1rem; font-weight: 900; color: var(--accent); margin-bottom: 6px; }
 .map-sub { font-size: 0.85rem; color: var(--text-mid); font-weight: 700; }
 .map-flower-count { font-size: 1.4rem; font-weight: 900; color: var(--warm-green); font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -865,7 +1232,7 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 }
 
 /* ── 魔法豌豆树 UI ── */
-.beanstalk-wrapper{margin-top:30px;padding:24px 16px 32px;background:linear-gradient(to bottom,#e8f5e9,#f1f8e9);border-radius:var(--radius-lg);border:2px solid #a5d6a7;text-align:center;box-shadow:0 4px 20px rgba(46,125,50,0.08);}
+.beanstalk-wrapper{margin-top:30px;padding:24px 16px 32px;background:linear-gradient(to bottom,#eef8f0,#f8fcf8);border-color:rgba(110,182,133,0.30);text-align:center;box-shadow:var(--shadow-sm);}
 .beanstalk-title{font-size:1.15rem;font-weight:900;color:#2e7d32;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;}
 .beanstalk-scene{position:relative;width:100%;margin:0 auto;}
 .beanstalk-trunk-svg{display:block;margin:0 auto;}
@@ -897,10 +1264,10 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .beanstalk-cloud{font-size:2.4rem;animation:cloudFloat 3s ease-in-out infinite;display:block;margin-top:4px;}
 
 .parent-growth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px;}
-.parent-growth-stat{background:#fff;border:1.5px solid #c8e6c9;border-radius:12px;padding:10px 8px;}
+.parent-growth-stat{background:var(--card-soft-fill);border-color:rgba(110,182,133,0.20);padding:10px 8px;}
 .parent-growth-val{font-size:1.05rem;font-weight:900;color:#1b5e20;}
 .parent-growth-label{font-size:0.7rem;font-weight:800;color:#5f7a63;margin-top:2px;}
-.parent-growth-list{margin-top:12px;background:#fff;border:1.5px solid #dcefdc;border-radius:12px;padding:8px 10px;max-height:230px;overflow:auto;}
+.parent-growth-list{margin-top:12px;background:var(--card-soft-fill);border-color:rgba(110,182,133,0.18);padding:8px 10px;max-height:230px;overflow:auto;}
 .parent-growth-row{display:grid;grid-template-columns:56px 1fr 1fr;gap:8px;padding:6px 0;border-bottom:1px dashed #d8e8d8;font-size:0.74rem;font-weight:700;color:#31503a;}
 .parent-growth-row:last-child{border-bottom:none;}
 .parent-growth-empty{color:var(--text-mid);font-size:0.88rem;font-weight:700;padding:20px 10px;line-height:1.6;}
@@ -910,11 +1277,9 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 /* ── 成长关联图 ── */
 .correlation-wrapper{
   margin-top:24px;
-  background:var(--card-bg);
-  border-radius:var(--radius-lg);
+  background:var(--card-soft-bg);
   padding:20px 16px 24px;
-  box-shadow:var(--shadow-sm);
-  border:1.5px solid rgba(44,31,0,0.07);
+  border-color:var(--card-border-strong);
 }
 .correlation-title{
   font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;
@@ -981,22 +1346,22 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 .onboard-btn{width:100%;padding:13px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--warm-green),var(--warm-green-mid));color:#fff;font-weight:900;font-size:1rem;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(42,105,0,0.25);}
 
 /* ── 月度报告卡片 ── */
-.report-wrapper{margin-top:24px;background:linear-gradient(135deg,var(--gold-light),var(--card-bg));border-radius:var(--radius-lg);padding:20px 16px 24px;box-shadow:var(--shadow-md);border:2px solid rgba(247,181,0,0.3);}
+.report-wrapper{margin-top:24px;background:linear-gradient(135deg,#fffbf2,var(--card-soft-fill));padding:20px 16px 24px;box-shadow:var(--shadow-sm);border-color:rgba(247,181,0,0.24);}
 .report-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .report-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.05rem;color:var(--on-surface);}
 .report-month{font-size:0.72rem;font-weight:800;color:var(--text-mid);background:var(--cream-dark);padding:3px 10px;border-radius:999px;}
 .report-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.report-stat{background:var(--card-bg);border-radius:var(--radius-md);padding:12px 14px;text-align:center;box-shadow:var(--shadow-sm);}
+.report-stat{background:var(--card-soft-fill);padding:12px 14px;text-align:center;box-shadow:none;border-color:var(--card-border);}
 .report-stat-val{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:1.6rem;color:var(--on-surface);line-height:1;}
 .report-stat-label{font-size:0.68rem;font-weight:800;color:var(--text-mid);margin-top:4px;}
-.report-top-habits{background:var(--card-bg);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+.report-top-habits{background:var(--card-soft-fill);padding:12px 14px;margin-bottom:12px;box-shadow:none;border-color:var(--card-border);}
 .report-top-title{font-size:0.75rem;font-weight:900;color:var(--text-mid);margin-bottom:8px;}
 .report-habit-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .report-habit-bar-bg{flex:1;height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden;}
 .report-habit-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--warm-green),var(--warm-green-mid));transition:width 0.6s cubic-bezier(.36,1.56,.64,1);}
 .report-habit-name{font-size:0.75rem;font-weight:800;color:var(--on-surface);width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .report-habit-pct{font-size:0.68rem;font-weight:900;color:var(--text-mid);width:32px;text-align:right;}
-.report-cheer{background:linear-gradient(135deg,var(--warm-green-light),var(--card-bg));border-radius:var(--radius-md);padding:12px 14px;font-size:0.85rem;font-weight:800;color:var(--on-surface);line-height:1.6;text-align:center;border:1.5px solid var(--warm-green-mid);}
+.report-cheer{background:linear-gradient(135deg,var(--warm-green-light),var(--card-soft-fill));padding:12px 14px;font-size:0.85rem;font-weight:800;color:var(--on-surface);line-height:1.6;text-align:center;border-color:rgba(132,200,64,0.28);}
 .report-empty{text-align:center;padding:28px 16px;font-size:0.85rem;font-weight:700;color:var(--text-light);line-height:1.7;}
 
 /* ── 孩子模式 ── */
@@ -1012,7 +1377,6 @@ main{position:relative;z-index:1;padding:0 16px;max-width:560px;margin:0 auto;}
 body.kid-mode .section-title:not(.kid-visible),
 body.kid-mode .wallet-card,
 body.kid-mode .stats-card,
-body.kid-mode .heatmap-card,
 body.kid-mode .growth-card,
 body.kid-mode .growth-remind,
 body.kid-mode .reset-btn,
@@ -1025,6 +1389,19 @@ body.kid-mode .beanstalk-wrapper,
 body.kid-mode .correlation-wrapper,
 body.kid-mode .report-wrapper{
   display:none !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-copy-default{
+  display:none !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-copy-kid{
+  display:inline !important;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-head{
+  margin-bottom:10px;
+}
+body.kid-mode .kid-home-group.review .kid-home-group-tag{
+  background:#e8f5e9;
+  color:#2e7d32;
 }
 /* 孩子模式进度页只显示地图 */
 body.kid-mode #navModeToggle{ color:#e53935; }
@@ -1045,23 +1422,63 @@ body.kid-mode .kid-score-hint{ display:block; }
 
 nav{
   position:fixed;bottom:0;left:0;right:0;z-index:50;
-  display:flex;justify-content:space-around;align-items:center;
-  padding:10px 20px 22px;
-  background:rgba(255,248,237,0.92);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-top:1.5px solid rgba(247,181,0,0.15);
-  border-radius:28px 28px 0 0;
+  display:flex;justify-content:space-between;align-items:stretch;gap:8px;
+  padding:10px 14px 18px;
+  padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  background:rgba(255,248,237,0.78);
+  backdrop-filter:blur(24px) saturate(1.08);-webkit-backdrop-filter:blur(24px) saturate(1.08);
+  border-top:1px solid rgba(247,181,0,0.10);
+  box-shadow:0 -10px 28px rgba(44,31,0,0.08);
 }
 .nav-btn{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:6px 16px;border-radius:var(--radius-sm);border:none;
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:9px 8px 8px;border-radius:18px;border:none;
   background:transparent;color:var(--text-light);cursor:pointer;
-  font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;
-  font-family:'Noto Sans SC',sans-serif;transition:all 0.2s;-webkit-tap-highlight-color:transparent;
+  font-size:0.64rem;font-weight:800;text-transform:none;letter-spacing:0.2px;
+  line-height:1.05;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;transition:transform 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;-webkit-tap-highlight-color:transparent;
+  opacity:0.88;
 }
-.nav-btn .material-symbols-outlined{font-size:1.4rem;}
-.nav-btn.active{color:var(--warm-green);}
-.nav-btn.active .material-symbols-outlined{font-variation-settings:'FILL' 1;}
+.nav-btn .nav-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:999px;
+  font-size:1.08rem;line-height:1;
+  transition:transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.nav-btn .nav-label{
+  display:block;
+  line-height:1;
+  white-space:nowrap;
+}
+.nav-btn:active{transform:scale(0.97);}
+.nav-btn.active{
+  color:var(--warm-green);
+  background:rgba(255,255,255,0.74);
+  box-shadow:0 10px 20px rgba(44,31,0,0.08), inset 0 0 0 1px rgba(132,200,64,0.12);
+  opacity:1;
+}
+.nav-btn.active .nav-icon{
+  transform:translateY(-1px) scale(1.04);
+  background:linear-gradient(135deg,var(--warm-green-light),rgba(255,255,255,0.96));
+  box-shadow:inset 0 0 0 1px rgba(132,200,64,0.22);
+}
+.nav-btn.active .nav-label{font-weight:900;}
+.nav-btn:not(.active):hover{opacity:1;}
+
+@media (prefers-reduced-motion: reduce) {
+  html{scroll-behavior:auto;}
+  .blob,
+  .toast-stars,
+  .easter-fallback,
+  .kid-panel,
+  #progress-view,
+  #rewards-view,
+  .nav-btn,
+  .nav-btn .nav-icon{
+    animation:none !important;
+    transition:none !important;
+  }
+}
 
 /* ── Toasts & Overlays ── */
 .toast-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:100;align-items:center;justify-content:center;background:rgba(44,31,0,0.3);backdrop-filter:blur(4px); }
@@ -1075,13 +1492,52 @@ nav{
 .easter-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column; }
 .easter-overlay.show{display:flex;animation:fadeIn 0.3s ease;}
 .easter-content{ background:#fff;border-radius:var(--radius-xl);padding:32px 28px;text-align:center;max-width:320px;width:90%;animation:popIn 0.5s cubic-bezier(.36,1.56,.64,1) both; }
-.easter-img{width:160px;height:160px;border-radius:var(--radius-lg);object-fit:cover;margin-bottom:16px;}
+.easter-media-wrap{
+  width:170px;height:170px;margin:0 auto 16px;border-radius:var(--radius-lg);
+  overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#fff8dc,#fff0f6);
+  box-shadow:0 10px 24px rgba(44,31,0,0.14);
+}
+.easter-video,
+.easter-img{
+  width:100%;height:100%;border-radius:var(--radius-lg);object-fit:cover;display:none;
+}
+.easter-img.static{
+  animation:easterPulse 1.8s ease-in-out infinite;
+}
 .easter-fallback{font-size:4rem;margin-bottom:16px;display:none;animation:starRow 1s ease-in-out infinite;}
 .easter-text{font-weight:900;font-size:1.1rem;color:var(--on-surface);}
+.easter-status{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  margin-top:10px;padding:6px 12px;border-radius:999px;
+  background:#fff8dc;border:1px solid rgba(247,181,0,0.35);
+  color:#8d6e00;font-size:0.74rem;font-weight:900;
+}
+.easter-status.video{background:#e8f5e9;border-color:rgba(56,142,60,0.22);color:#2e7d32;}
+.easter-status.gif{background:#e3f2fd;border-color:rgba(30,136,229,0.22);color:#1565c0;}
+.easter-status.image{background:#fff3e0;border-color:rgba(245,124,0,0.24);color:#ef6c00;}
+.easter-status.pending{background:#f3e5f5;border-color:rgba(142,36,170,0.2);color:#7b1fa2;}
+.easter-sub{margin-top:6px;font-size:0.78rem;color:var(--text-mid);font-weight:700;line-height:1.5;}
+.easter-sound-btn{
+  margin-top:12px;padding:9px 16px;border:none;border-radius:999px;
+  background:linear-gradient(135deg,#ffb300,#ff8f00);color:#fff;
+  font-size:0.82rem;font-weight:900;font-family:inherit;cursor:pointer;
+  box-shadow:0 6px 16px rgba(255,143,0,0.26);
+}
+@keyframes easterPulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.04);}
+}
 
 /* ── Edit Overlay ── */
 .edit-overlay{ display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150;align-items:center;justify-content:center;background:rgba(44,31,0,0.35);backdrop-filter:blur(6px); }
 .edit-overlay.show{display:flex;animation:fadeIn 0.2s ease;}
+
+#pwdOverlay,
+#storeConfirmOverlay,
+#appDialogOverlay{
+  z-index:500;
+}
 
 /* 统一修复：隐藏状态下弹层不拦截点击，避免“看不见的遮罩层”导致顶部/底部按钮失效 */
 .toast-overlay,
@@ -1092,6 +1548,90 @@ nav{
 .store-edit-overlay,
 .all-done-boom-overlay {
   pointer-events: none;
+}
+
+body.is-standalone{
+  overscroll-behavior:none;
+}
+
+body.is-old-iphone{
+  --header-stack-top: 84px;
+  --identity-stick-top: 140px;
+  --selector-compact-top: 72px;
+}
+
+body.is-old-iphone nav{
+  gap:6px;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+body.is-old-iphone .nav-btn{
+  padding:8px 6px 7px;
+  font-size:0.62rem;
+  letter-spacing:0.2px;
+}
+
+body.is-old-iphone .nav-btn .nav-icon{
+  width:28px;
+  height:28px;
+  font-size:1rem;
+}
+
+body.is-old-iphone .header-page-title{
+  font-size:1.05rem;
+}
+
+body.is-old-iphone .header-eyebrow{
+  font-size:0.6rem;
+}
+
+body.is-old-iphone .header-date{
+  font-size:0.68rem;
+}
+
+body.is-old-iphone .header-meta-pill{
+  font-size:0.7rem;
+  padding:5px 10px;
+}
+
+body.is-old-iphone main{
+  padding-left:12px;
+  padding-right:12px;
+}
+
+body.is-old-iphone .selector-toggle{
+  padding:10px 12px;
+}
+
+body.is-old-iphone .hero-name,
+body.is-old-iphone .study-word{
+  font-size:1.32rem;
+}
+
+body.is-old-iphone .map-flower-count{
+  font-size:1.25rem;
+}
+
+@media (max-width: 430px){
+  nav{
+    gap:6px;
+    padding-left:10px;
+    padding-right:10px;
+  }
+  .nav-btn{
+    padding:7px 4px 6px;
+    font-size:0.6rem;
+  }
+  .nav-btn .nav-icon{
+    width:26px;
+    height:26px;
+    font-size:0.98rem;
+  }
+  .toast-box,
+  .easter-content{
+    width:92%;
+  }
 }
 .toast-overlay.show,
 .easter-overlay.show,
@@ -1128,16 +1668,24 @@ nav{
   <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
 </div>
 
-<header>
-  <div class="header-left">
-    <div class="header-logo">🌱</div>
-    <div>
-      <div class="header-title">每日花园</div>
+<header id="appHeader" data-view="home">
+  <div class="header-shell">
+    <div class="header-topline">
+      <div class="header-left">
+        <div class="header-logo" id="headerLogo">🌱</div>
+        <div class="header-branding">
+          <div class="header-eyebrow">每日花园</div>
+          <div class="header-page-title" id="headerPageTitle">今日任务</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="streak-pill" id="streakPill">🔥 0天连续</div>
+      </div>
+    </div>
+    <div class="header-bottomline">
+      <div class="header-meta-pill" id="headerMetaPill">👧 Lulu · 家长模式</div>
       <div class="header-date" id="headerDate">今天是…</div>
     </div>
-  </div>
-  <div class="header-right">
-    <div class="streak-pill" id="streakPill">🔥 0天连续</div>
   </div>
 </header>
 
@@ -1247,16 +1795,16 @@ nav{
 </main>
 
 <nav>
-  <button class="nav-btn active" id="navHome"><span class="material-symbols-outlined">home</span>今日</button>
-  <button class="nav-btn" id="navProgress"><span class="material-symbols-outlined">map</span>进度</button>
-  <button class="nav-btn" id="navRewards"><span class="material-symbols-outlined">storefront</span>奖励</button>
-  <button class="nav-btn" id="navSettings"><span class="material-symbols-outlined">settings</span>设置</button>
-  <button class="nav-btn" id="navModeToggle"><span class="material-symbols-outlined">child_care</span>孩子</button>
+  <button class="nav-btn active" id="navHome"><span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-label">今日</span></button>
+  <button class="nav-btn" id="navProgress"><span class="nav-icon" aria-hidden="true">🗺️</span><span class="nav-label">进度</span></button>
+  <button class="nav-btn" id="navRewards"><span class="nav-icon" aria-hidden="true">🎁</span><span class="nav-label">奖励</span></button>
+  <button class="nav-btn" id="navSettings"><span class="nav-icon" aria-hidden="true">⚙️</span><span class="nav-label">设置</span></button>
+  <button class="nav-btn" id="navModeToggle"><span class="nav-icon" aria-hidden="true">🧒</span><span class="nav-label">孩子</span></button>
 </nav>
 
 <div class="toast-overlay" id="toastSuccess"><div class="toast-box"><span class="toast-stars">🌟✨⭐✨🌟</span><div class="toast-msg" id="toastSuccessName">真棒！</div><div class="toast-sub" id="toastSuccessSub">又完成一个好习惯 🎉</div><button class="toast-close" id="closeSuccess">开心！</button></div></div>
 <div class="toast-overlay" id="toastEncourage"><div class="toast-box red"><span class="toast-stars" style="animation:none">💪🌈💪</span><div class="toast-msg" id="toastEncourageName">继续努力！</div><div class="toast-sub" id="toastEncourageSub">没关系，明天再加油！💕</div><button class="toast-close red" id="closeEncourage">加油！</button></div></div>
-<div class="easter-overlay" id="easterEgg"><div class="easter-content"><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div><div class="easter-text">🎉 连续 7 天达成！专属奖励！🎉</div><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
+<div class="easter-overlay" id="easterEgg"><div class="easter-content"><div class="easter-media-wrap"><video class="easter-video" id="easterEggVideo" playsinline webkit-playsinline loop preload="auto" autoplay></video><img src="" class="easter-img" id="easterEggImg" alt="专属奖励"><div class="easter-fallback" id="easterEggFallback">🎁🌟🎉</div></div><div class="easter-text" id="easterEggTitle">🎉 连续 7 天达成！专属奖励！🎉</div><div class="easter-status pending" id="easterEggStatus">⏳ 正在尝试视频</div><div class="easter-sub" id="easterEggSub">优先播放动图或短视频，没有的话会自动回退到图片版本。</div><button class="easter-sound-btn" id="easterSoundBtn" type="button">🔊 再播一次庆祝音乐</button><button class="toast-close" id="closeEasterEgg" style="margin-top:16px;">太棒啦！收下奖励</button></div></div>
 <div class="onboard-overlay" id="onboardOverlay">
   <div class="onboard-box">
     <div class="onboard-icon">🌱</div>
@@ -1447,6 +1995,7 @@ nav{
       <button class="edit-btn danger" id="clearReminderBtn" style="white-space:nowrap;">✖ 关闭提醒</button>
     </div>
     <div id="reminderStatus" style="font-size:0.75rem;font-weight:800;color:var(--warm-green);margin-top:4px;min-height:16px;"></div>
+    <div id="reminderCompatNote" style="font-size:0.72rem;font-weight:700;color:var(--text-light);margin-top:6px;line-height:1.45;"></div>
 
     <div class="edit-actions" style="margin-top:10px;"><button class="edit-btn purple" id="exportDataBtn">📤 导出备份文件</button><button class="edit-btn orange" id="importDataBtn">📥 导入恢复</button></div>
     <div class="backup-area" id="backupDisplay"><div style="font-size:0.75rem;font-weight:700;color:#2e7d32;margin-bottom:6px;">✅ 备份文件已生成，请保存到安全位置！</div><button class="edit-btn primary" id="closeBackupBtn" style="margin-top:8px;width:100%;">关闭</button></div>
@@ -1465,11 +2014,58 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('dblclick', e => e.preventDefault(), { passive:false });
   document.addEventListener('gesturestart', e => e.preventDefault(), { passive:false });
 
+  function isIosDevice(){
+    const ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
+  function isStandaloneMode(){
+    try{
+      return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    }catch(e){
+      return window.navigator.standalone === true;
+    }
+  }
+
+  function updateDeviceClasses(){
+    document.body.classList.toggle('is-ios', isIosDevice());
+    document.body.classList.toggle('is-standalone', isStandaloneMode());
+    const narrowShortScreen = window.innerWidth <= 430 && window.innerHeight <= 760;
+    document.body.classList.toggle('is-old-iphone', narrowShortScreen);
+  }
+
+  function updateReminderCompatNote(){
+    const noteEl = document.getElementById('reminderCompatNote');
+    if(!noteEl) return;
+    if(isIosDevice()){
+      noteEl.textContent = '苹果主屏模式下，网页提醒受系统限制会比原生 App 弱一些。建议同时在 iPhone 的“提醒事项”或闹钟里设一个固定时间兜底。';
+      return;
+    }
+    noteEl.textContent = '提醒依赖浏览器通知权限；如果系统省电或浏览器被完全关闭，提醒可能会延后。';
+  }
+
+  function registerGardenServiceWorker(){
+    if(!('serviceWorker' in navigator)) return;
+    if(location.protocol === 'file:') return;
+    navigator.serviceWorker.register('sw.js', { scope: './' })
+      .then(reg => {
+        try{ reg.update(); }catch(e){}
+      })
+      .catch(() => {});
+  }
+
+  updateDeviceClasses();
+  updateReminderCompatNote();
+  window.addEventListener('resize', updateDeviceClasses);
+  window.addEventListener('orientationchange', updateDeviceClasses);
+  window.addEventListener('pageshow', updateDeviceClasses);
+  registerGardenServiceWorker();
+
   const TOTAL_HABITS = 9, TOTAL_SUPERS = 3, TOTAL_TASKS = 10;
   const KIDS = ['lulu','qiqi','mimi'];
   const V = 'v6';
   const PWD_KEY = 'app_pwd_v6';
-  const STORAGE_SCHEMA_VERSION = 2;
+  const STORAGE_SCHEMA_VERSION = 4;
   const STORAGE_SCHEMA_KEY = 'garden_storage_schema_v1';
 
   function skVer(k,t,v=V){return `tab_${k}_${t}_${v}`;}
@@ -1491,14 +2087,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const supers = JSON.parse(localStorage.getItem(skVer(k,'supers')) || '[]');
       const score = parseInt(localStorage.getItem(skVer(k,'score')) || '0', 10) || 0;
       const studyDone = localStorage.getItem(skVer(k,'studyDone')) === todayStr();
+      const habitConfig = getStoredHabitConfig(k);
+      const superConfig = getStoredSuperConfig(k);
       const normalizedHabits = Array.isArray(habits) ? habits.map(v => v === true) : [];
       const hasUsefulState = normalizedHabits.some(Boolean) || studyDone || (Array.isArray(supers) && supers.some(Boolean)) || score > 0;
       if(!hasUsefulState) return null;
       return {
         date: todayStr(),
         habits: normalizedHabits,
+        habitsState: Array.isArray(habits) ? habits.map(v => v === true ? true : v === false ? false : null) : [],
+        habitTexts: buildSnapshotHabitTexts(habitConfig),
         habitsDone: normalizedHabits.filter(Boolean).length,
         studyDone,
+        supersState: Array.isArray(supers) ? supers.map(Boolean) : [],
+        superTexts: buildSnapshotSuperTexts(superConfig),
         supersDone: Array.isArray(supers) ? supers.filter(Boolean).length : 0,
         score
       };
@@ -1531,6 +2133,12 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
         nextVersion = 2;
+      }
+      if(nextVersion < 3){
+        nextVersion = 3;
+      }
+      if(nextVersion < 4){
+        nextVersion = 4;
       }
       localStorage.setItem(STORAGE_SCHEMA_KEY, String(nextVersion));
     }catch(e){
@@ -1569,83 +2177,161 @@ document.addEventListener('DOMContentLoaded', function() {
     const defaultName = KID_NAMES[k] || k;
     return `
       <div class="kid-panel${activeClass}" id="${k}-panel">
-        <div class="section-title">📘 今日学习</div>
-        <div class="study-flip-wrap" id="${k}-studyBtn">
-          <div class="study-flip-inner" id="${k}-flip-inner">
-            <div class="study-face">
-              <div class="study-front-content">
-                <div class="study-word" id="${k}-study-word">cat</div>
-                <div class="study-phonetic" id="${k}-study-phonetic">/kæt/</div>
-                <div class="study-flip-hint">👆 点击翻看意思</div>
+        <div class="kid-identity-bar kid-${k}">
+          <div class="kid-identity-emoji"><span class="dyn-emoji" data-kid="${k}">${KID_EMOJIS[k] || '👧'}</span></div>
+          <div class="kid-identity-text">
+            <div class="kid-identity-label">当前正在查看</div>
+            <div class="kid-identity-name"><span class="dyn-name" data-kid="${k}">${defaultName}</span></div>
+          </div>
+        </div>
+        <div class="kid-home-group tasks">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title">今日任务区</div>
+              <div class="kid-home-group-sub">先完成今天的学习、习惯和挑战，最常用的操作都集中在这里。</div>
+            </div>
+            <div class="kid-home-group-tag">Today</div>
+          </div>
+          <div id="${k}-yesterdayReview"></div>
+          <div class="hero-card" id="${k}-heroCard">
+            <div class="hero-info">
+              <div class="hero-name"><span class="dyn-name" data-kid="${k}">${defaultName}</span></div>
+              <div class="hero-sub" id="${k}-heroSub">今天还没开始哦，加油！</div>
+              <div class="hero-status-grid">
+                <div class="hero-status-item">
+                  <div class="hero-status-label">📘 学习</div>
+                  <div class="hero-status-value" id="${k}-overviewStudy">待完成</div>
+                </div>
+                <div class="hero-status-item">
+                  <div class="hero-status-label">✅ 习惯</div>
+                  <div class="hero-status-value" id="${k}-overviewHabitRemain">还差 9 项</div>
+                </div>
+                <div class="hero-status-item">
+                  <div class="hero-status-label">🏅 挑战</div>
+                  <div class="hero-status-value" id="${k}-overviewSuper">0 / 3</div>
+                </div>
+              </div>
+              <div class="hero-tip" id="${k}-overviewTip">先从今天的好习惯开始吧。</div>
+            </div>
+            <div class="hero-ring-wrap">
+              <svg class="hero-ring" viewBox="0 0 88 88" aria-hidden="true">
+                <circle cx="44" cy="44" r="36" fill="none" stroke="rgba(176,144,96,0.16)" stroke-width="8"></circle>
+                <circle cx="44" cy="44" r="36" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" transform="rotate(-90 44 44)" id="${k}-ring"></circle>
+              </svg>
+              <div class="hero-ring-inner">
+                <div class="hero-pct" id="${k}-pct">0%</div>
+                <div class="hero-pct-label">今日完成</div>
               </div>
             </div>
-            <div class="study-face study-face-back">
-              <div class="study-back-content">
-                <div class="study-header">
-                  <span class="study-label" style="color:${accent};">📘 英文学习 · <span id="${k}-study-level">L1</span></span>
-                  <div class="study-speak" id="${k}-study-speak" style="background:${accent};" title="朗读单词">🔊</div>
+          </div>
+          <div class="section-title">✅ 今日好习惯</div>
+          <div class="habits-grid" id="${k}-habitsList"></div>
+          <div class="all-done-banner" id="${k}-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
+
+          <div class="section-title">📘 今日学习</div>
+          <div class="study-flip-wrap" id="${k}-studyBtn">
+            <div class="study-flip-inner" id="${k}-flip-inner">
+              <div class="study-face">
+                <div class="study-front-content">
+                  <div class="study-word" id="${k}-study-word">cat</div>
+                  <div class="study-phonetic" id="${k}-study-phonetic">/kæt/</div>
+                  <div class="study-flip-hint">👆 点击翻看意思</div>
                 </div>
-                <div class="study-meaning" id="${k}-study-meaning">猫｜一只可爱的小猫</div>
-                <div class="study-phrase-text" id="${k}-study-phrase">a cute cat</div>
-                <div class="study-actions">
-                  <button class="study-btn got-it" id="${k}-study-gotit">✅ 我会了 +1分</button>
-                  <button class="study-btn again" id="${k}-study-again">🔄 再看看</button>
+              </div>
+              <div class="study-face study-face-back">
+                <div class="study-back-content">
+                  <div class="study-header">
+                    <span class="study-label" style="color:${accent};">📘 英文学习 · <span id="${k}-study-level">L1</span></span>
+                    <div class="study-speak" id="${k}-study-speak" style="background:${accent};" title="朗读单词">🔊</div>
+                  </div>
+                  <div class="study-meaning" id="${k}-study-meaning">猫｜一只可爱的小猫</div>
+                  <div class="study-phrase-text" id="${k}-study-phrase">a cute cat</div>
+                  <div class="study-actions">
+                    <button class="study-btn got-it" id="${k}-study-gotit">✅ 我会了 +1分</button>
+                    <button class="study-btn again" id="${k}-study-again">🔄 再看看</button>
+                  </div>
+                  <div id="${k}-studyProgress"></div>
                 </div>
-                <div id="${k}-studyProgress"></div>
               </div>
             </div>
           </div>
+
+          <div class="section-title">🏆 超级挑战</div>
+          <div class="super-card"><div class="super-title"><span id="${k}-superBadgeSummary">🏅 本月成就 0/3</span><span id="${k}-superBadgeTotal" style="font-size:0.82rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:3px 10px;">🏅 已获得 0 枚</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div id="${k}-superBadgeHint" style="margin:-6px 0 12px;font-size:0.74rem;font-weight:800;color:#8d6e00;background:#fff8dc;border-radius:12px;padding:8px 10px;">继续挑战就能解锁更多勋章</div><div class="super-list" id="${k}-superList"></div><div class="badge-roadmap" id="${k}-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="${k}-badgeDetailToggle" data-action="toggle-badge-detail" data-kid="${k}">📂 查看详情</button><div class="weekly-review-card" id="${k}-weeklyReview"></div>
         </div>
 
-        <div class="section-title">🏆 超级挑战</div>
-        <div class="super-card"><div class="super-title"><span id="${k}-superBadgeSummary">🏅 本月成就 0/3</span><span id="${k}-superBadgeTotal" style="font-size:0.78rem;font-weight:900;color:#8d6e00;background:#fff3cd;border-radius:999px;padding:2px 8px;">累计勋章 0</span><span style="font-size:0.68rem;font-weight:800;color:#fff;background:#c8860a;border-radius:999px;padding:2px 8px;">每月重置</span></div><div class="super-list" id="${k}-superList"></div><div class="badge-roadmap" id="${k}-badgeRoadmap"></div></div><button class="badge-detail-toggle" id="${k}-badgeDetailToggle" data-action="toggle-badge-detail" data-kid="${k}">📂 查看详情</button><div class="weekly-review-card" id="${k}-weeklyReview"></div>
-
-        <div class="section-title">🌟 成长能量</div>
-        <div class="tv-card">
-          <div class="tv-card-header"><div class="tv-count-badge" id="${k}-tv-count-badge">0/10</div></div>
-          <div class="tv-track"><div class="tv-fill" id="${k}-tv-fill" style="width:0%"></div></div>
-          <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="${k}-tvTime">0</span> 点</div><button class="tv-spend-btn" id="${k}-spendTvBtn" data-action="spend-tv" data-kid="${k}">兑换活动</button></div>
-        </div>
-        <div class="activity-menu-card" id="${k}-activityMenu"></div>
-        <div class="kid-score-hint" id="${k}-kidScoreHint">⭐ 今天 +0 星星</div>
-
-        <div class="section-title">🏦 积分银行</div>
-        <div class="wallet-card">
-          <div class="wallet-history-title" id="${k}-bankTitle" data-action="bonus-score" data-kid="${k}">🏦 <span class="dyn-name" data-kid="${k}">${defaultName}</span> 的积分银行</div>
-          <div class="wallet-stats">
-            <div class="wallet-stat"><div class="wallet-stat-label">本月积分</div><div class="wallet-stat-val" id="${k}-monthScore">0</div></div>
-            <div class="wallet-stat"><div class="wallet-stat-label">本月兑换</div><div class="wallet-stat-val">¥<span id="${k}-monthMoney">0.0</span></div></div>
+        <div class="kid-home-group feedback">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title">成长反馈区</div>
+              <div class="kid-home-group-sub">这里集中看今天收获了多少成长卡、积分和兑换进度。</div>
+            </div>
+            <div class="kid-home-group-tag">Reward</div>
           </div>
-          <div class="wallet-row">
-            <div><div class="wallet-balance-label">👛 零钱包结余</div><div class="wallet-balance">¥<span id="${k}-wallet">0.00</span></div></div>
-            <div class="wallet-actions"><button class="wallet-btn spend" id="${k}-spendBtn" data-action="wallet-spend" data-kid="${k}">💸 扣除</button><button class="wallet-btn deposit" id="${k}-depositBtn" data-action="wallet-deposit" data-kid="${k}">💰 存入</button></div>
+          <div class="section-title">🌟 成长能量</div>
+          <div class="tv-card">
+            <div class="tv-card-header"><div class="tv-count-badge" id="${k}-tv-count-badge">0/10</div></div>
+            <div class="tv-track"><div class="tv-fill" id="${k}-tv-fill" style="width:0%"></div></div>
+            <div class="tv-bank-row"><div class="tv-bank-info">🌟 成长卡：<span id="${k}-tvTime">0</span> 点</div><button class="tv-spend-btn" id="${k}-spendTvBtn" data-action="spend-tv" data-kid="${k}">兑换活动</button></div>
           </div>
-          <div class="wallet-history" id="${k}-historyTimeline"></div>
-          <div id="${k}-redeemHistory"></div>
-        </div>
-        <div class="section-title">📊 完成率统计</div>
-        <div class="stats-card" id="${k}-statsCard"></div>
-        <div class="heatmap-card" style="margin-bottom:10px;">
-          <div class="heatmap-title">🗓️ 打卡热力图</div>
-          <div class="heatmap-sub">过去90天全部完成记录</div>
-          <div class="heatmap-months" id="${k}-heatmap"></div>
-          <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
-        </div>
-        <div class="growth-remind" id="${k}-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
-        <div class="growth-card" id="${k}-growthCard">
-          <div class="growth-header" id="${k}-growthHeader">
-            <div class="growth-header-left"><div class="growth-icon">📏</div><div><div class="growth-title"><span class="dyn-name" data-kid="${k}">${defaultName}</span> 的成长档案</div><div class="growth-latest" id="${k}-growthLatest">点击展开录入</div></div></div>
-            <span class="growth-arrow" id="${k}-growthArrow">▼</span>
+          <div class="activity-menu-card" id="${k}-activityMenu"></div>
+          <div class="kid-score-hint" id="${k}-kidScoreHint">⭐ 今天 +0 星星</div>
+
+          <div class="section-title">🏦 积分银行</div>
+          <div class="wallet-card">
+            <div class="wallet-history-title" id="${k}-bankTitle" data-action="bonus-score" data-kid="${k}">🏦 <span class="dyn-name" data-kid="${k}">${defaultName}</span> 的积分银行</div>
+            <div class="wallet-stats">
+              <div class="wallet-stat"><div class="wallet-stat-label">本月积分</div><div class="wallet-stat-val" id="${k}-monthScore">0</div></div>
+              <div class="wallet-stat"><div class="wallet-stat-label">本月兑换</div><div class="wallet-stat-val">¥<span id="${k}-monthMoney">0.0</span></div></div>
+            </div>
+            <div class="wallet-row">
+              <div><div class="wallet-balance-label">👛 零钱包结余</div><div class="wallet-balance">¥<span id="${k}-wallet">0.00</span></div></div>
+              <div class="wallet-actions"><button class="wallet-btn spend" id="${k}-spendBtn" data-action="wallet-spend" data-kid="${k}">💸 扣除</button><button class="wallet-btn deposit" id="${k}-depositBtn" data-action="wallet-deposit" data-kid="${k}">💰 存入</button></div>
+            </div>
+            <div class="wallet-history" id="${k}-historyTimeline"></div>
+            <div id="${k}-redeemHistory"></div>
           </div>
-          <div class="growth-body" id="${k}-growthBody"><div class="growth-body-inner">
-            <div class="growth-add-row"><input class="growth-input" id="${k}-heightInput" type="number" step="0.1" placeholder="身高 cm"><input class="growth-input" id="${k}-weightInput" type="number" step="0.1" placeholder="体重 kg"><button class="growth-save-btn" id="${k}-growthSaveBtn">📝 记录</button></div>
-            <table class="growth-table"><thead><tr><th>月份</th><th>身高</th><th>体重</th><th>身高↑</th><th>体重↑</th></tr></thead><tbody id="${k}-growthTable"></tbody></table>
-          </div></div>
         </div>
 
-        <div class="section-title">✅ 今日好习惯</div>
-        <div class="habits-grid" id="${k}-habitsList"></div>
-        <div class="all-done-banner" id="${k}-allDone"><span class="all-done-stars">🌟✨🌟✨🌟</span><div class="all-done-text">太棒了！今天全部完成啦！🏆</div></div>
+        <div class="kid-home-group review">
+          <div class="kid-home-group-head">
+            <div>
+              <div class="kid-home-group-title"><span class="kid-home-group-copy-default">成长回顾区</span><span class="kid-home-group-copy-kid">我的打卡足迹</span></div>
+              <div class="kid-home-group-sub"><span class="kid-home-group-copy-default">放在后面看趋势和记录，避免把今天的打卡动作埋住。</span><span class="kid-home-group-copy-kid">看看最近这段时间坚持打卡的足迹吧。</span></div>
+            </div>
+            <div class="kid-home-group-tag"><span class="kid-home-group-copy-default">Review</span><span class="kid-home-group-copy-kid">Footprint</span></div>
+          </div>
+          <div class="section-title">📊 完成率统计</div>
+          <div class="stats-card" id="${k}-statsCard"></div>
+          <div class="heatmap-card" style="margin-bottom:10px;">
+            <div class="heatmap-title">🗓️ 打卡热力图</div>
+            <div class="heatmap-sub">以当月完整视图为主，横向看周，纵向看星期；点格子可查看具体日期</div>
+            <div class="heatmap-grid">
+              <div class="heatmap-weekdays" aria-hidden="true">
+                <div class="heatmap-weekday">日</div>
+                <div class="heatmap-weekday">一</div>
+                <div class="heatmap-weekday">二</div>
+                <div class="heatmap-weekday">三</div>
+                <div class="heatmap-weekday">四</div>
+                <div class="heatmap-weekday">五</div>
+                <div class="heatmap-weekday">六</div>
+              </div>
+              <div class="heatmap-months" id="${k}-heatmap"></div>
+            </div>
+            <div class="heatmap-legend"><div class="heatmap-legend-box" style="background:var(--cream-dark);"></div>未完成<div class="heatmap-legend-box" style="background:#9ccc65;margin-left:6px;"></div>部分完成<div class="heatmap-legend-box" style="background:var(--warm-green);margin-left:6px;"></div>全部完成</div>
+          </div>
+          <div class="growth-remind" id="${k}-growthRemind">📏 月底快到了！本月还没给宝贝量身高体重哦～</div>
+          <div class="growth-card" id="${k}-growthCard">
+            <div class="growth-header" id="${k}-growthHeader">
+              <div class="growth-header-left"><div class="growth-icon">📏</div><div><div class="growth-title"><span class="dyn-name" data-kid="${k}">${defaultName}</span> 的成长档案</div><div class="growth-latest" id="${k}-growthLatest">点击展开录入</div></div></div>
+              <span class="growth-arrow" id="${k}-growthArrow">▼</span>
+            </div>
+            <div class="growth-body" id="${k}-growthBody"><div class="growth-body-inner">
+              <div class="growth-add-row"><input class="growth-input" id="${k}-heightInput" type="number" step="0.1" placeholder="身高 cm"><input class="growth-input" id="${k}-weightInput" type="number" step="0.1" placeholder="体重 kg"><button class="growth-save-btn" id="${k}-growthSaveBtn">📝 记录</button></div>
+              <table class="growth-table"><thead><tr><th>月份</th><th>身高</th><th>体重</th><th>身高↑</th><th>体重↑</th></tr></thead><tbody id="${k}-growthTable"></tbody></table>
+            </div></div>
+          </div>
+        </div>
         <div class="gap"></div><button class="reset-btn" id="${k}-resetBtn" data-action="reset-kid" data-kid="${k}">🔄 重置今日打卡</button><div class="gap"></div>
       </div>`;
   }
@@ -1659,6 +2345,42 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentNav = 'home';
   let currentKid = 'lulu';
   renderKidPanels();
+
+  function updateHeaderUI(){
+    const titleEl = document.getElementById('headerPageTitle');
+    const metaEl = document.getElementById('headerMetaPill');
+    const logoEl = document.getElementById('headerLogo');
+    const headerEl = document.getElementById('appHeader');
+    if(!titleEl || !metaEl || !logoEl) return;
+
+    const name = KID_NAMES[currentKid] || currentKid;
+    const emoji = KID_EMOJIS[currentKid] || '👧';
+    const titleMap = {
+      home: '今日任务',
+      progress: isKidMode ? '我的打卡足迹' : '成长进度',
+      rewards: isKidMode ? '我的奖励' : '奖励商店'
+    };
+    const metaMap = {
+      home: isKidMode ? '孩子模式' : '家长模式',
+      progress: isKidMode ? '看看最近的坚持' : '成长回顾',
+      rewards: isKidMode ? '可以兑换的小惊喜' : '奖励与兑换'
+    };
+    const logoMap = {
+      home: '🌱',
+      progress: '🗺️',
+      rewards: '🎁'
+    };
+
+    titleEl.textContent = titleMap[currentNav] || '每日花园';
+    metaEl.textContent = `${emoji} ${name} · ${metaMap[currentNav] || ''}`.trim();
+    logoEl.textContent = logoMap[currentNav] || '🌱';
+    if(headerEl) headerEl.dataset.view = currentNav;
+  }
+
+  function applyCurrentKidBodyClass(k=currentKid){
+    document.body.classList.remove(...KIDS.map(kid => `kid-${kid}`));
+    document.body.classList.add(`kid-${k}`);
+  }
 
   // 可选字段：wordAudio / phraseAudio（真人词典音频 URL）
   const STUDY_BANK = {
@@ -2365,9 +3087,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newCount = getStudyCount(k) + 1;
     saveStudyCount(k, newCount);
     saveKidScore(k);
-    updateBankUI(k);
-    renderStudyButtons(k);
-    renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     try{ playSuccessKid(k,false); }catch(e){}
     try{ launchConfetti(); }catch(e){}
     document.getElementById('toastSuccessName').textContent = '太棒了！';
@@ -2519,6 +3239,26 @@ document.addEventListener('DOMContentLoaded', function() {
     qiqi:[{text:'独立完成一道菜'},{text:'练习一首新歌'},{text:'帮家里大扫除'}],
     mimi:[{text:'独立准备早餐'},{text:'完成一本小书阅读'},{text:'整理房间并保持整洁'}]
   };
+
+  function normalizeHabitConfig(config, fallback){
+    const base = Array.isArray(fallback) ? fallback : [];
+    return base.map((item, index) => {
+      const raw = Array.isArray(config) ? config[index] : null;
+      const emoji = typeof raw?.emoji === 'string' && raw.emoji.trim() ? raw.emoji.trim() : item.emoji;
+      const text = typeof raw?.text === 'string' && raw.text.trim() ? raw.text.trim() : item.text;
+      return { emoji, text };
+    });
+  }
+
+  function normalizeSuperConfig(config, fallback){
+    const base = Array.isArray(fallback) ? fallback : [];
+    return base.map((item, index) => {
+      const raw = Array.isArray(config) ? config[index] : null;
+      const text = typeof raw?.text === 'string' && raw.text.trim() ? raw.text.trim() : item.text;
+      return { text };
+    });
+  }
+
   const GROWTH_ACTIVITY_OPTIONS=[
     {id:1,name:'📚 亲子共读 20 分钟',cost:1},
     {id:2,name:'🎨 创作时间 30 分钟',cost:1.5},
@@ -2566,15 +3306,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
       try{
         let savedHabits = safeJsonParse(safeGetItem(sk(k,'hcfg'),'',`load_hcfg_${k}`), null, `parse_hcfg_${k}`);
-        if(savedHabits && k==='lulu') {
-          if(savedHabits[0].text === '按时到校') { savedHabits[0].emoji = '⏰'; savedHabits[0].text = '按时起床'; }
-          if(savedHabits[8].text === '照顾妹妹') { savedHabits[8].emoji = '💤'; savedHabits[8].text = '按时睡觉'; }
-          safeSetItem(sk(k,'hcfg'), JSON.stringify(savedHabits), `save_hcfg_fix_${k}`);
+        if(Array.isArray(savedHabits) && k==='lulu') {
+          if(savedHabits[0] && savedHabits[0].text === '按时到校') { savedHabits[0].emoji = '⏰'; savedHabits[0].text = '按时起床'; }
+          if(savedHabits[8] && savedHabits[8].text === '照顾妹妹') { savedHabits[8].emoji = '💤'; savedHabits[8].text = '按时睡觉'; }
         }
-        S[k].currentHabits = savedHabits || defaultHabits[k];
-      }catch(e){logSoftError(`load_current_habits_${k}`,e);S[k].currentHabits=defaultHabits[k];}
+        S[k].currentHabits = normalizeHabitConfig(savedHabits, defaultHabits[k]);
+        if(Array.isArray(savedHabits)) {
+          safeSetItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits), `save_hcfg_fix_${k}`);
+        }
+      }catch(e){logSoftError(`load_current_habits_${k}`,e);S[k].currentHabits=normalizeHabitConfig(null, defaultHabits[k]);}
 
-      try{S[k].currentSupers=safeJsonParse(safeGetItem(sk(k,'scfg'),'',`load_scfg_${k}`), defaultSupers[k], `parse_scfg_${k}`)||defaultSupers[k];}catch(e){logSoftError(`load_current_supers_${k}`,e);S[k].currentSupers=defaultSupers[k];}
+      try{
+        const savedSupers = safeJsonParse(safeGetItem(sk(k,'scfg'),'',`load_scfg_${k}`), defaultSupers[k], `parse_scfg_${k}`);
+        S[k].currentSupers = normalizeSuperConfig(savedSupers, defaultSupers[k]);
+      }catch(e){logSoftError(`load_current_supers_${k}`,e);S[k].currentSupers=normalizeSuperConfig(null, defaultSupers[k]);}
 
       if(!safeGetItem(sk(k,'date'),'',`load_date_${k}`))safeSetItem(sk(k,'date'),todayStr(),`save_date_${k}`);
       if(!safeGetItem(sk(k,'month'),'',`load_month_${k}`))safeSetItem(sk(k,'month'),monthStr(),`save_month_${k}`);
@@ -2595,26 +3340,211 @@ document.addEventListener('DOMContentLoaded', function() {
   function saveKidHistory(k){safeSetItem(sk(k,'hist'),JSON.stringify(S[k].monthHistory),`save_hist_${k}`);}
   function saveKidCalendar(k){safeSetItem(sk(k,'cal'),JSON.stringify(S[k].calendar),`save_cal_${k}`);}
   function saveKidDailySnapshots(k){safeSetItem(sk(k,'dailySnapshots'),JSON.stringify(S[k].dailySnapshots||{}),`save_daily_snapshots_${k}`);}
+  const yesterdayReviewOpen = {};
 
   function trimDailySnapshots(snapshotMap){
     const entries = Object.entries(snapshotMap || {}).sort((a,b)=>b[0].localeCompare(a[0]));
     return Object.fromEntries(entries.slice(0, 400));
   }
 
-  function buildDailySnapshot(k){
+  function dateOffsetStr(offsetDays){
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  function yesterdayStr(){
+    return dateOffsetStr(-1);
+  }
+
+  function getYesterdayReviewDismissKey(k){
+    return sk(k,'yesterdayReviewDismissed');
+  }
+
+  function getStoredHabitConfig(k){
+    try{
+      return safeJsonParse(safeGetItem(sk(k,'hcfg'),'',`load_snapshot_hcfg_${k}`), defaultHabits[k], `parse_snapshot_hcfg_${k}`) || defaultHabits[k] || [];
+    }catch(_){
+      return defaultHabits[k] || [];
+    }
+  }
+
+  function getStoredSuperConfig(k){
+    try{
+      return safeJsonParse(safeGetItem(sk(k,'scfg'),'',`load_snapshot_scfg_${k}`), defaultSupers[k], `parse_snapshot_scfg_${k}`) || defaultSupers[k] || [];
+    }catch(_){
+      return defaultSupers[k] || [];
+    }
+  }
+
+  function buildSnapshotHabitTexts(items){
+    return (items || []).map(item => item && item.text ? item.text : '习惯任务');
+  }
+
+  function buildSnapshotSuperTexts(items){
+    return (items || []).map(item => item && item.text ? item.text : '挑战任务');
+  }
+
+  function buildDailySnapshot(k, snapshotDate=todayStr()){
+    const habitsState = (S[k].habits || []).map(v => v === true ? true : v === false ? false : null);
+    const supersState = (S[k].supers || []).map(Boolean);
+    const studyDoneOnDate = safeGetItem(getStudyDoneKey(k), '', `load_snapshot_study_done_${k}`) === snapshotDate;
     return {
-      date: todayStr(),
-      habits: (S[k].habits || []).map(v => v === true),
-      habitsDone: (S[k].habits || []).filter(v => v === true).length,
-      studyDone: isStudyDoneToday(k),
-      supersDone: (S[k].supers || []).filter(Boolean).length,
+      date: snapshotDate,
+      habits: habitsState.map(v => v === true),
+      habitsState,
+      habitTexts: buildSnapshotHabitTexts(S[k].currentHabits || getStoredHabitConfig(k)),
+      habitsDone: habitsState.filter(v => v === true).length,
+      studyDone: studyDoneOnDate,
+      supersState,
+      superTexts: buildSnapshotSuperTexts(S[k].currentSupers || getStoredSuperConfig(k)),
+      supersDone: supersState.filter(Boolean).length,
       score: S[k].score || 0
     };
   }
 
-  function recordDailySnapshot(k){
+  function buildSnapshotDetailModel(k, snapshotDate){
+    const snapshot = (S[k].dailySnapshots || {})[snapshotDate];
+    if(!snapshot) return null;
+
+    const habitTexts = Array.isArray(snapshot.habitTexts) && snapshot.habitTexts.length
+      ? snapshot.habitTexts
+      : buildSnapshotHabitTexts(S[k].currentHabits || getStoredHabitConfig(k));
+    const hasHabitState = Array.isArray(snapshot.habitsState) && snapshot.habitsState.length > 0;
+    const hasLegacyHabitState = Array.isArray(snapshot.habits) && snapshot.habits.length > 0;
+    const habitStates = hasHabitState
+      ? snapshot.habitsState.map(v => v === true ? true : v === false ? false : null)
+      : (hasLegacyHabitState ? snapshot.habits.map(v => v === true ? true : false) : null);
+
+    const superTexts = Array.isArray(snapshot.superTexts) && snapshot.superTexts.length
+      ? snapshot.superTexts
+      : buildSnapshotSuperTexts(S[k].currentSupers || getStoredSuperConfig(k));
+    const hasSuperState = Array.isArray(snapshot.supersState) && snapshot.supersState.length > 0;
+    const superStates = hasSuperState ? snapshot.supersState.map(Boolean) : null;
+
+    const completedHabits = Array.isArray(habitStates) ? habitTexts.filter((_, idx) => habitStates[idx] === true) : [];
+    const missingHabits = Array.isArray(habitStates) ? habitTexts.filter((_, idx) => habitStates[idx] !== true) : [];
+    const doneSupers = Array.isArray(superStates) ? superTexts.filter((_, idx) => superStates[idx] === true) : [];
+    const missingSupers = Array.isArray(superStates) ? superTexts.filter((_, idx) => superStates[idx] === false) : [];
+    const habitsDone = Number.isFinite(snapshot.habitsDone) ? snapshot.habitsDone : completedHabits.length;
+    const supersDone = Number.isFinite(snapshot.supersDone) ? snapshot.supersDone : doneSupers.length;
+    const studyDone = snapshot.studyDone === true;
+    const doneCount = habitsDone + (studyDone ? 1 : 0);
+
+    return {
+      snapshotDate,
+      snapshot,
+      hasHabitDetail: Array.isArray(habitStates),
+      hasSuperDetail: Array.isArray(superStates),
+      habitsDone,
+      supersDone,
+      studyDone,
+      doneCount,
+      completedHabits,
+      missingHabits,
+      doneSupers,
+      missingSupers
+    };
+  }
+
+  function buildYesterdayReviewModel(k){
+    const snapshotDate = yesterdayStr();
+    const detail = buildSnapshotDetailModel(k, snapshotDate);
+    if(!detail) return null;
+
+    const missingStudy = !detail.studyDone;
+    const totalMissing = Math.max(0, TOTAL_TASKS - detail.doneCount);
+    if(totalMissing <= 0) return null;
+
+    return {
+      snapshotDate,
+      hasDetail: detail.hasHabitDetail || detail.hasSuperDetail,
+      hasHabitDetail: detail.hasHabitDetail,
+      hasSuperDetail: detail.hasSuperDetail,
+      habitsDone: detail.habitsDone || 0,
+      doneCount: detail.doneCount || 0,
+      completedHabits: detail.completedHabits,
+      missingHabits: detail.missingHabits,
+      missingStudy,
+      doneSupers: detail.doneSupers,
+      missingSupers: detail.missingSupers,
+      totalMissing
+    };
+  }
+
+  function buildYesterdayReviewSummary(model){
+    if(!model) return '';
+    if(!model.hasDetail) return `昨天完成了 ${model.doneCount}/${TOTAL_TASKS} 项任务，这一天的旧记录没有保存逐项明细。`;
+    if(model.missingStudy && model.missingHabits.length === 0) return '昨天学习还没完成，今天先把学习拿下吧。';
+    if(model.missingHabits.length === 1 && !model.missingStudy) return `昨天差一点点就全完成了，还差「${model.missingHabits[0]}」。`;
+    if(model.missingHabits.length > 0 && model.missingHabits.length <= 2){
+      return `昨天还差 ${model.missingHabits.length + (model.missingStudy ? 1 : 0)} 项小任务：${model.missingHabits.join('、')}${model.missingStudy ? '、今日学习' : ''}。`;
+    }
+    return `昨天还差 ${model.missingHabits.length + (model.missingStudy ? 1 : 0)} 项小任务，今天继续把它们补上吧。`;
+  }
+
+  function renderYesterdayReview(k){
+    const root = document.getElementById(`${k}-yesterdayReview`);
+    if(!root) return;
+    const model = buildYesterdayReviewModel(k);
+    const dismissedDate = safeGetItem(getYesterdayReviewDismissKey(k), '', `load_yesterday_review_dismiss_${k}`);
+    if(!model || dismissedDate === model.snapshotDate){
+      root.innerHTML = '';
+      return;
+    }
+    const open = !!yesterdayReviewOpen[k];
+    const detailToggleText = open ? '收起' : '查看详情';
+    const missingHabitText = model.hasHabitDetail
+      ? (model.missingHabits.length ? model.missingHabits.join('、') : '没有漏掉日常习惯')
+      : '这一天的旧记录没有保存逐项明细';
+    const completedHabitText = model.hasHabitDetail
+      ? (model.completedHabits.length ? model.completedHabits.join('、') : '昨天暂时没有完成日常习惯')
+      : '旧记录暂时无法列出已完成项目';
+    const superText = model.hasSuperDetail
+      ? `已完成：${model.doneSupers.length ? model.doneSupers.join('、') : '暂无'}｜未完成：${model.missingSupers.length ? model.missingSupers.join('、') : '暂无'}`
+      : '昨天没有保存到挑战明细，后续新记录会显示得更完整。';
+
+    root.innerHTML = `
+      <div class="yesterday-review-card${open ? ' open' : ''}">
+        <div class="yesterday-review-top">
+          <div>
+            <div class="yesterday-review-title">🌤 昨日小回顾</div>
+            <div class="yesterday-review-summary">${escapeHtml(buildYesterdayReviewSummary(model))}</div>
+            <div class="yesterday-review-meta">昨天完成了 ${model.doneCount} / ${TOTAL_TASKS} 项任务</div>
+          </div>
+          <div class="yesterday-review-actions">
+            <button class="yesterday-review-btn toggle" data-action="toggle-yesterday-review" data-kid="${k}">${detailToggleText}</button>
+            <button class="yesterday-review-btn dismiss" data-action="dismiss-yesterday-review" data-kid="${k}" aria-label="关闭昨日回顾">✕</button>
+          </div>
+        </div>
+        <div class="yesterday-review-detail">
+          <div class="yesterday-review-grid">
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日学习</div>
+              <div class="yesterday-review-item-text">${model.missingStudy ? '昨天学习还没完成' : '昨天学习已完成'}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日未完成</div>
+              <div class="yesterday-review-item-text">${escapeHtml(missingHabitText)}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日已完成</div>
+              <div class="yesterday-review-item-text">${escapeHtml(completedHabitText)}</div>
+            </div>
+            <div class="yesterday-review-item">
+              <div class="yesterday-review-item-label">昨日挑战</div>
+              <div class="yesterday-review-item-text">${escapeHtml(superText)}</div>
+            </div>
+          </div>
+          <div class="yesterday-review-encourage">今天把这些小任务补上，就会更棒啦 🌱</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function recordDailySnapshot(k, snapshotDate=todayStr()){
     if(!S[k].dailySnapshots) S[k].dailySnapshots = {};
-    S[k].dailySnapshots[todayStr()] = buildDailySnapshot(k);
+    S[k].dailySnapshots[snapshotDate] = buildDailySnapshot(k, snapshotDate);
     S[k].dailySnapshots = trimDailySnapshots(S[k].dailySnapshots);
     saveKidDailySnapshots(k);
   }
@@ -2693,12 +3623,88 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function saveStoreItems(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(STORE_ITEMS)); }catch(e){} }
 
+  function isKidBackupKey(key){
+    return KIDS.some(k => key.startsWith(`tab_${k}`) || key === `growth_${k}_v1` || key === `redeem_${k}_v1`);
+  }
+
+  function isStaticBackupKey(key){
+    return key === 'kidNames_v6' || key === 'kidEmojis_v1' || key === 'studyLevels_v1' || key === STORE_KEY;
+  }
+
+  function escapeHtml(value){
+    return String(value ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function escapeAttr(value){
+    return escapeHtml(value).replace(/`/g,'&#96;');
+  }
+
+  function shouldIncludeInBackup(key){
+    return !!key && (isKidBackupKey(key) || isStaticBackupKey(key));
+  }
+
+  function shouldRestoreBackupKey(key){
+    return shouldIncludeInBackup(key);
+  }
+
+  function buildBackupInspectionHtml(data, count, backupAppVer, backupSchemaVer){
+    const keys = Object.keys(data || {});
+    const hasGrowth = KIDS.some(k => keys.includes(`growth_${k}_v1`));
+    const hasRedeem = KIDS.some(k => keys.includes(`redeem_${k}_v1`));
+    const hasStore = keys.includes(STORE_KEY);
+    const kidConfigCount = KIDS.filter(k => keys.some(key => key.startsWith(`tab_${k}`))).length;
+    return [
+      `识别到 <b style="color:var(--warm-green);">${count}</b> 条可恢复数据。`,
+      `备份版本：<b>${escapeHtml(backupAppVer || '未知')}</b> ｜ schema：<b>${escapeHtml(backupSchemaVer || 0)}</b>`,
+      `孩子配置：${kidConfigCount > 0 ? `已识别 ${kidConfigCount} 组` : '未识别到'}`,
+      `成长记录：${hasGrowth ? '已包含' : '未包含'}`,
+      `兑换记录：${hasRedeem ? '已包含' : '未包含'}`,
+      `自定义奖励：${hasStore ? '已包含' : '未包含'}`
+    ].join('<br>');
+  }
+
+  function collectBackupData(){
+    const data={};
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(shouldIncludeInBackup(key)) data[key]=localStorage.getItem(key);
+    }
+    data['kidNames_v6']=JSON.stringify(KID_NAMES);
+    data['kidEmojis_v1']=JSON.stringify(KID_EMOJIS);
+    data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
+    data['__backup_app_version__']=V;
+    data['__backup_schema_version__']=String(STORAGE_SCHEMA_VERSION);
+    return data;
+  }
+
+  function downloadBackupFile(data, prefix='每日花园备份'){
+    const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));
+    const d=new Date();
+    const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}${String(d.getSeconds()).padStart(2,'0')}`;
+    const fname=`${prefix}_${stamp}.txt`;
+    const blob=new Blob([backupStr],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=fname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return backupStr;
+  }
+
   function openStoreEdit(){
     const list=document.getElementById('storeEditList');
     list.innerHTML=STORE_ITEMS.map((item,idx)=>`
       <div class="store-edit-item-row">
-        <input class="store-edit-icon-input" id="sedit-icon-${idx}" value="${item.icon}" maxlength="2">
-        <input class="store-edit-text-input" id="sedit-name-${idx}" value="${item.name}" placeholder="奖励名称">
+        <input class="store-edit-icon-input" id="sedit-icon-${idx}" value="${escapeAttr(item.icon)}" maxlength="2">
+        <input class="store-edit-text-input" id="sedit-name-${idx}" value="${escapeAttr(item.name)}" placeholder="奖励名称">
         <input class="store-edit-price-input" id="sedit-price-${idx}" type="number" value="${item.price}" min="1">
         <span class="store-edit-type-tag ${item.type}">${item.type==='money'?'💰元':'⭐星'}</span>
       </div>`).join('');
@@ -2716,11 +3722,11 @@ document.addEventListener('DOMContentLoaded', function() {
     saveStoreItems();
     document.getElementById('storeEditOverlay').classList.remove('show');
     renderRewards();
-    showToast('success','商品已保存','奖励商品修改已经生效。');
+    showPresetToast('success','storeSaved');
   };
 
   window.openStoreEditWithPwd = async function(){
-    const ok = await showPwdOverlay('🔒 编辑奖励商品','请输入家长密码后继续');
+    const ok = await showPresetPwd('editStore');
     if(!ok) return;
     openStoreEdit();
   };
@@ -2755,9 +3761,9 @@ document.addEventListener('DOMContentLoaded', function() {
           : `<div class="store-progress-wrap"><div class="store-progress-bg"><div class="store-progress-fill" style="width:${pct}%"></div></div><div class="store-progress-label">还差 ${diffText} 解锁 (${pct}%)</div></div>`;
         const btnText = canAfford ? `${priceText} 兑换` : `🔒 还差 ${diffText} 解锁`;
         html += `<div class="store-item ${itemClass}" onclick="window.buyStoreItem('${item.id}')">
-          <div class="store-icon">${item.icon}</div>
-          <div class="store-name">${item.name}</div>
-          <div class="store-desc">${item.desc}</div>
+          <div class="store-icon">${escapeHtml(item.icon)}</div>
+          <div class="store-name">${escapeHtml(item.name)}</div>
+          <div class="store-desc">${escapeHtml(item.desc)}</div>
           ${progressHtml}
           <button class="store-btn ${btnClass}">${btnText}</button>
         </div>`;
@@ -2796,21 +3802,239 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  const UI_TEXT = {
+    pwd: {
+      resetToday: { title:'🔒 重置今日打卡', desc:'请输入家长密码后继续' },
+      walletSpend: { title:'🔒 消费扣除验证', desc:'请输入家长密码后继续' },
+      walletDeposit: { title:'🔒 存入零钱包验证', desc:'请输入家长密码后继续' },
+      switchParentMode: { title:'🔒 切换家长模式', desc:'请输入家长密码' },
+      quickEditHabit: { title:'🔒 修改习惯', desc:'请输入家长密码' },
+      quickEditSuper: { title:'🔒 修改挑战', desc:'请输入家长密码' },
+      settingsEntry: { title:'🔒 家长验证', desc:'请输入家长密码进入设置' },
+      editStore: { title:'🔒 编辑奖励商品', desc:'请输入家长密码后继续' },
+      importData: { title:'🔒 导入数据验证', desc:'导入会覆盖当前数据，请先验证家长密码' },
+      growthDelete: { title:'🔒 删除成长记录', desc:'请输入家长密码后继续' },
+      changePassword: { title:'🔒 修改密码', desc:'请先输入当前旧密码验证身份' }
+    },
+    dialog: {
+      confirmReset: {
+        title:'确认重置',
+        desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',
+        confirmText:'确认重置',
+        cancelText:'先不重置'
+      },
+      bankBonus: {
+        title:'家长特权',
+        desc:'请输入要补充的积分，负数表示扣除。',
+        confirmText:'保存积分',
+        inputType:'number',
+        inputValue:'0',
+        inputPlaceholder:'请输入整数',
+        validator:value=>/^-?\d+$/.test((value||'').trim())? '' : '请输入整数，可使用负数'
+      },
+      walletAction: ({ isSpend, currentBalance }) => ({
+        title:isSpend ? '零钱包扣除' : '零钱包存入',
+        desc:`当前余额：<b>¥${currentBalance}</b><br>请输入本次${isSpend ? '消费' : '存入'}金额（元）`,
+        confirmText:isSpend ? '确认扣除' : '确认存入',
+        inputType:'number',
+        inputPlaceholder:'例如 5.20'
+      }),
+      importInput: {
+        title:'导入备份',
+        desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',
+        confirmText:'开始识别',
+        inputType:'textarea',
+        inputPlaceholder:'请粘贴完整备份代码'
+      },
+      versionMismatch: ({ backupAppVer, currentVersion }) => ({
+        title:'版本不匹配',
+        desc:`备份版本：${escapeHtml(backupAppVer)}<br>当前版本：${escapeHtml(currentVersion)}<br>仍要继续导入吗？`,
+        confirmText:'仍然导入',
+        cancelText:'取消导入'
+      }),
+      schemaNewer: ({ backupSchemaVer, currentSchemaVer }) => ({
+        title:'结构版本较新',
+        desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${currentSchemaVer}<br>继续导入可能出现兼容问题，是否继续？`,
+        confirmText:'继续导入',
+        cancelText:'取消'
+      }),
+      importInspect: ({ html }) => ({
+        title:'识别到的备份内容',
+        desc:html,
+        confirmText:'确认导入',
+        cancelText:'取消',
+        inputType:'none'
+      }),
+      superCheck: ({ question }) => ({
+        title:'防误触验证',
+        desc:`答对下面这道题，才能完成挑战：<br><b style="font-size:1.2rem;color:#e65100;">${question}</b>`,
+        confirmText:'提交答案',
+        inputType:'number',
+        inputPlaceholder:'请输入答案'
+      }),
+      activityGate: ({ question }) => ({
+        title:'算术锁验证',
+        desc:`答对这道题，才能继续兑换活动：<br><b style="font-size:1.2rem;color:#e65100;">${question}</b>`,
+        confirmText:'提交答案',
+        inputType:'number',
+        inputPlaceholder:'请输入答案'
+      }),
+      activitySelect: ({ points, menuHtml, validator }) => ({
+        title:'选择兑换活动',
+        desc:`当前成长卡：<b>${points} 点</b><br><div style="text-align:left;margin-top:10px;">${menuHtml}</div>`,
+        confirmText:'确认兑换',
+        inputType:'number',
+        inputPlaceholder:'请输入序号',
+        validator
+      })
+    },
+    toast: {
+      modeChanged: ({ isKidMode }) => ({
+        title:isKidMode ? '已进入孩子模式' : '已切回家长模式',
+        desc:isKidMode ? '家长功能已隐藏，页面现在更适合孩子自己操作。' : '家长功能已恢复，可以继续查看设置、奖励和银行。'
+      }),
+      quickEditSaved: ({ type }) => ({
+        title:type === 'super' ? '挑战已保存' : '习惯已保存',
+        desc:type === 'super' ? '刚才编辑的超级挑战已经更新好了。' : '刚才编辑的打卡项目已经更新好了。'
+      }),
+      quickEditSaveFailed: {
+        title:'保存失败',
+        desc:'本地保存没有成功，请稍后重试。'
+      },
+      resetDone: {
+        title:'已重置',
+        desc:'今天的打卡记录已经清空啦。'
+      },
+      resetUndone: {
+        title:'已撤销',
+        desc:'今天的打卡记录已经恢复。'
+      },
+      bonusUpdated: ({ score }) => ({
+        title:'积分已更新',
+        desc:`当前积分：${score} 分`
+      }),
+      walletUpdated: ({ isSpend, amount, balance }) => ({
+        title:isSpend ? '扣除成功' : '存入成功',
+        desc:isSpend ? `已扣除 ¥${amount}，剩余 ¥${balance}` : `已存入 ¥${amount}，当前余额 ¥${balance}`
+      }),
+      settingsSaved: {
+        title:'设置已保存',
+        desc:'名字、头像和习惯内容都更新好了。'
+      },
+      backupExported: {
+        title:'备份已导出',
+        desc:'本次备份已包含成长记录、兑换记录和自定义奖励。'
+      },
+      growthSaved: {
+        title:'记录已保存',
+        desc:'成长档案已经更新好了。'
+      },
+      growthDeleted: ({ month }) => ({
+        title:'已删除记录',
+        desc:`${month} 的成长记录已删除`
+      }),
+      growthRestored: {
+        title:'已撤销',
+        desc:'成长记录已经恢复。'
+      },
+      storeSaved: {
+        title:'商品已保存',
+        desc:'奖励商品修改已经生效。'
+      },
+      passwordEmpty: {
+        title:'新密码不能为空',
+        desc:'请先输入一个新的家长密码。'
+      },
+      passwordMismatch: {
+        title:'两次输入不一致',
+        desc:'请确认两次输入的新密码完全一致。'
+      },
+      passwordChanged: {
+        title:'密码已修改',
+        desc:'新的家长密码已经保存，请牢记。'
+      },
+      monthlySuperDone: {
+        title:'本月已完成',
+        desc:'这个超级挑战本月已经完成过啦，下个月再来挑战新任务吧~'
+      },
+      superMathRetry: {
+        title:'再试一次',
+        desc:'算错啦，再仔细算算~'
+      },
+      tvInsufficient: {
+        title:'成长卡不足',
+        desc:'先完成今日任务，再来兑换活动吧。'
+      },
+      tvGateRetry: {
+        title:'答案不对',
+        desc:'再仔细检查一下，然后再试一次吧。'
+      },
+      activityRedeemed: ({ name, balance }) => ({
+        title:'兑换成功',
+        desc:`已兑换：${name}，剩余成长卡 ${balance} 点`
+      }),
+      importSuccess: ({ count }) => ({
+        title:'恢复成功',
+        desc:`共恢复 ${count} 条记录，页面即将刷新。导入前当前状态已自动备份。`
+      }),
+      importNoData: {
+        title:'恢复失败',
+        desc:'备份内容无效，没有找到可导入的数据。'
+      },
+      importInvalid: {
+        title:'恢复失败',
+        desc:'代码格式不正确，请检查后重试。'
+      },
+      growthHeightInvalid: {
+        title:'身高有误',
+        desc:'请输入有效的身高（50~200cm）'
+      },
+      growthWeightInvalid: {
+        title:'体重有误',
+        desc:'请输入有效的体重（10~100kg）'
+      }
+    }
+  };
+
+  function resolveUiEntry(entry, params={}){
+    return typeof entry === 'function' ? entry(params) : { ...entry };
+  }
+
+  function showPresetPwd(key){
+    const cfg = resolveUiEntry(UI_TEXT.pwd[key] || {});
+    return showPwdOverlay(cfg.title, cfg.desc);
+  }
+
+  function showPresetDialog(key, params={}){
+    const cfg = resolveUiEntry(UI_TEXT.dialog[key] || {}, params);
+    return showAppDialog({ ...cfg, ...params });
+  }
+
+  function showPresetToast(type, key, params={}){
+    const cfg = resolveUiEntry((UI_TEXT.toast || {})[key] || {}, params);
+    return showToast(type, cfg.title || '', cfg.desc || '', !!cfg.allowHtml);
+  }
+
+  function showPresetToastAction(type, key, params={}, options={}){
+    const cfg = resolveUiEntry((UI_TEXT.toast || {})[key] || {}, params);
+    return showToastAction(type, cfg.title || '', cfg.desc || '', { ...options, allowHtml: !!cfg.allowHtml });
+  }
+
   // ── 密码修改 ──────────────────────────────────────────────────────────────
   document.getElementById('changePwdBtn').onclick = async (e) => {
     e.preventDefault();
     const msgEl  = document.getElementById('pwdChangeMsg');
     const newPwd = document.getElementById('edit-pwd-new').value.trim();
     const cfmPwd = document.getElementById('edit-pwd-confirm').value.trim();
-    if (!newPwd) { msgEl.style.color='#e53935'; msgEl.textContent='❌ 新密码不能为空'; return; }
-    if (newPwd !== cfmPwd) { msgEl.style.color='#e53935'; msgEl.textContent='❌ 两次输入不一致'; return; }
-    const ok = await showPwdOverlay('🔒 修改密码', '请先输入当前旧密码验证身份');
+    if (!newPwd) { msgEl.textContent=''; showPresetToast('error','passwordEmpty'); return; }
+    if (newPwd !== cfmPwd) { msgEl.textContent=''; showPresetToast('error','passwordMismatch'); return; }
+    const ok = await showPresetPwd('changePassword');
     if (!ok) return;
     localStorage.setItem(PWD_KEY, newPwd);
     document.getElementById('edit-pwd-new').value = '';
     document.getElementById('edit-pwd-confirm').value = '';
-    msgEl.style.color = '#2e7d32';
-    msgEl.textContent = `✅ 密码已修改，请牢记新密码！`;
+    msgEl.textContent = '';
+    showPresetToast('success','passwordChanged');
   };
 
   // ── 商店确认弹层 ──────────────────────────────────────────────────────────
@@ -2872,8 +4096,8 @@ document.addEventListener('DOMContentLoaded', function() {
       html += `<div class="history-item">
         <div class="history-month">${r.date}</div>
         <div class="history-stats">
-          <div class="history-score" style="font-size:1.2rem;">${r.icon}</div>
-          <div style="flex:1;font-size:0.82rem;font-weight:800;color:var(--on-surface);">${r.name}</div>
+          <div class="history-score" style="font-size:1.2rem;">${escapeHtml(r.icon)}</div>
+          <div style="flex:1;font-size:0.82rem;font-weight:800;color:var(--on-surface);">${escapeHtml(r.name)}</div>
           <div class="history-money" style="background:#fce4ec;color:#c62828;">${priceStr}</div>
         </div>
       </div>`;
@@ -2900,10 +4124,9 @@ document.addEventListener('DOMContentLoaded', function() {
       else { S[k].score -= item.price; saveKidScore(k); }
       addRedeemRecord(k, item);
       updateBankUI(k); renderRewards();
-      renderRedeemHistory(k);
       try{launchConfetti();launchConfetti();playSuccessKid(currentKid,true);}catch(e){}
       document.getElementById('toastSuccessName').textContent = `兑换成功！`;
-      document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${item.icon} ${item.name}</b>！<br>快去找爸爸妈妈兑现吧！`;
+      document.getElementById('toastSuccessSub').innerHTML = `🎉 恭喜获得：<br><b style="font-size:1.2rem;color:var(--warm-green);">${escapeHtml(item.icon)} ${escapeHtml(item.name)}</b>！<br>快去找爸爸妈妈兑现吧！`;
       document.getElementById('toastSuccess').classList.add('show');
     });
   };
@@ -3281,45 +4504,175 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── Nav & Switcher Logic ──
   const badgeDetailOpen = {lulu:false, qiqi:false, mimi:false};
+  const VIEW_ANIM_OUT_MS = 180;
+  const VIEW_ANIM_IN_MS = 280;
+
+  function prefersReducedMotion(){
+    try{
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }catch(e){
+      return false;
+    }
+  }
+
+  function getPrimaryViewEl(view = currentNav, kid = currentKid){
+    if(view === 'home') return document.getElementById(`${kid}-panel`);
+    if(view === 'progress') return document.getElementById('progress-view');
+    if(view === 'rewards') return document.getElementById('rewards-view');
+    return null;
+  }
+
+  function resetPrimaryViewState(el){
+    if(!el) return;
+    try{
+      if(typeof el.getAnimations === 'function'){
+        el.getAnimations().forEach(anim => {
+          try{ anim.cancel(); }catch(e){}
+        });
+      }
+    }catch(e){}
+    el.style.opacity = '';
+    el.style.transform = '';
+    el.style.animation = '';
+  }
+
+  function resetAllPrimaryViewStates(){
+    KIDS.forEach(kid => resetPrimaryViewState(document.getElementById(`${kid}-panel`)));
+    resetPrimaryViewState(document.getElementById('progress-view'));
+    resetPrimaryViewState(document.getElementById('rewards-view'));
+  }
+
+  function setPrimaryViewVisible(el, visible, view){
+    if(!el) return;
+    if(view === 'home'){
+      el.classList.toggle('active', visible);
+      return;
+    }
+    el.style.display = visible ? 'block' : 'none';
+  }
+
+  function hideInactivePrimaryViews(activeView, activeKid){
+    const panelHost = document.getElementById('kid-panels');
+    if(panelHost) panelHost.style.display = activeView === 'home' ? 'block' : 'none';
+    KIDS.forEach(kid => {
+      const panel = document.getElementById(`${kid}-panel`);
+      if(panel) panel.classList.toggle('active', activeView === 'home' && kid === activeKid);
+    });
+    const rewardsView = document.getElementById('rewards-view');
+    const progressView = document.getElementById('progress-view');
+    if(rewardsView) rewardsView.style.display = activeView === 'rewards' ? 'block' : 'none';
+    if(progressView) progressView.style.display = activeView === 'progress' ? 'block' : 'none';
+  }
+
+  function animatePrimaryViewSwap(prevEl, nextEl){
+    if(!nextEl || prefersReducedMotion() || typeof nextEl.animate !== 'function'){
+      if(prevEl && prevEl !== nextEl){
+        prevEl.style.opacity = '';
+        prevEl.style.transform = '';
+      }
+      if(nextEl){
+        nextEl.style.opacity = '';
+        nextEl.style.transform = '';
+      }
+      return;
+    }
+
+    if(prevEl && prevEl !== nextEl && typeof prevEl.animate === 'function'){
+      prevEl.animate(
+        [
+          { opacity: 1, transform: 'translateY(0) scale(1)' },
+          { opacity: 0, transform: 'translateY(10px) scale(0.985)' }
+        ],
+        { duration: VIEW_ANIM_OUT_MS, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' }
+      );
+    }
+
+    nextEl.style.opacity = '0';
+    nextEl.style.transform = 'translateY(14px) scale(0.992)';
+    requestAnimationFrame(() => {
+      nextEl.animate(
+        [
+          { opacity: 0, transform: 'translateY(14px) scale(0.992)' },
+          { opacity: 1, transform: 'translateY(0) scale(1)' }
+        ],
+        { duration: VIEW_ANIM_IN_MS, easing: 'cubic-bezier(.24,1,.32,1)', fill: 'forwards' }
+      );
+      setTimeout(() => {
+        nextEl.style.opacity = '';
+        nextEl.style.transform = '';
+        if(prevEl && prevEl !== nextEl){
+          prevEl.style.opacity = '';
+          prevEl.style.transform = '';
+        }
+      }, VIEW_ANIM_IN_MS + 30);
+    });
+  }
+
+  function scrollToViewTop(){
+    try{
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    }catch(e){
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function updateSelectorCompactState(){
+    const selector=document.getElementById('charSelector');
+    if(!selector) return;
+    const shouldCompact = currentNav === 'home' && window.scrollY > 56 && !selector.classList.contains('open');
+    selector.classList.toggle('compact', shouldCompact);
+  }
 
   function switchNav(view) {
+    const prevView = currentNav;
+    const prevKid = currentKid;
+    const prevEl = getPrimaryViewEl(prevView, prevKid);
     currentNav = view;
+    resetAllPrimaryViewStates();
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('nav' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
-    const panels = document.querySelectorAll('.kid-panel');
-    document.getElementById('rewards-view').style.display = 'none';
-    document.getElementById('progress-view').style.display = 'none';
+    const nextEl = getPrimaryViewEl(view, currentKid);
+    hideInactivePrimaryViews(view, currentKid);
+    setPrimaryViewVisible(nextEl, true, view);
 
     if (view === 'home') {
-      panels.forEach(p => p.classList.toggle('active', p.id === currentKid + '-panel'));
-      renderKid(currentKid);
+      renderHomeView(currentKid, 'tasks', 'feedback', 'review');
     } else if (view === 'rewards') {
-      panels.forEach(p => p.classList.remove('active'));
-      document.getElementById('rewards-view').style.display = 'block';
       renderRewards();
     } else if (view === 'progress') {
-      panels.forEach(p => p.classList.remove('active'));
-      document.getElementById('progress-view').style.display = 'block';
       renderMap(true);
     }
+    if(prevEl !== nextEl) animatePrimaryViewSwap(prevEl, nextEl);
     renderDailySummary(currentKid);
+    updateHeaderUI();
+    scrollToViewTop();
+    updateSelectorCompactState();
   }
 
   function switchTab(k){
+    const prevKid = currentKid;
+    const prevEl = getPrimaryViewEl(currentNav, prevKid);
     currentKid=k;
-    document.body.className=`kid-${k}`;
+    resetAllPrimaryViewStates();
+    applyCurrentKidBodyClass(k);
+    syncSelectorActiveState(k);
+    const nextEl = getPrimaryViewEl(currentNav, k);
+    hideInactivePrimaryViews(currentNav, k);
+    setPrimaryViewVisible(nextEl, true, currentNav);
     if (currentNav === 'home') {
-      KIDS.forEach(kid => document.getElementById(`${kid}-panel`).classList.toggle('active', kid===k));
-      renderKid(k);
-      renderStudy(k);
+      renderHomeView(k, 'tasks', 'feedback', 'review');
     } else if (currentNav === 'rewards') {
       renderRewards();
     } else if (currentNav === 'progress') {
       renderMap(true);
     }
+    if(prevEl !== nextEl) animatePrimaryViewSwap(prevEl, nextEl);
     const selectorEl=document.getElementById('charSelector');
     if(selectorEl)selectorEl.classList.remove('open');
     updateSelectorUI(k);
+    updateHeaderUI();
+    scrollToViewTop();
+    updateSelectorCompactState();
   }
 
   // ── 孩子/家长 双视角模式 ────────────────────────────────────────────────
@@ -3329,26 +4682,25 @@ document.addEventListener('DOMContentLoaded', function() {
   function applyKidMode(){
     document.body.classList.toggle('kid-mode', isKidMode);
     const banner = document.getElementById('kidModeBanner');
-    if(banner) banner.style.display = isKidMode ? 'flex' : 'none';
+    if(banner) banner.style.display = 'none';
     const btn = document.getElementById('navModeToggle');
     if(btn){
-      btn.querySelector('.material-symbols-outlined').textContent = isKidMode ? 'supervisor_account' : 'child_care';
-      btn.querySelector('.material-symbols-outlined').nextSibling
-        && (btn.childNodes[1].textContent = isKidMode ? '家长' : '孩子');
       btn.innerHTML = isKidMode
-        ? `<span class="material-symbols-outlined">supervisor_account</span>家长`
-        : `<span class="material-symbols-outlined">child_care</span>孩子`;
+        ? `<span class="nav-icon" aria-hidden="true">🧑</span><span class="nav-label">家长</span>`
+        : `<span class="nav-icon" aria-hidden="true">🧒</span><span class="nav-label">孩子</span>`;
     }
     // 孩子模式下切到今日页
     if(isKidMode && currentNav !== 'home' && currentNav !== 'progress'){
       switchNav('home');
     }
+    updateHeaderUI();
+    updateSelectorCompactState();
   }
 
   const handleModeToggle = async () => {
     if(isKidMode){
       // 切回家长模式需要密码
-      const ok = await showPwdOverlay('🔒 切换家长模式', '请输入家长密码');
+      const ok = await showPresetPwd('switchParentMode');
       if(!ok) return;
       isKidMode = false;
     } else {
@@ -3356,6 +4708,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     try{ localStorage.setItem('kidMode', isKidMode ? '1' : '0'); }catch(e){}
     applyKidMode();
+      showPresetToast('success','modeChanged',{ isKidMode });
   };
 
   // 初始化时应用模式
@@ -3368,9 +4721,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function openHabitEdit(k, id){
     const h = S[k].currentHabits[id];
     if(!h) return;
-    habitEditTarget = {k, id};
+    habitEditTarget = {k, id, type:'habit'};
+    document.querySelector('#habitEditOverlay .habit-edit-title').textContent = '✏️ 快速编辑习惯';
+    document.querySelector('#habitEditOverlay .habit-edit-row').style.display = 'flex';
+    document.getElementById('habitEditEmoji').style.display = '';
+    document.getElementById('habitEditText').placeholder = '习惯名称';
     document.getElementById('habitEditEmoji').value = h.emoji || '✨';
     document.getElementById('habitEditText').value = h.text || '';
+    document.getElementById('habitEditOverlay').classList.add('show');
+    setTimeout(()=>document.getElementById('habitEditText').focus(), 150);
+  }
+
+  function openSuperEdit(k, id){
+    const s = S[k].currentSupers[id];
+    if(!s) return;
+    habitEditTarget = {k, id, type:'super'};
+    document.querySelector('#habitEditOverlay .habit-edit-title').textContent = '✏️ 快速编辑挑战';
+    document.querySelector('#habitEditOverlay .habit-edit-row').style.display = 'block';
+    document.getElementById('habitEditEmoji').style.display = 'none';
+    document.getElementById('habitEditText').placeholder = '挑战名称';
+    document.getElementById('habitEditEmoji').value = '';
+    document.getElementById('habitEditText').value = s.text || '';
     document.getElementById('habitEditOverlay').classList.add('show');
     setTimeout(()=>document.getElementById('habitEditText').focus(), 150);
   }
@@ -3378,16 +4749,29 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('habitEditSaveBtn').onclick = async e => {
     e.preventDefault();
     if(!habitEditTarget) return;
-    const ok = await showPwdOverlay('🔒 修改习惯','请输入家长密码');
+    const draftEmoji = document.getElementById('habitEditEmoji').value.trim() || '✨';
+    const draftText  = document.getElementById('habitEditText').value.trim() || (habitEditTarget.type === 'super' ? '未命名挑战' : '未命名');
+    const target = { ...habitEditTarget };
+    const ok = await showPresetPwd(target.type === 'super' ? 'quickEditSuper' : 'quickEditHabit');
     if(!ok) return;
-    const {k, id} = habitEditTarget;
-    const emoji = document.getElementById('habitEditEmoji').value.trim() || '✨';
-    const text  = document.getElementById('habitEditText').value.trim() || '未命名';
-    S[k].currentHabits[id] = { emoji, text };
-    try{ localStorage.setItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits)); }catch(e2){}
+    const {k, id, type} = target;
+    const saveOk = type === 'super'
+      ? (() => {
+          S[k].currentSupers[id] = { text:draftText };
+          return safeSetItem(sk(k,'scfg'), JSON.stringify(S[k].currentSupers), `save_scfg_quick_${k}`);
+        })()
+      : (() => {
+          S[k].currentHabits[id] = { emoji:draftEmoji, text:draftText };
+          return safeSetItem(sk(k,'hcfg'), JSON.stringify(S[k].currentHabits), `save_hcfg_quick_${k}`);
+        })();
+    if(!saveOk){
+      showPresetToast('error','quickEditSaveFailed');
+      return;
+    }
     document.getElementById('habitEditOverlay').classList.remove('show');
-    renderLists(); renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     habitEditTarget = null;
+    showPresetToast('success','quickEditSaved',{ type });
   };
   document.getElementById('habitEditCancelBtn').onclick = () => {
     document.getElementById('habitEditOverlay').classList.remove('show');
@@ -3417,13 +4801,13 @@ document.addEventListener('DOMContentLoaded', function() {
   bindTap(document.getElementById('navProgress'), () => switchNav('progress'));
   bindTap(document.getElementById('navRewards'), () => switchNav('rewards'));
   bindTap(document.getElementById('navSettings'), async () => {
-    const ok = await showPwdOverlay('🔒 家长验证', '请输入家长密码进入设置');
+    const ok = await showPresetPwd('settingsEntry');
     if (ok) openEditModal();
   });
   bindTap(document.getElementById('navModeToggle'), handleModeToggle);
   const selectorRoot=document.getElementById('charSelector');
   const selectorToggle=document.getElementById('charSelectorToggle');
-  bindTap(selectorToggle, e=>{e.stopPropagation();selectorRoot.classList.toggle('open');});
+  bindTap(selectorToggle, e=>{e.stopPropagation();selectorRoot.classList.toggle('open');updateSelectorCompactState();});
   document.querySelectorAll('.selector-option').forEach(btn=>{
     bindTap(btn, e=>{
       e.stopPropagation();
@@ -3432,7 +4816,10 @@ document.addEventListener('DOMContentLoaded', function() {
       switchTab(next);
     });
   });
-  document.addEventListener('click',e=>{if(!selectorRoot.contains(e.target))selectorRoot.classList.remove('open');});
+  document.addEventListener('click',e=>{if(!selectorRoot.contains(e.target)){selectorRoot.classList.remove('open');updateSelectorCompactState();}});
+  window.addEventListener('scroll', updateSelectorCompactState, { passive:true });
+  window.addEventListener('resize', updateSelectorCompactState);
+  updateSelectorCompactState();
   KIDS.forEach(k=>{
     // 翻卡：点击卡片正面翻转
     const wrap=document.getElementById(`${k}-studyBtn`);
@@ -3477,49 +4864,87 @@ document.addEventListener('DOMContentLoaded', function() {
     const today=new Date();
     const todayStr2=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
 
-    // 生成过去90天，按周分组
-    const days=[];
-    for(let i=89;i>=0;i--){
-      const d=new Date(today);
-      d.setDate(today.getDate()-i);
-      const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-      days.push({ds, dow:d.getDay(), date:d, month:d.getMonth(), day:d.getDate()});
+    const monthNames=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const months=[];
+    for(let offset=2;offset>=0;offset--){
+      const monthDate=new Date(today.getFullYear(), today.getMonth()-offset, 1);
+      const year=monthDate.getFullYear();
+      const month=monthDate.getMonth();
+      const monthStart=new Date(year, month, 1);
+      const monthEnd=new Date(year, month + 1, 0);
+      const isCurrentMonth = month===today.getMonth() && year===today.getFullYear();
+      const lastVisibleDate=monthEnd;
+      const weeks=[];
+      let week=Array(7).fill(null);
+
+      for(let day=1; day<=lastVisibleDate.getDate(); day++){
+        const current=new Date(year, month, day);
+        const ds=current.getFullYear()+'-'+String(current.getMonth()+1).padStart(2,'0')+'-'+String(current.getDate()).padStart(2,'0');
+        week[current.getDay()]={ds, dow:current.getDay(), date:current, month, day, isFuture:isCurrentMonth && day>today.getDate()};
+        if(current.getDay()===6 || day===lastVisibleDate.getDate()){
+          weeks.push(week);
+          week=Array(7).fill(null);
+        }
+      }
+
+      months.push({
+        label: monthNames[month],
+        isCurrentMonth,
+        weeks
+      });
     }
 
-    // 按周列分组（每7天一列）
-    const weeks=[];
-    let week=[];
-    // 从第一天的星期几开始填充
-    const firstDow=days[0].dow;
-    for(let p=0;p<firstDow;p++) week.push(null); // 前置空格
-    days.forEach(d=>{
-      week.push(d);
-      if(week.length===7){weeks.push(week);week=[];}
-    });
-    if(week.length>0){while(week.length<7)week.push(null);weeks.push(week);}
-
-    // 按月分组显示月份标签
     let html='';
-    let lastMonth=-1;
-    weeks.forEach(w=>{
-      // 找本周第一个有效日期的月份
-      const firstValid=w.find(d=>d!==null);
-      const monthLabel=firstValid&&firstValid.day<=7&&firstValid.month!==lastMonth
-        ?['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'][firstValid.month]
-        :'';
-      if(firstValid&&firstValid.day<=7) lastMonth=firstValid?.month??lastMonth;
-
-      html+=`<div class="heatmap-month-col">`;
-      html+=`<div class="heatmap-month-label">${monthLabel}</div>`;
-      w.forEach(d=>{
-        if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
-        const done=cal[d.ds]===true;
-        const isToday=d.ds===todayStr2;
-        html+=`<div class="heatmap-day${done?' done':''}${isToday?' today':''}" title="${d.ds}"></div>`;
+    months.forEach((monthBlock, monthIndex)=>{
+      monthBlock.weeks.forEach((weekData, weekIndex)=>{
+        const isFirstCol=weekIndex===0;
+        html+=`<div class="heatmap-month-col${isFirstCol?' month-start':''}">`;
+        html+=`<div class="heatmap-month-label${isFirstCol?' has-label':''}${isFirstCol&&monthBlock.isCurrentMonth?' current-month':''}">${isFirstCol?monthBlock.label:''}</div>`;
+        weekData.forEach(d=>{
+          if(!d){html+=`<div class="heatmap-day future"></div>`;return;}
+          const value=cal[d.ds];
+          const done=value===true;
+          const partial=typeof value==='number' && value>0 && value!==true;
+          const isToday=d.ds===todayStr2;
+          const isFuture=!!d.isFuture;
+          const isAnchor=isFuture || d.day===1 || d.day===8 || d.day===15 || d.day===22 || d.day===29;
+          const anchorHtml=isAnchor?`<span class="heatmap-day-anchor">${d.day}</span>`:'';
+          html+=`<div class="heatmap-day${done?' done':''}${partial?' partial':''}${isToday?' today':''}${isFuture?' future':''}"${isFuture?'':' data-kid="'+k+'" data-date="'+d.ds+'"'} title="${d.ds}">${anchorHtml}</div>`;
+        });
+        html+=`</div>`;
       });
-      html+=`</div>`;
     });
     el.innerHTML=html;
+    el.onclick=async evt=>{
+      const dayEl=evt.target.closest('.heatmap-day[data-date]');
+      if(!dayEl) return;
+      const dateStr=dayEl.dataset.date;
+      const value=cal[dateStr];
+      const snapshotDetail = buildSnapshotDetailModel(k, dateStr);
+      let desc=value===true
+        ? `📅 ${dateStr}<br>完成情况：<b style="color:var(--warm-green);">全部完成 10/10</b>`
+        : (typeof value==='number' && value>0
+          ? `📅 ${dateStr}<br>完成情况：<b style="color:#7cb342;">完成 ${value}/${TOTAL_TASKS}</b>`
+          : `📅 ${dateStr}<br>完成情况：<b style="color:var(--text-mid);">当天没有完成记录</b>`);
+
+      if(snapshotDetail){
+        if(snapshotDetail.hasHabitDetail){
+          desc += `<br>已完成习惯：${escapeHtml(snapshotDetail.completedHabits.length ? snapshotDetail.completedHabits.join('、') : '暂无')}<br>未完成习惯：${escapeHtml(snapshotDetail.missingHabits.length ? snapshotDetail.missingHabits.join('、') : '暂无')}`;
+        }else if(snapshotDetail.doneCount > 0){
+          desc += `<br><span style="color:var(--text-mid);">这一天的旧记录只保存了完成数量，没有逐项明细。</span>`;
+        }
+        if(snapshotDetail.hasSuperDetail){
+          desc += `<br>挑战情况：已完成 ${escapeHtml(snapshotDetail.doneSupers.length ? snapshotDetail.doneSupers.join('、') : '暂无')}｜未完成 ${escapeHtml(snapshotDetail.missingSupers.length ? snapshotDetail.missingSupers.join('、') : '暂无')}`;
+        }
+      }
+      await showAppDialog({
+        title:'打卡详情',
+        desc,
+        confirmText:'知道了',
+        cancelText:'关闭',
+        inputType:'none'
+      });
+    };
   }
 
   function renderHistoryTimeline(k){
@@ -3587,13 +5012,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const mmEl=document.getElementById(`${k}-monthMoney`);if(mmEl)mmEl.textContent=money.toFixed(1);
     const wEl=document.getElementById(`${k}-wallet`);if(wEl)wEl.textContent=S[k].wallet.toFixed(2);
     renderHistoryTimeline(k);
-    renderStatsCard(k);
-    renderHeatmap(k);
     renderRedeemHistory(k);
   }
 
-  function renderLists(){
-    KIDS.forEach(k=>{
+  function normalizeKidTargets(targetKids=KIDS){
+    if(Array.isArray(targetKids)) return targetKids;
+    return [targetKids];
+  }
+
+  function renderLists(targetKids=KIDS){
+    normalizeKidTargets(targetKids).forEach(k=>{
+      S[k].currentHabits = normalizeHabitConfig(S[k].currentHabits, defaultHabits[k]);
+      S[k].currentSupers = normalizeSuperConfig(S[k].currentSupers, defaultSupers[k]);
       const hl=document.getElementById(`${k}-habitsList`);hl.innerHTML='';
       // 构建索引数组，未完成置顶，已完成/已叉沉底
       const indices=Array.from({length:TOTAL_HABITS},(_,i)=>i);
@@ -3603,13 +5033,65 @@ document.addEventListener('DOMContentLoaded', function() {
         return sa-sb;
       });
       indices.forEach((i,pos)=>{
-        const streak=S[k].streaks[i]||0;const streakHtml=streak>0?`<div class="streak-tag">🔥 ${streak}天</div>`:'';
-        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${pos*0.04}s"><span class="habit-emoji">${S[k].currentHabits[i].emoji}</span><div class="habit-label-wrap"><div class="habit-label">${S[k].currentHabits[i].text}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}" data-action="habit-check" data-kid="${k}" data-id="${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}" data-action="habit-cross" data-kid="${k}" data-id="${i}">✖️</button></div></div>`;
+      const streak=S[k].streaks[i]||0;const streakHtml=streak>0?`<div class="streak-tag">🔥 ${streak}天</div>`:'';
+        hl.innerHTML+=`<div class="habit-item" data-kid="${k}" data-id="${i}" style="animation-delay:${pos*0.04}s"><span class="habit-emoji">${escapeHtml(S[k].currentHabits[i].emoji)}</span><div class="habit-label-wrap"><div class="habit-label">${escapeHtml(S[k].currentHabits[i].text)}</div>${streakHtml}</div><div class="habit-actions"><button class="habit-btn check" id="${k}-check-${i}" data-action="habit-check" data-kid="${k}" data-id="${i}">✔️</button><button class="habit-btn cross" id="${k}-cross-${i}" data-action="habit-cross" data-kid="${k}" data-id="${i}">✖️</button></div></div>`;
       });
       const sl=document.getElementById(`${k}-superList`);sl.innerHTML='';
-      for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}" data-action="super-check" data-kid="${k}" data-id="${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${S[k].currentSupers[j].text}</span><span class="super-pts">🏅 成就</span></div>`;}
+      for(let j=0;j<TOTAL_SUPERS;j++){sl.innerHTML+=`<div class="super-item" id="${k}-superBox-${j}" data-action="super-check" data-kid="${k}" data-id="${j}"><div class="super-check" id="${k}-superCheck-${j}"></div><span class="super-text">${escapeHtml(S[k].currentSupers[j].text)}</span><span class="super-pts">🏅 成就</span></div>`;}
     });
     bindEvents();
+  }
+
+  function renderHomeSection(k, section){
+    if(section === 'tasks'){
+      renderLists(k);
+      renderStudy(k);
+      renderKid(k);
+      renderYesterdayReview(k);
+      return;
+    }
+    if(section === 'feedback'){
+      renderKid(k);
+      return;
+    }
+    if(section === 'review'){
+      renderStatsCard(k);
+      renderHeatmap(k);
+      renderGrowthTable(k);
+      return;
+    }
+    if(section === 'wallet'){
+      updateBankUI(k);
+      return;
+    }
+    if(section === 'growth'){
+      renderGrowthTable(k);
+      checkGrowthReminder();
+      return;
+    }
+    if(section === 'selector'){
+      updateSelectorUI(k);
+    }
+  }
+
+  function renderHomeView(k, ...sections){
+    const unique = [...new Set((sections.length ? sections : ['tasks','feedback','review']).flat())];
+    unique.forEach(section => renderHomeSection(k, section));
+  }
+
+  function renderAllHomeViews(...sections){
+    const unique = [...new Set((sections.length ? sections : ['tasks','feedback','review']).flat())];
+    KIDS.forEach(k => renderHomeView(k, ...unique));
+  }
+
+  function syncSelectorActiveState(k=currentKid){
+    const root = document.getElementById('charSelector');
+    if(root) root.dataset.currentKid = k;
+    document.querySelectorAll('#charSelector .selector-option').forEach(btn => {
+      const active = btn.dataset.kid === k;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
   }
 
   function updateSelectorUI(k=currentKid){
@@ -3620,7 +5102,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cPct=document.getElementById('selector-current-pct');if(cPct)cPct.textContent=`${currentPct}%`;
     const cName=document.querySelector('#charSelector .selector-name .dyn-name[data-kid="current"]');if(cName)cName.textContent=KID_NAMES[k]||k;
     const cSub=document.getElementById('selector-current-sub');if(cSub)cSub.textContent=currentDone===TOTAL_TASKS?`今日完成 ${currentDone}/${TOTAL_TASKS} ✅`:`已完成 ${currentDone}/${TOTAL_TASKS}`;
-    document.querySelectorAll('.selector-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.kid===k));
+    syncSelectorActiveState(k);
     KIDS.forEach(kid=>{
       const hDone=(S[kid]?.habits||[]).filter(v=>v===true).length;
       const done=hDone+(isStudyDoneToday(kid)?1:0);
@@ -3629,6 +5111,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const pctEl=document.getElementById(`selector-${kid}-pct`);if(pctEl)pctEl.textContent=`${pct}%`;
       const subEl=document.getElementById(`selector-${kid}-sub`);if(subEl)subEl.textContent=`${done}/${TOTAL_TASKS}`;
     });
+    updateHeaderUI();
   }
   const KID_CHARS = KID_EMOJIS; // 统一使用 KID_EMOJIS
   const KID_MSGS  = {
@@ -3673,6 +5156,227 @@ document.addEventListener('DOMContentLoaded', function() {
         o.start(t);o.stop(t+0.4);
       });
     }catch(e){}
+  }
+
+  const EASTER_MEDIA = {
+    lulu: {
+      title: '🎉 连续 7 天达成！Lulu 的专属奖励！'
+    },
+    qiqi: {
+      title: '🎉 连续 7 天达成！Qiqi 的专属奖励！'
+    },
+    mimi: {
+      title: '🎉 连续 7 天达成！Mimi 的专属奖励！'
+    }
+  };
+  const EASTER_MEDIA_BASES = ['media/lulu-caidan','media/qiqi-caidan','media/mimi-caidan'];
+  let currentEasterKid = 'lulu';
+  let currentEasterMedia = null;
+  let currentEasterNeedsManualSound = false;
+
+  function updateEasterSoundButton(media=currentEasterMedia){
+    const btn = document.getElementById('easterSoundBtn');
+    if(!btn) return;
+    btn.textContent = currentEasterNeedsManualSound && media && media.type === 'video'
+      ? '🔊 点一下播放视频声音'
+      : '🔊 再播一次庆祝音乐';
+  }
+
+  function resetEasterMediaState(){
+    const videoEl = document.getElementById('easterEggVideo');
+    const imgEl = document.getElementById('easterEggImg');
+    const fallbackEl = document.getElementById('easterEggFallback');
+    const statusEl = document.getElementById('easterEggStatus');
+    currentEasterMedia = null;
+    currentEasterNeedsManualSound = false;
+    if(videoEl){
+      try{ videoEl.pause(); }catch(_){}
+      videoEl.oncanplay = null;
+      videoEl.onloadeddata = null;
+      videoEl.onerror = null;
+      videoEl.onended = null;
+      videoEl.muted = false;
+      videoEl.volume = 1;
+      videoEl.removeAttribute('poster');
+      videoEl.removeAttribute('src');
+      try{ videoEl.currentTime = 0; }catch(_){}
+      try{ videoEl.load(); }catch(_){}
+      videoEl.style.display = 'none';
+    }
+    if(imgEl){
+      imgEl.removeAttribute('src');
+      imgEl.classList.remove('static');
+      imgEl.style.display = 'none';
+    }
+    if(fallbackEl) fallbackEl.style.display = 'none';
+    if(statusEl){
+      statusEl.className = 'easter-status pending';
+      statusEl.textContent = '⏳ 正在尝试视频';
+    }
+    updateEasterSoundButton(null);
+  }
+
+  function playEasterCelebrationSound(k=currentEasterKid){
+    try{ playCelebMusic(); }catch(_){}
+    try{ playSuccessKid(k,true); }catch(_){}
+  }
+
+  function resolveEasterCandidates(k){
+    const base = EASTER_MEDIA_BASES[Math.floor(Math.random()*EASTER_MEDIA_BASES.length)] || 'lulu-caidan';
+    return [
+      { type:'video', src:`${base}.m4v` },
+      { type:'video', src:`${base}.mp4` },
+      { type:'video', src:`${base}.webm` },
+      { type:'image', src:`${base}.gif` },
+      { type:'image', src:`${base}.jpg` },
+      { type:'image', src:`${base}.png` }
+    ];
+  }
+
+  function updateEasterStatus(media){
+    const statusEl = document.getElementById('easterEggStatus');
+    if(!statusEl) return;
+    const src = String(media && media.src ? media.src : '');
+    const fileName = src ? src.split('/').pop() : '';
+    if(media.type === 'video'){
+      statusEl.className = 'easter-status video';
+      statusEl.textContent = currentEasterNeedsManualSound
+        ? `▶ 视频已显示${fileName ? ` · ${fileName}` : ''} · 等你点一下开声`
+        : `▶ 视频播放中${fileName ? ` · ${fileName}` : ''}`;
+      return;
+    }
+    if(media.type === 'image' && src.endsWith('.gif')){
+      statusEl.className = 'easter-status gif';
+      statusEl.textContent = `🌀 GIF 动图${fileName ? ` · ${fileName}` : ''}`;
+      return;
+    }
+    statusEl.className = 'easter-status image';
+    statusEl.textContent = `🖼 图片回退${fileName ? ` · ${fileName}` : ''}`;
+  }
+
+  function loadEasterRewardMedia(k){
+    const videoEl = document.getElementById('easterEggVideo');
+    const imgEl = document.getElementById('easterEggImg');
+    const fallbackEl = document.getElementById('easterEggFallback');
+    const candidates = resolveEasterCandidates(k);
+    resetEasterMediaState();
+
+    return new Promise(resolve => {
+      let index = 0;
+      const tryNext = () => {
+        if(index >= candidates.length){
+          if(fallbackEl) fallbackEl.style.display = 'block';
+          resolve({ type:'fallback', reason:'unplayable_or_missing' });
+          return;
+        }
+        const candidate = candidates[index++];
+        if(candidate.type === 'video' && videoEl){
+          const posterSrc = candidate.src.replace(/\.(m4v|mp4|webm)$/i, '.jpg');
+          let settled = false;
+          const resolveOnce = media => {
+            if(settled) return;
+            settled = true;
+            resolve(media);
+          };
+          const failToNext = () => {
+            if(settled) return;
+            settled = true;
+            tryNext();
+          };
+          const playbackTimeout = setTimeout(() => {
+            if(settled) return;
+            if(videoEl && !videoEl.paused){
+              currentEasterNeedsManualSound = !!videoEl.muted;
+              resolveOnce({ ...candidate, reason:videoEl.muted ? 'video_muted_timeout' : 'video_ok_timeout' });
+              return;
+            }
+            failToNext();
+          }, 2500);
+          const clearPlaybackTimeout = () => clearTimeout(playbackTimeout);
+          videoEl.preload = 'auto';
+          videoEl.autoplay = true;
+          videoEl.playsInline = true;
+          videoEl.setAttribute('playsinline','');
+          videoEl.setAttribute('webkit-playsinline','');
+          videoEl.loop = true;
+          videoEl.controls = false;
+          videoEl.muted = false;
+          videoEl.volume = 1;
+          videoEl.poster = posterSrc;
+          videoEl.onloadeddata = () => {
+            videoEl.style.display = 'block';
+            if(fallbackEl) fallbackEl.style.display = 'none';
+          };
+          videoEl.onerror = () => {
+            clearPlaybackTimeout();
+            failToNext();
+          };
+          videoEl.src = candidate.src;
+          try{ videoEl.load(); }catch(_){}
+          (async () => {
+            try{
+              await videoEl.play();
+              clearPlaybackTimeout();
+              currentEasterNeedsManualSound = false;
+              resolveOnce({ ...candidate, reason:'video_ok' });
+            }catch(_){
+              try{
+                videoEl.muted = true;
+                videoEl.defaultMuted = true;
+                await videoEl.play();
+                clearPlaybackTimeout();
+                currentEasterNeedsManualSound = true;
+                resolveOnce({ ...candidate, reason:'video_muted_fallback' });
+              }catch(_2){
+                clearPlaybackTimeout();
+                failToNext();
+              }
+            }
+          })();
+          return;
+        }
+        if(candidate.type === 'image' && imgEl){
+          imgEl.onload = () => {
+            imgEl.style.display = 'block';
+            imgEl.classList.toggle('static', !candidate.src.endsWith('.gif'));
+            if(fallbackEl) fallbackEl.style.display = 'none';
+            resolve({ ...candidate, reason:candidate.src.endsWith('.gif') ? 'gif_ok' : 'image_ok' });
+          };
+          imgEl.onerror = () => tryNext();
+          imgEl.src = candidate.src;
+          return;
+        }
+        tryNext();
+      };
+      tryNext();
+    });
+  }
+
+  function showEasterReward(k){
+    const overlay = document.getElementById('easterEgg');
+    const titleEl = document.getElementById('easterEggTitle');
+    const subEl = document.getElementById('easterEggSub');
+    const config = EASTER_MEDIA[k] || EASTER_MEDIA.qiqi;
+    currentEasterKid = k;
+    if(titleEl) titleEl.textContent = config.title;
+    if(subEl) subEl.textContent = '优先播放同名短视频或动图，没有的话会自动回退到静态图片。';
+    loadEasterRewardMedia(k).then(media=>{
+      currentEasterMedia = media;
+      updateEasterStatus(media);
+      updateEasterSoundButton(media);
+      if(subEl){
+        subEl.textContent = media.type === 'video'
+          ? currentEasterNeedsManualSound
+            ? '这次已经切到会动的视频啦；苹果旧机可能会拦自动开声，点一下按钮就能开声音。'
+            : '这次已经升级成会动有声的短视频奖励啦！'
+          : media.type === 'image' && String(media.src || '').endsWith('.gif')
+            ? '这次已经升级成会动的 GIF 奖励啦！'
+            : '当前浏览器没有成功播放视频，已经自动回退到图片版本。';
+      }
+    });
+    overlay.classList.add('show');
+    try{launchConfetti();launchConfetti();}catch(_){}
+    playEasterCelebrationSound(k);
   }
 
   // ── 里程碑庆祝（30天/60天）──────────────────────────────────────────────
@@ -3722,7 +5426,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showMilestoneBoom._timer = setTimeout(()=>{
       overlay.classList.add('hiding');
       // 恢复标题
-      if(titleEl) titleEl.innerHTML = `<span class="celeb-name" id="celebName">${KID_NAMES[k]||k}</span><br>今天全部完成啦！🏆`;
+      if(titleEl) titleEl.innerHTML = `<span class="celeb-name" id="celebName">${escapeHtml(KID_NAMES[k]||k)}</span><br>今天全部完成啦！🏆`;
       setTimeout(()=>{ overlay.classList.remove('show','hiding'); }, 500);
     }, 4000);
   }
@@ -3896,9 +5600,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const studyDone = isStudyDoneToday(k) ? 1 : 0;
     const totalCount = count + studyDone;
     const pct=Math.round((totalCount/TOTAL_TASKS)*100);
+    const remainingHabits = TOTAL_HABITS - count;
+    const challengeDone = (S[k].supers||[]).filter(Boolean).length;
     const ringEl=document.getElementById(`${k}-ring`);if(ringEl)ringEl.style.strokeDashoffset=226-(226*totalCount/TOTAL_TASKS);
     const pctEl=document.getElementById(`${k}-pct`);if(pctEl)pctEl.textContent=pct+'%';
     const subEl=document.getElementById(`${k}-heroSub`);if(subEl)subEl.textContent=totalCount===0?'今天还没开始哦，加油！':totalCount===TOTAL_TASKS?'🎉 今日全部完成！超棒的！':`已完成 ${totalCount} / ${TOTAL_TASKS} 个任务 💪`;
+    const overviewStudyEl=document.getElementById(`${k}-overviewStudy`);if(overviewStudyEl)overviewStudyEl.textContent=studyDone?'已完成':'待完成';
+    const overviewHabitEl=document.getElementById(`${k}-overviewHabitRemain`);if(overviewHabitEl)overviewHabitEl.textContent=remainingHabits===0?'已完成':'还差 ' + remainingHabits + ' 项';
+    const overviewSuperEl=document.getElementById(`${k}-overviewSuper`);if(overviewSuperEl)overviewSuperEl.textContent=`${challengeDone} / ${TOTAL_SUPERS}`;
+    const overviewTipEl=document.getElementById(`${k}-overviewTip`);
+    if(overviewTipEl){
+      let tip='先从今天的好习惯开始吧。';
+      if(!studyDone) tip='先把今天的学习完成，开个好头吧。';
+      else if(remainingHabits > 0) tip=`还差 ${remainingHabits} 项习惯，继续打卡吧。`;
+      else if(challengeDone < TOTAL_SUPERS) tip='日常任务完成啦，可以冲一项超级挑战。';
+      else tip='今天任务全部点亮了，去看看成长反馈吧。';
+      overviewTipEl.textContent = tip;
+    }
 
     if(currentKid===k){
       const maxStreak=Math.max(...(S[k].streaks||[0]));
@@ -3913,12 +5631,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if(kidHint) kidHint.textContent = `⭐ 今天 +${totalCount} 星星`;
     for(let j=0;j<TOTAL_SUPERS;j++){const sb=document.getElementById(`${k}-superCheck-${j}`);if(!sb)continue;if(S[k].supers[j]){sb.classList.add('checked');sb.innerHTML='✔';}else{sb.classList.remove('checked');sb.innerHTML='';}}
     syncMonthlyBadgeProgress(k);
-    const badgeDone=(S[k].supers||[]).filter(Boolean).length;
+    const badgeDone=challengeDone;
     const badgeInfo=getCurrentBadgeTier(k);
     const badgeSummary=document.getElementById(`${k}-superBadgeSummary`);
     if(badgeSummary) badgeSummary.textContent = `🏅 当前等级：${getBadgeTitle(badgeInfo.tier)}`;
     const badgeTotalEl=document.getElementById(`${k}-superBadgeTotal`);
-    if(badgeTotalEl) badgeTotalEl.textContent = getNextBadgeHint(badgeInfo);
+    if(badgeTotalEl) badgeTotalEl.textContent = `🏅 已获得 ${S[k].badgeTotal||0} 枚`;
+    const badgeHintEl=document.getElementById(`${k}-superBadgeHint`);
+    if(badgeHintEl) badgeHintEl.textContent = getNextBadgeHint(badgeInfo);
     renderBadgeRoadmap(k);
     const roadEl=document.getElementById(`${k}-badgeRoadmap`);
     const weeklyEl=document.getElementById(`${k}-weeklyReview`);
@@ -3977,10 +5697,10 @@ document.addEventListener('DOMContentLoaded', function() {
     recordDailySnapshot(k);
     markProgressDirty('map','mindmap','report');
 
-    renderLists(); renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
 
     if(totalCount===TOTAL_TASKS && !S[k].tvRewardGiven){
-      S[k].tvTime += 1; S[k].tvRewardGiven = true; saveTvState(k); renderKid(k);
+      S[k].tvTime += 1; S[k].tvRewardGiven = true; saveTvState(k); renderHomeView(k, 'feedback');
     }
     if(totalCount===TOTAL_TASKS && currentKid===k){
       showAllDoneBoom(k);
@@ -3989,16 +5709,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 触发盲盒条件：当前累计恰好到达第7天
     if(S[k].streaks[id] === 7){
-      setTimeout(()=>{
-        const imgEl=document.getElementById('easterEggImg');
-        const src=k==='lulu'?'lulu-caidan.jpg':'qiqi-caidan.jpg';
-        imgEl.onerror=()=>{imgEl.style.display='none';document.getElementById('easterEggFallback').style.display='block';};
-        imgEl.onload=()=>{imgEl.style.display='block';document.getElementById('easterEggFallback').style.display='none';};
-        imgEl.src=src;
-        document.getElementById('easterEgg').classList.add('show');
-        try{launchConfetti();launchConfetti();}catch(e){}
-        try{playSuccessKid(k,true);}catch(e){}
-      }, 700);
+      showEasterReward(k);
     } else {
       try{launchConfetti();}catch(e){}
       try{playSuccessKid(k,totalCount===TOTAL_TASKS);}catch(e){}
@@ -4016,24 +5727,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if(S[k].calendar && S[k].calendar[todayStr()]) { S[k].calendar[todayStr()] = false; saveKidCalendar(k); }
     recordDailySnapshot(k);
     markProgressDirty('map','mindmap','report');
-    renderLists();renderKid(k);
+    renderHomeView(k, 'tasks', 'feedback');
     try{playCross();}catch(e){}
     document.getElementById('toastEncourageName').textContent=`继续努力！`;document.getElementById('toastEncourageSub').textContent='没关系，明天再加油！💕';document.getElementById('toastEncourage').classList.add('show');
   }
 
   function doSuperCheck(k,j){
     if(S[k].supers[j]){
-      showToast('error','本月已完成','这个超级挑战本月已经完成过啦，下个月再来挑战新任务吧~');
+      showPresetToast('error','monthlySuperDone');
       return;
     }
     const p=mathProblem();
-    showAppDialog({
-      title:'防误触验证',
-      desc:`答对下面这道题，才能完成挑战：<br><b style="font-size:1.2rem;color:#e65100;">${p.q}</b>`,
-      confirmText:'提交答案',
-      inputType:'number',
-      inputPlaceholder:'请输入答案'
-    }).then(result=>{
+    showPresetDialog('superCheck',{ question:p.q }).then(result=>{
       if(!result.confirmed) return;
       if(result.value.trim()===p.ans){
         const beforeTotal=S[k].badgeTotal||0;
@@ -4043,67 +5748,102 @@ document.addEventListener('DOMContentLoaded', function() {
         saveKidSupers(k);
         recordDailySnapshot(k);
         markProgressDirty('mindmap','report');
-        renderKid(k);
+        renderHomeView(k, 'tasks', 'feedback');
         const afterTotal=S[k].badgeTotal||0;
         const afterTier=getCurrentBadgeTier(k).tier;
         const levelUp=afterTier>beforeTier || afterTotal>beforeTotal;
         vib(levelUp ? [20,50,30,60,40] : VIB_SUPER);
         try{ if(levelUp){ launchConfetti();launchConfetti();launchConfetti(); } else { launchConfetti(); } }catch(e){}
         try{playSuccessKid(k,levelUp);}catch(e){}
-        const superName=(S[k].currentSupers?.[j]?.text)||'本月挑战';
+        const superName=escapeHtml((S[k].currentSupers?.[j]?.text)||'本月挑战');
         document.getElementById('toastSuccessName').textContent=levelUp?'勋章晋级！':'挑战完成！';
         document.getElementById('toastSuccessSub').innerHTML=
           `🏆 ${superName}<br>当前称号：${getBadgeTitle(afterTier)}（${afterTier}/${BADGE_ROADMAP_LEVELS.length}）<br>累计勋章：${afterTotal} 枚`;
         document.getElementById('toastSuccess').classList.add('show');
       }else{
-        showToast('error','再试一次','算错啦，再仔细算算~');
+        showPresetToast('error','superMathRetry');
       }
     });
   }
   function doSpendTv(k){
     if(S[k].tvTime<=0){
-      showToast('error','成长卡不足','先完成今日任务，再来兑换活动吧。');
+      showPresetToast('error','tvInsufficient');
       return;
     }
     const p=generateMath3();
-    showAppDialog({
-      title:'算术锁验证',
-      desc:`答对这道题，才能继续兑换活动：<br><b style="font-size:1.2rem;color:#e65100;">${p.q}</b>`,
-      confirmText:'提交答案',
-      inputType:'number',
-      inputPlaceholder:'请输入答案'
-    }).then(firstStep=>{
+    showPresetDialog('activityGate',{ question:p.q }).then(firstStep=>{
       if(!firstStep.confirmed) return;
       if(firstStep.value.trim()!==p.ans){
-        showToast('error','答案不对','再仔细检查一下，然后再试一次吧。');
+        showPresetToast('error','tvGateRetry');
         return;
       }
       const options=GROWTH_ACTIVITY_OPTIONS;
       const menu = options.map(o=>`<div style="padding:6px 0;"><b>${o.id}.</b> ${o.name} <span style="color:#e65100;">（${o.cost}点）</span></div>`).join('');
-      showAppDialog({
-        title:'选择兑换活动',
-        desc:`当前成长卡：<b>${S[k].tvTime} 点</b><br><div style="text-align:left;margin-top:10px;">${menu}</div>`,
-        confirmText:'确认兑换',
-        inputType:'number',
-        inputPlaceholder:'请输入序号',
-        validator:value=>{
+      showPresetDialog('activitySelect',{ points:S[k].tvTime, menuHtml:menu, validator:value=>{
           const selected = options.find(o=>String(o.id)===String((value||'').trim()));
           if(!selected) return '请输入上面列表中的正确序号';
           if(selected.cost>S[k].tvTime) return `点数不足，当前仅有 ${S[k].tvTime} 点`;
           return '';
-        }
-      }).then(secondStep=>{
+        } }).then(secondStep=>{
         if(!secondStep.confirmed) return;
         const selected=options.find(o=>String(o.id)===String((secondStep.value||'').trim()));
         if(!selected) return;
         S[k].tvTime=parseFloat((S[k].tvTime-selected.cost).toFixed(2));
         saveTvState(k);
-        renderKid(k);
-        showToast('success','兑换成功',`已兑换：${selected.name}，剩余成长卡 ${S[k].tvTime} 点`);
+        renderHomeView(k, 'feedback');
+        showPresetToast('success','activityRedeemed',{ name:selected.name, balance:S[k].tvTime });
       });
     });
   }
-  async function doReset(k){const ok=await showPwdOverlay('🔒 重置今日打卡','请输入家长密码后继续');if(!ok)return;const confirmRes=await showAppDialog({title:'确认重置',desc:'确定重置今天的打卡吗？<br>⚠️ 今日积分会被扣除。',confirmText:'确认重置',cancelText:'先不重置'});if(!confirmRes.confirmed)return;const earned=S[k].habits.filter(v=>v===true).length;const studyBonus=isStudyDoneToday(k)?1:0;S[k].score=Math.max(0,S[k].score-earned-studyBonus);S[k].habits=Array(TOTAL_HABITS).fill(null);S[k].tvRewardGiven=false;if(S[k].calendar)S[k].calendar[todayStr()]=false;saveKidCalendar(k);saveTvState(k);saveKidState(k);saveKidScore(k);try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}recordDailySnapshot(k);markProgressDirty('map','mindmap','report');renderStudy(k);renderKid(k);showToast('success','已重置','今天的打卡记录已经清空啦。');}
+  function refreshAfterResetChange(k){
+    recordDailySnapshot(k);
+    markProgressDirty('map','mindmap','report');
+    renderHomeView(k, 'tasks', 'feedback');
+  }
+
+  async function doReset(k){
+    const ok=await showPresetPwd('resetToday');
+    if(!ok)return;
+    const confirmRes=await showPresetDialog('confirmReset');
+    if(!confirmRes.confirmed)return;
+    const today=todayStr();
+    const before={
+      score:S[k].score,
+      habits:Array.isArray(S[k].habits)?S[k].habits.slice():Array(TOTAL_HABITS).fill(null),
+      tvRewardGiven:!!S[k].tvRewardGiven,
+      calendar:S[k].calendar?{...S[k].calendar}:{},
+      studyDone:isStudyDoneToday(k)
+    };
+    const earned=S[k].habits.filter(v=>v===true).length;
+    const studyBonus=before.studyDone?1:0;
+    S[k].score=Math.max(0,S[k].score-earned-studyBonus);
+    S[k].habits=Array(TOTAL_HABITS).fill(null);
+    S[k].tvRewardGiven=false;
+    if(!S[k].calendar) S[k].calendar={};
+    S[k].calendar[today]=false;
+    saveKidCalendar(k);
+    saveTvState(k);
+    saveKidState(k);
+    saveKidScore(k);
+    try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}
+    refreshAfterResetChange(k);
+    showPresetToastAction('success','resetDone',{}, {actionLabel:'撤销重置',timeoutMs:5000,onAction:()=>{
+      S[k].score=before.score;
+      S[k].habits=before.habits.slice();
+      S[k].tvRewardGiven=before.tvRewardGiven;
+      S[k].calendar={...before.calendar};
+      saveKidCalendar(k);
+      saveTvState(k);
+      saveKidState(k);
+      saveKidScore(k);
+      try{
+        if(before.studyDone) localStorage.setItem(getStudyDoneKey(k), today);
+        else localStorage.removeItem(getStudyDoneKey(k));
+      }catch(e){}
+      refreshAfterResetChange(k);
+      showPresetToast('success','resetUndone');
+    }});
+  }
 
   let panelEventsBound = false;
   const bankTapState = {};
@@ -4119,46 +5859,31 @@ document.addEventListener('DOMContentLoaded', function() {
     state.timer = setTimeout(()=>{ state.count = 0; }, 800);
     if(state.count < 5) return;
     state.count = 0;
-    const result = await showAppDialog({
-      title:'家长特权',
-      desc:'请输入要补充的积分，负数表示扣除。',
-      confirmText:'保存积分',
-      inputType:'number',
-      inputValue:'0',
-      inputPlaceholder:'请输入整数',
-      validator:value=>/^-?\\d+$/.test((value||'').trim())? '' : '请输入整数，可使用负数'
-    });
+    const result = await showPresetDialog('bankBonus');
     if(!result.confirmed) return;
     const pts = parseInt(result.value, 10);
     S[k].score = Math.max(0, S[k].score + pts);
     saveKidScore(k);
     updateBankUI(k);
-    showToast('success','积分已更新',`当前积分：${S[k].score} 分`);
+    showPresetToast('success','bonusUpdated',{ score:S[k].score });
   }
   async function handleWalletAction(k, type){
     const isSpend = type === 'wallet-spend';
-    const ok = await showPwdOverlay(isSpend ? '🔒 消费扣除验证' : '🔒 存入零钱包验证','请输入家长密码后继续');
+    const ok = await showPresetPwd(isSpend ? 'walletSpend' : 'walletDeposit');
     if(!ok) return;
     const cur = S[k].wallet.toFixed(2);
-    const result = await showAppDialog({
-      title:isSpend ? '零钱包扣除' : '零钱包存入',
-      desc:`当前余额：<b>¥${cur}</b><br>请输入本次${isSpend ? '消费' : '存入'}金额（元）`,
-      confirmText:isSpend ? '确认扣除' : '确认存入',
-      inputType:'number',
-      inputPlaceholder:'例如 5.20',
-      validator:value=>{
-        const amount = parseFloat(value);
-        if(Number.isNaN(amount) || amount <= 0) return '请输入大于 0 的有效金额';
-        if(isSpend && amount > S[k].wallet) return `余额不足，当前仅有 ¥${cur}`;
-        return '';
-      }
-    });
+    const result = await showPresetDialog('walletAction', { isSpend, currentBalance: cur, validator:value=>{
+      const amount = parseFloat(value);
+      if(Number.isNaN(amount) || amount <= 0) return '请输入大于 0 的有效金额';
+      if(isSpend && amount > S[k].wallet) return `余额不足，当前仅有 ¥${cur}`;
+      return '';
+    }});
     if(!result.confirmed) return;
     const amount = parseFloat(result.value);
     S[k].wallet = parseFloat((S[k].wallet + (isSpend ? -amount : amount)).toFixed(2));
     saveKidWallet(k);
     updateBankUI(k);
-    showToast('success',isSpend ? '扣除成功' : '存入成功',isSpend ? `已扣除 ¥${amount.toFixed(2)}，剩余 ¥${S[k].wallet.toFixed(2)}` : `已存入 ¥${amount.toFixed(2)}，当前余额 ¥${S[k].wallet.toFixed(2)}`);
+    showPresetToast('success','walletUpdated',{ isSpend, amount: amount.toFixed(2), balance: S[k].wallet.toFixed(2) });
   }
   function bindEvents(){
     if(panelEventsBound) return;
@@ -4179,8 +5904,19 @@ document.addEventListener('DOMContentLoaded', function() {
       if(action === 'spend-tv') return doSpendTv(kid);
       if(action === 'toggle-badge-detail'){
         badgeDetailOpen[kid] = !badgeDetailOpen[kid];
-        renderKid(kid);
+        renderHomeView(kid, 'tasks');
         if(currentNav === 'progress' && badgeDetailOpen[kid]){ markProgressDirty('mindmap'); renderMap(false); }
+        return;
+      }
+      if(action === 'toggle-yesterday-review'){
+        yesterdayReviewOpen[kid] = !yesterdayReviewOpen[kid];
+        renderYesterdayReview(kid);
+        return;
+      }
+      if(action === 'dismiss-yesterday-review'){
+        const snapshotDate = yesterdayStr();
+        safeSetItem(getYesterdayReviewDismissKey(kid), snapshotDate, `save_yesterday_review_dismiss_${kid}`);
+        renderYesterdayReview(kid);
         return;
       }
       if(action === 'bonus-score') return handleBankBonus(kid);
@@ -4189,12 +5925,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     panelRoot.addEventListener('touchstart', e => {
       const card = e.target.closest('.habit-item');
-      if(!card || e.target.closest('.habit-btn')) return;
-      const { kid, id } = card.dataset;
+      const superCard = e.target.closest('.super-item');
+      if(card && !e.target.closest('.habit-btn')){
+        const { kid, id } = card.dataset;
+        clearLongPressTimer();
+        longPressTimer = setTimeout(()=>{
+          vib([20,30,20]);
+          openHabitEdit(kid, Number(id));
+        }, 500);
+        return;
+      }
+      if(!superCard) return;
+      const { kid, id } = superCard.dataset;
       clearLongPressTimer();
       longPressTimer = setTimeout(()=>{
         vib([20,30,20]);
-        openHabitEdit(kid, Number(id));
+        openSuperEdit(kid, Number(id));
       }, 500);
     }, { passive: true });
     panelRoot.addEventListener('touchend', clearLongPressTimer, { passive: true });
@@ -4202,23 +5948,72 @@ document.addEventListener('DOMContentLoaded', function() {
     panelRoot.addEventListener('touchcancel', clearLongPressTimer, { passive: true });
     panelRoot.addEventListener('contextmenu', e => {
       const card = e.target.closest('.habit-item');
-      if(!card) return;
+      if(card){
+        e.preventDefault();
+        openHabitEdit(card.dataset.kid, Number(card.dataset.id));
+        return;
+      }
+      const superCard = e.target.closest('.super-item');
+      if(!superCard) return;
       e.preventDefault();
-      openHabitEdit(card.dataset.kid, Number(card.dataset.id));
+      openSuperEdit(superCard.dataset.kid, Number(superCard.dataset.id));
     });
   }
 
-  function closeToast(id){document.getElementById(id).classList.remove('show');}
+  const TOAST_META = {
+    success: { overlayId:'toastSuccess', titleId:'toastSuccessName', subId:'toastSuccessSub', buttonId:'closeSuccess', defaultLabel:'开心！', timer:null, action:null, onTimeout:null, token:0 },
+    error: { overlayId:'toastEncourage', titleId:'toastEncourageName', subId:'toastEncourageSub', buttonId:'closeEncourage', defaultLabel:'加油！', timer:null, action:null, onTimeout:null, token:0 }
+  };
+
+  function getToastMetaById(id){
+    return id === 'toastEncourage' ? TOAST_META.error : TOAST_META.success;
+  }
+
+  function resetToastState(meta){
+    if(meta.timer){
+      clearTimeout(meta.timer);
+      meta.timer = null;
+    }
+    meta.action = null;
+    meta.onTimeout = null;
+    meta.token += 1;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = meta.defaultLabel;
+  }
+
+  function closeToast(id){
+    const meta = getToastMetaById(id);
+    resetToastState(meta);
+    document.getElementById(id).classList.remove('show');
+  }
+
   function showToast(type, title, desc, allowHtml=false){
-    const isError = type === 'error';
-    const overlayId = isError ? 'toastEncourage' : 'toastSuccess';
-    const titleId = isError ? 'toastEncourageName' : 'toastSuccessName';
-    const subId = isError ? 'toastEncourageSub' : 'toastSuccessSub';
-    document.getElementById(titleId).textContent = title;
-    const subEl = document.getElementById(subId);
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    resetToastState(meta);
+    document.getElementById(meta.titleId).textContent = title;
+    const subEl = document.getElementById(meta.subId);
     if(allowHtml) subEl.innerHTML = desc;
     else subEl.textContent = desc;
-    document.getElementById(overlayId).classList.add('show');
+    document.getElementById(meta.overlayId).classList.add('show');
+  }
+
+  function showToastAction(type, title, desc, options={}){
+    const { allowHtml=false, actionLabel='撤销', timeoutMs=5000, onAction=null, onTimeout=null } = options;
+    const meta = type === 'error' ? TOAST_META.error : TOAST_META.success;
+    showToast(type, title, desc, allowHtml);
+    meta.action = typeof onAction === 'function' ? onAction : null;
+    meta.onTimeout = typeof onTimeout === 'function' ? onTimeout : null;
+    const button = document.getElementById(meta.buttonId);
+    if(button) button.textContent = actionLabel;
+    const currentToken = meta.token;
+    if(timeoutMs > 0){
+      meta.timer = setTimeout(()=>{
+        if(meta.token !== currentToken) return;
+        const timeoutCb = meta.onTimeout;
+        closeToast(meta.overlayId);
+        if(timeoutCb) timeoutCb();
+      }, timeoutMs);
+    }
   }
   function focusDialogField(el){
     if(!el || typeof el.focus !== 'function') return;
@@ -4323,15 +6118,34 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();closeToast('toastSuccess');};
-  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();closeToast('toastEncourage');};
+  document.getElementById('closeSuccess').onclick=e=>{e.preventDefault();const action=TOAST_META.success.action;closeToast('toastSuccess');if(action)action();};
+  document.getElementById('closeEncourage').onclick=e=>{e.preventDefault();const action=TOAST_META.error.action;closeToast('toastEncourage');if(action)action();};
   document.getElementById('toastSuccess').onclick=()=>closeToast('toastSuccess');
   document.getElementById('toastEncourage').onclick=()=>closeToast('toastEncourage');
   document.querySelector('#toastSuccess .toast-box').onclick=e=>e.stopPropagation();
   document.querySelector('#toastEncourage .toast-box').onclick=e=>e.stopPropagation();
-  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');renderLists();KIDS.forEach(kid=>renderKid(kid));};
+  document.getElementById('easterSoundBtn').onclick=async e=>{
+    e.preventDefault();
+    const videoEl = document.getElementById('easterEggVideo');
+    if(currentEasterNeedsManualSound && currentEasterMedia && currentEasterMedia.type === 'video' && videoEl && videoEl.src){
+      try{
+        videoEl.muted = false;
+        videoEl.volume = 1;
+        try{ videoEl.currentTime = 0; }catch(_){}
+        await videoEl.play();
+        currentEasterNeedsManualSound = false;
+        updateEasterStatus(currentEasterMedia);
+        updateEasterSoundButton(currentEasterMedia);
+        return;
+      }catch(_){}
+    }
+    playEasterCelebrationSound();
+  };
+  document.getElementById('closeEasterEgg').onclick=e=>{e.preventDefault();document.getElementById('easterEgg').classList.remove('show');resetEasterMediaState();renderAllHomeViews('tasks','feedback');};
 
   function openEditModal(){
+    const backupDisplay = document.getElementById('backupDisplay');
+    if(backupDisplay) backupDisplay.style.display = 'none';
     document.getElementById('edit-name-lulu').value = KID_NAMES.lulu || 'Lulu';
     document.getElementById('edit-name-qiqi').value = KID_NAMES.qiqi || 'Qiqi';
     document.getElementById('edit-name-mimi').value = KID_NAMES.mimi || 'Mimi';
@@ -4344,12 +6158,25 @@ document.addEventListener('DOMContentLoaded', function() {
     KIDS.forEach(k=>{
       const cap=k.charAt(0).toUpperCase()+k.slice(1);
       const hl=document.getElementById(`edit${cap}List`);hl.innerHTML='';
-      S[k].currentHabits.forEach((h,i)=>{hl.innerHTML+=`<div class="edit-row"><input class="edit-emoji" id="edit-${k}-emoji-${i}" value="${h.emoji}"><input class="edit-text" id="edit-${k}-text-${i}" value="${h.text}"></div>`;});
+      S[k].currentHabits.forEach((h,i)=>{hl.innerHTML+=`<div class="edit-row"><input class="edit-emoji" id="edit-${k}-emoji-${i}" value="${escapeAttr(h.emoji)}"><input class="edit-text" id="edit-${k}-text-${i}" value="${escapeAttr(h.text)}"></div>`;});
       const sl=document.getElementById(`edit${cap}SuperList`);sl.innerHTML='';
-      S[k].currentSupers.forEach((s,j)=>{sl.innerHTML+=`<div class="edit-row"><input class="edit-text" id="edit-${k}-super-${j}" value="${s.text}" style="width:100%"></div>`;});
+      S[k].currentSupers.forEach((s,j)=>{sl.innerHTML+=`<div class="edit-row"><input class="edit-text" id="edit-${k}-super-${j}" value="${escapeAttr(s.text)}" style="width:100%"></div>`;});
     });
     document.getElementById('editOverlay').classList.add('show');
   }
+
+  function closeEditModal(){
+    const backupDisplay = document.getElementById('backupDisplay');
+    if(backupDisplay) backupDisplay.style.display = 'none';
+    document.getElementById('editOverlay').classList.remove('show');
+  }
+
+  function reopenEditModalSoon(delay=180){
+    setTimeout(() => {
+      try{ openEditModal(); }catch(_){}
+    }, delay);
+  }
+
   document.getElementById('saveEditBtn').onclick=e=>{
     e.preventDefault();
     const name1 = document.getElementById('edit-name-lulu').value.trim();
@@ -4381,46 +6208,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // 立刻刷新选择器当前孩子的 emoji 和庆祝弹窗角色
     const celebEl = document.getElementById('celebCharacter');
     if(celebEl) celebEl.textContent = KID_EMOJIS[currentKid] || '👧';
+    renderAllHomeViews('tasks','feedback');
     updateSelectorUI(currentKid);
-    KIDS.forEach(k=>renderStudy(k));
-    renderLists();KIDS.forEach(k=>renderKid(k));
-    document.getElementById('editOverlay').classList.remove('show');
-    showToast('success','设置已保存','名字、头像和习惯内容都更新好了。');
+    closeEditModal();
+    showPresetToast('success','settingsSaved');
   };
-  document.getElementById('cancelEditBtn').onclick=e=>{e.preventDefault();document.getElementById('editOverlay').classList.remove('show');};
-  document.getElementById('editOverlay').onclick=()=>document.getElementById('editOverlay').classList.remove('show');
+  document.getElementById('cancelEditBtn').onclick=e=>{e.preventDefault();closeEditModal();};
+  document.getElementById('editOverlay').onclick=()=>closeEditModal();
   document.querySelector('#editOverlay .edit-box').onclick=e=>e.stopPropagation();
 
   document.getElementById('exportDataBtn').onclick=e=>{
     e.preventDefault();
-    const data={};
-    for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')))data[key]=localStorage.getItem(key);}
-    data['kidNames_v6']=JSON.stringify(KID_NAMES);
-    data['kidEmojis_v1']=JSON.stringify(KID_EMOJIS);
-    data['studyLevels_v1']=JSON.stringify(LEARNING_LEVEL);
-    data['__backup_app_version__']=V;
-    data['__backup_schema_version__']=String(STORAGE_SCHEMA_VERSION);
-    const backupStr=btoa(encodeURIComponent(JSON.stringify(data)));
-    // 创建下载文件
-    const d=new Date();
-    const fname=`每日花园备份_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.txt`;
-    const blob=new Blob([backupStr],{type:'text/plain;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=fname;
-    document.body.appendChild(a);a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const data=collectBackupData();
+    downloadBackupFile(data);
     document.getElementById('backupDisplay').style.display='block';
+    showPresetToast('success','backupExported');
     try{localStorage.setItem('last_backup_date',todayStr());}catch(e2){}
     const banner=document.getElementById('backupReminder');if(banner)banner.style.display='none';
   };
   document.getElementById('closeBackupBtn').onclick=e=>{e.preventDefault();document.getElementById('backupDisplay').style.display='none';};
-  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();const ok=await showPwdOverlay('🔒 导入数据验证','导入会覆盖当前数据，请先验证家长密码');if(!ok)return;const inputRes=await showAppDialog({title:'导入备份',desc:'⚠️ 导入会覆盖当前所有数据，请粘贴备份代码。',confirmText:'开始导入',inputType:'textarea',inputPlaceholder:'请粘贴完整备份代码'});if(!inputRes.confirmed||!inputRes.value.trim())return;try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showAppDialog({title:'版本不匹配',desc:`备份版本：${backupAppVer}<br>当前版本：${V}<br>仍要继续导入吗？`,confirmText:'仍然导入',cancelText:'取消导入'});if(!versionRes.confirmed)return;}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showAppDialog({title:'结构版本较新',desc:`备份 schema：${backupSchemaVer}<br>当前 schema：${STORAGE_SCHEMA_VERSION}<br>继续导入可能出现兼容问题，是否继续？`,confirmText:'继续导入',cancelText:'取消'});if(!schemaRes.confirmed)return;}let count=0;for(const key in data){if(key.startsWith('tab_lulu')||key.startsWith('tab_qiqi')||key.startsWith('tab_mimi')||key==='kidNames_v6'||key==='kidEmojis_v1'||key==='studyLevels_v1'){localStorage.setItem(key,data[key]);count++;}}if(count>0){localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showToast('success','恢复成功',`共恢复 ${count} 条记录，页面即将刷新。`);setTimeout(()=>location.reload(),700);}else showToast('error','恢复失败','备份内容无效，没有找到可导入的数据。');}catch(err){showToast('error','恢复失败','代码格式不正确，请检查后重试。');}};
+  document.getElementById('importDataBtn').onclick=async e=>{e.preventDefault();closeEditModal();const ok=await showPresetPwd('importData');if(!ok){reopenEditModalSoon();return;}const inputRes=await showPresetDialog('importInput');if(!inputRes.confirmed||!inputRes.value.trim()){reopenEditModalSoon();return;}try{const data=JSON.parse(decodeURIComponent(atob(inputRes.value.trim())));const backupAppVer=data['__backup_app_version__']||data['__backup_version__']||'未知';const backupSchemaVer=parseInt(data['__backup_schema_version__']||'0',10)||0;if(backupAppVer!==V){const versionRes=await showPresetDialog('versionMismatch',{backupAppVer,currentVersion:V});if(!versionRes.confirmed){reopenEditModalSoon();return;}}if(backupSchemaVer>STORAGE_SCHEMA_VERSION){const schemaRes=await showPresetDialog('schemaNewer',{backupSchemaVer,currentSchemaVer:STORAGE_SCHEMA_VERSION});if(!schemaRes.confirmed){reopenEditModalSoon();return;}}const restorableKeys=Object.keys(data).filter(shouldRestoreBackupKey);const count=restorableKeys.length;if(count>0){const inspectRes=await showPresetDialog('importInspect',{html:buildBackupInspectionHtml(data,count,backupAppVer,backupSchemaVer)});if(!inspectRes.confirmed){reopenEditModalSoon();return;}downloadBackupFile(collectBackupData(),'每日花园导入前自动备份');restorableKeys.forEach(key=>localStorage.setItem(key,data[key]));localStorage.setItem(STORAGE_SCHEMA_KEY,String(Math.min(backupSchemaVer||STORAGE_SCHEMA_VERSION,STORAGE_SCHEMA_VERSION)));showPresetToast('success','importSuccess',{count});setTimeout(()=>location.reload(),700);}else{showPresetToast('error','importNoData');reopenEditModalSoon();}}catch(err){showPresetToast('error','importInvalid');reopenEditModalSoon();}};
 
   function loadGrowth(k){try{return JSON.parse(localStorage.getItem(`growth_${k}_v1`))||[];}catch(e){return[];}}
   function saveGrowth(k,records){try{localStorage.setItem(`growth_${k}_v1`,JSON.stringify(records));}catch(e){}}
   function currentMonthLabel(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+  function refreshGrowthViews(k){
+    renderHomeView(k, 'review');
+    checkGrowthReminder();
+    markProgressDirty('beanstalk','correlation');
+    if(currentNav==='progress') renderMap(false);
+  }
 
   function renderGrowthTable(k){
     const records=loadGrowth(k);const tbody=document.getElementById(`${k}-growthTable`);const latestEl=document.getElementById(`${k}-growthLatest`);if(!tbody)return;
@@ -4428,7 +6245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(records.length===0){tbody.innerHTML=`<tr><td colspan="6" style="color:#bbb;padding:12px 0;">还没有记录，快来量一量吧 📏</td></tr>`;return;}
     const dHtml=val=>{if(val===null)return`<span class="growth-same">—</span>`;const n=parseFloat(val);if(n>0)return`<span class="growth-up">+${val}</span>`;if(n<0)return`<span style="color:#42a5f5;">${val}</span>`;return`<span class="growth-same">0</span>`;};
     tbody.innerHTML=records.map((r,i)=>{const prev=records[i+1];const dH=prev?(r.height-prev.height).toFixed(1):null;const dW=prev?(r.weight-prev.weight).toFixed(1):null;return`<tr><td>${r.month}</td><td>${r.height}</td><td>${r.weight}</td><td>${dHtml(dH)}</td><td>${dHtml(dW)}</td><td><button class="growth-del-btn" data-kid="${k}" data-idx="${i}">🗑️</button></td></tr>`;}).join('');
-    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx);const ok=await showPwdOverlay('🔒 删除成长记录','请输入家长密码后继续');if(!ok)return;const recs=loadGrowth(kid);recs.splice(idx,1);saveGrowth(kid,recs);renderGrowthTable(kid);markProgressDirty('beanstalk','correlation');if(currentNav==='progress')renderMap(false);};});
+    tbody.querySelectorAll('.growth-del-btn').forEach(btn=>{btn.onclick=async e=>{e.preventDefault();const kid=btn.dataset.kid,idx=parseInt(btn.dataset.idx,10);const ok=await showPresetPwd('growthDelete');if(!ok)return;const recs=loadGrowth(kid);const removed=recs[idx];if(!removed)return;recs.splice(idx,1);saveGrowth(kid,recs);refreshGrowthViews(kid);showPresetToastAction('success','growthDeleted',{ month: removed.month },{actionLabel:'撤销删除',timeoutMs:5000,onAction:()=>{const current=loadGrowth(kid);const restoreIdx=Math.min(idx,current.length);current.splice(restoreIdx,0,removed);saveGrowth(kid,current);refreshGrowthViews(kid);showPresetToast('success','growthRestored');}});};});
   }
 
   KIDS.forEach(k=>{
@@ -4440,8 +6257,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const hInput=document.getElementById(`${k}-heightInput`);
       const wInput=document.getElementById(`${k}-weightInput`);
       const h=parseFloat(hInput.value), w=parseFloat(wInput.value);
-      if(isNaN(h)||h<50||h>200){showToast('error','身高有误','请输入有效的身高（50~200cm）');return;}
-      if(isNaN(w)||w<10||w>100){showToast('error','体重有误','请输入有效的体重（10~100kg）');return;}
+      if(isNaN(h)||h<50||h>200){showPresetToast('error','growthHeightInvalid');return;}
+      if(isNaN(w)||w<10||w>100){showPresetToast('error','growthWeightInvalid');return;}
       const records=loadGrowth(k);
       const month=currentMonthLabel();
       const existIdx=records.findIndex(r=>r.month===month);
@@ -4453,14 +6270,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if(records.length>24)records.pop();
       }
       saveGrowth(k,records);
-      renderGrowthTable(k);
-      checkGrowthReminder();
-      markProgressDirty('beanstalk','correlation');
+      refreshGrowthViews(k);
       hInput.value='';
       wInput.value='';
       hInput.focus();
-      showToast('success','记录已保存','成长档案已经更新好了。');
-      if(currentNav==='progress') renderMap(false);
+      showPresetToast('success','growthSaved');
     });
     renderGrowthTable(k);
   });
@@ -4482,9 +6296,10 @@ document.addEventListener('DOMContentLoaded', function() {
     try{
       let progressNeedsRefresh = false;
       KIDS.forEach(k=>{
-        if(localStorage.getItem(sk(k,'date'))!==todayStr()){
+        const storedDate = localStorage.getItem(sk(k,'date')) || todayStr();
+        if(storedDate!==todayStr()){
           progressNeedsRefresh = true;
-          recordDailySnapshot(k);
+          recordDailySnapshot(k, storedDate);
           for(let i=0;i<TOTAL_HABITS;i++){if(S[k].habits[i]!==true)S[k].streaks[i]=0;}
           saveKidStreaks(k);
           S[k].habits=Array(TOTAL_HABITS).fill(null);
@@ -4492,17 +6307,16 @@ document.addEventListener('DOMContentLoaded', function() {
           saveTvState(k);
           saveKidState(k);
           try{localStorage.removeItem(getStudyDoneKey(k));}catch(e){}
-          renderLists();renderKid(k);renderStudy(k);
+          renderHomeView(k, 'tasks', 'feedback');
         }
         if(localStorage.getItem(sk(k,'month'))!==monthStr()){
           progressNeedsRefresh = true;
           const lastScore=parseInt(localStorage.getItem(sk(k,'score')))||0;const lastMonth=localStorage.getItem(sk(k,'month'))||'';const earned=parseFloat((lastScore/10).toFixed(2));
           if(lastMonth&&lastScore>0){S[k].monthHistory.unshift({month:lastMonth,score:lastScore,money:earned});if(S[k].monthHistory.length>12)S[k].monthHistory=S[k].monthHistory.slice(0,12);saveKidHistory(k);}
-          S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); recordDailySnapshot(k); renderKid(k);
+          S[k].wallet=parseFloat((S[k].wallet+earned).toFixed(2));saveKidWallet(k);localStorage.setItem(sk(k,'month'),monthStr());S[k].score=0;S[k].supers=Array(TOTAL_SUPERS).fill(false);saveKidScore(k);saveKidSupers(k); S[k].calendar={}; saveKidCalendar(k); recordDailySnapshot(k); renderHomeView(k, 'tasks', 'feedback', 'review');
         }
         if(localStorage.getItem(sk(k,'week'))!==getMondayStr()){
-          progressNeedsRefresh = true;
-          S[k].tvTime=0;saveTvState(k);localStorage.setItem(sk(k,'week'),getMondayStr());renderKid(k);
+          localStorage.setItem(sk(k,'week'),getMondayStr());
         }
       });
       if(progressNeedsRefresh){
@@ -4541,7 +6355,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(Notification.permission === 'granted'){
           new Notification('🌱 每日花园', {
             body: '宝贝，今天的好习惯打卡了吗？快来完成今日任务吧！🌟',
-            icon: '',
+            icon: 'icons/icon-192-v2.png',
             tag: 'daily-reminder'
           });
         }
@@ -4573,6 +6387,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 发一条即时测试通知
     new Notification('🌱 每日花园提醒已开启！', {
       body: `每天 ${timeStr} 会提醒孩子打卡 ✅`,
+      icon: 'icons/icon-192-v2.png',
       tag: 'reminder-set'
     });
   };
@@ -4606,7 +6421,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }catch(e){}
   }
 
-  loadAll(); renderLists(); KIDS.forEach(k=>{renderKid(k);renderStudy(k);}); updateSelectorUI(currentKid); renderDate(); checkGrowthReminder(); checkBackupReminder(); setInterval(checkDateReset,60000);
+  loadAll(); renderAllHomeViews('tasks','feedback','review'); updateSelectorUI(currentKid); renderDate(); checkDateReset(); checkGrowthReminder(); checkBackupReminder(); setInterval(checkDateReset,60000);
 
   // ── 首次使用引导 ──────────────────────────────────────────────────────────
   (function(){
