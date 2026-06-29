@@ -212,12 +212,34 @@
     box-shadow: var(--shadow);
   }
   .kid-card {
+    position: relative;
     min-height: 136px;
     padding: 14px;
     text-align: left;
     display: grid;
     align-content: space-between;
     gap: 16px;
+    transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease;
+  }
+  .kid-card.active {
+    background: #f0f7ff;
+    border-color: #4c9ee6;
+    box-shadow: 0 18px 44px rgba(40, 126, 199, .22);
+  }
+  .kid-card.active::after {
+    content: "✓";
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: #287ec7;
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 1000;
   }
   .kid-face {
     width: 58px;
@@ -970,7 +992,7 @@
     const completed = completedLessonIds(state.kid);
     const nextIndex = nextLessonIndexForKid(state.kid);
     $('kidGrid').innerHTML = KIDS.map(k => `
-      <button class="kid-card" type="button" data-kid="${k.id}">
+      <button class="kid-card ${k.id === state.kid ? 'active' : ''}" type="button" data-kid="${k.id}" aria-pressed="${k.id === state.kid ? 'true' : 'false'}">
         <span class="kid-face">${k.face}</span>
         <span><strong>${k.name}</strong><span class="mini">${completedCount(k.id)} 关完成</span></span>
       </button>
