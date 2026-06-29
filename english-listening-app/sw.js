@@ -1,6 +1,7 @@
-const CACHE_NAME = 'english-listening-v10';
+const CACHE_NAME = 'english-listening-v14';
 const OFFLINE_ASSETS = [
   './index.html',
+  './src/course-data.js',
   './manifest.webmanifest',
   './assets/concepts/primary-screen-concept.png',
   './assets/illustrations/generated/cat-sleeping.png',
