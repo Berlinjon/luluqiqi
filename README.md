@@ -1,4 +1,28 @@
-👋 **你好呀！我是 Lulu & Qiqi 的专属每日打卡小助手！**
+👋 **你好呀！这个目录里现在有四个家庭小应用。**
+
+`garden-app/index.html` 是原来的每日花园打卡软件，根目录 `garden.html` 会自动跳转到这里，旧链接仍可使用。
+
+`garden-app/luludaka.html` 是原来根目录的 Lulu & Qiqi 每日好习惯页面，根目录 `index.html` 会自动跳转到这里，旧首页仍可使用。
+
+`yuwen-app/index.html` 是面向杭州一年级小朋友的语文闯关软件第一版，包含单元地图、课文关卡、识字选择、笔顺认知、词句练习、朗读示范和家长进度。所有学习记录都保存在本机浏览器里。
+
+`english-listening-app/index.html` 是独立的儿童英语听力启蒙软件，核心玩法是听一句英文短句，再从图片里选择对应画面。当前版本包含 Lulu / Qiqi / You 独立进度、7 个关卡、105 句、二选一到四选一难度爬坡、自动发音、答错重听、家长进度和本机记录。
+
+可以直接打开：
+
+`./apps.html`
+
+`./garden-app/index.html`
+
+`./yuwen-app/index.html`
+
+`./english-listening-app/index.html`
+
+---
+
+**原来的每日花园说明保留如下：**
+
+👋 **我是 Lulu & Qiqi 的专属每日打卡小助手！**
 
 我是一款超轻量、零负担的习惯养成网页工具 (Web App)。起初，我是为了给刚满七岁的 Lulu 和她的好玩伴 Qiqi 打造一个充满乐趣的积分小游戏而诞生的。现在，我也非常欢迎你和你的家人一起来体验这个简单又纯粹的快乐！
 
@@ -12,4 +36,3 @@
 **想拥有一个干净、简单又充满成就感的习惯养成计划吗？**
 👉 直接点击我的专属网址 (URL) 来找我玩吧：
 `https://stunning-marshmallow-4771c3.netlify.app`
-

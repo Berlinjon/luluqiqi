@@ -1,6 +1,18 @@
-const CACHE_NAME = 'garden-app-shell-v3';
+const CACHE_NAME = 'garden-root-shell-v6';
 const OFFLINE_ASSETS = [
   './index.html',
+  './apps.html',
+  './garden.html',
+  './garden-app/index.html',
+  './garden-app/luludaka.html',
+  './english-listening-app/index.html',
+  './english-listening-app/src/course-data.js',
+  './english-listening-app/manifest.webmanifest',
+  './english-listening-app/sw.js',
+  './yuwen-app/index.html',
+  './yuwen-app/manifest.webmanifest',
+  './yuwen-app/sw.js',
+  './english-listening-app/assets/concepts/primary-screen-concept.png',
   './manifest.webmanifest',
   './icons/icon-192-v2.png',
   './icons/icon-512-v2.png',
@@ -29,9 +41,9 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(request).then(response => {
         const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+        caches.open(CACHE_NAME).then(cache => cache.put('./garden-app/index.html', copy));
         return response;
-      }).catch(() => caches.match('./index.html'))
+      }).catch(() => caches.match('./garden-app/index.html'))
     );
     return;
   }

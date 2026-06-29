@@ -784,8 +784,9 @@
     LESSONS = []
   } = courseData;
   const CONFIG = {
-    AUTO_PLAY_DELAY: 1800,
-    CORRECT_ADVANCE_DELAY: 520
+    AUTO_PLAY_DELAY: 900,
+    NEXT_QUESTION_DELAY: 850,
+    NEXT_AUDIO_DELAY: 650
   };
   let currentAudio = null;
   let autoPlayTimer = null;
@@ -879,14 +880,14 @@
     $('autoPlayBtn').classList.toggle('active', state.autoPlay);
   }
 
-  function scheduleAutoPlay() {
+  function scheduleAutoPlay(delayOverride) {
     clearAutoPlayTimer();
     updateAutoPlayControl();
     if (!state.autoPlay) return;
 
     setAutoPlayWaiting(true);
     const lesson = LESSONS[state.lessonIndex];
-    const delay = Number(lesson.autoPlayDelay) || CONFIG.AUTO_PLAY_DELAY;
+    const delay = Number(delayOverride ?? lesson.autoPlayDelay) || CONFIG.AUTO_PLAY_DELAY;
     autoPlayTimer = setTimeout(() => {
       autoPlayTimer = null;
       setAutoPlayWaiting(false);
@@ -915,6 +916,7 @@
 
   function renderLearn() {
     clearAutoPlayTimer();
+    clearAdvanceTimer();
     const lesson = LESSONS[state.lessonIndex];
     const item = lesson.items[state.itemIndex];
     const pct = ((state.itemIndex) / lesson.items.length) * 100;
@@ -1064,6 +1066,7 @@
     const ok = btn.dataset.correct === '1';
     btn.classList.add(ok ? 'correct' : 'wrong');
     if (!ok) {
+      btn.disabled = true;
       const item = LESSONS[state.lessonIndex].items[state.itemIndex];
       state.sessionErrors.add(item.id);
       recordMistake();
@@ -1071,13 +1074,20 @@
       return;
     }
     state.locked = true;
+    setChoicesLocked(true);
     stopPracticeFlow();
     addStar(state.kid);
     $('starPill').textContent = `★ ${starCount(state.kid)}`;
     advanceTimer = setTimeout(() => {
       advanceTimer = null;
       nextItem();
-    }, CONFIG.CORRECT_ADVANCE_DELAY);
+    }, CONFIG.NEXT_QUESTION_DELAY);
+  }
+
+  function setChoicesLocked(locked) {
+    document.querySelectorAll('#choices .choice').forEach(choice => {
+      choice.disabled = locked;
+    });
   }
 
   function nextItem() {
@@ -1085,7 +1095,7 @@
     if (state.itemIndex < lesson.items.length - 1) {
       state.itemIndex += 1;
       renderLearn();
-      scheduleAutoPlay();
+      scheduleAutoPlay(CONFIG.NEXT_AUDIO_DELAY);
       return;
     }
     completeLesson();
