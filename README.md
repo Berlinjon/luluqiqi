@@ -1,10 +1,8 @@
-👋 **你好呀！这个目录里现在有四个家庭小应用。**
+👋 **你好呀！这个目录里现在有三个家庭小应用。**
 
 `garden-app/index.html` 是原来的每日花园打卡软件，根目录 `garden.html` 会自动跳转到这里，旧链接仍可使用。
 
 `garden-app/luludaka.html` 是原来根目录的 Lulu & Qiqi 每日好习惯页面，根目录 `index.html` 会自动跳转到这里，旧首页仍可使用。
-
-`yuwen-app/index.html` 是面向杭州一年级小朋友的语文闯关软件第一版，包含单元地图、课文关卡、识字选择、笔顺认知、词句练习、朗读示范和家长进度。所有学习记录都保存在本机浏览器里。
 
 `english-listening-app/index.html` 是独立的儿童英语听力启蒙软件，核心玩法是听一句英文短句，再从图片里选择对应画面。当前版本包含 Lulu / Qiqi / You 独立进度、7 个关卡、105 句、二选一到四选一难度爬坡、自动发音、答错重听、家长进度和本机记录。
 
@@ -13,8 +11,6 @@
 `./apps.html`
 
 `./garden-app/index.html`
-
-`./yuwen-app/index.html`
 
 `./english-listening-app/index.html`
 

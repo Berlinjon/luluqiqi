@@ -6425,7 +6425,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── 首次使用引导 ──────────────────────────────────────────────────────────
   (function(){
-    try{
+    try{                
       if(!localStorage.getItem('onboard_done_v1')){
         const overlay = document.getElementById('onboardOverlay');
         if(overlay) overlay.classList.add('show');
@@ -6444,9 +6444,9 @@ document.addEventListener('DOMContentLoaded', function() {
           overlay.style.transition='';
         }, 300);
       }
-    });
+    });                
   })();
-});
-</script>
-</body>
-</html>
+});                
+</script>                
+</body>                
+</html>                
