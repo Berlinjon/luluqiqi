@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#eef8ff">
-<title>听句子选图片</title>
+<title>英语启蒙听力复习</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <style>
   :root {
@@ -793,7 +793,7 @@
 <main class="app">
   <header class="topbar">
     <div class="brand">
-      <strong id="screenTitle">听句子选图片</strong>
+      <strong id="screenTitle">英语启蒙听力复习</strong>
       <span id="screenSub">Lulu</span>
     </div>
     <button class="text-btn" id="parentBtn" type="button">家长</button>
@@ -913,7 +913,7 @@
   const stars = () => readJSON(storageKey('stars'), {});
   state.autoPlay = readJSON(storageKey('autoPlay'), true) !== false;
 
-  function show(screen, title = '听句子选图片') {
+  function show(screen, title = '英语启蒙听力复习') {
     screens.forEach(id => $(id).classList.toggle('active', id === screen));
     $('screenTitle').textContent = title;
     $('screenSub').textContent = KIDS.find(k => k.id === state.kid)?.name || 'Lulu';
@@ -1023,7 +1023,7 @@
     renderPrompt();
     updateAutoPlayControl();
     state.locked = false;
-    show('learnScreen', '听句子选图片');
+    show('learnScreen', '英语启蒙听力复习');
   }
 
   function startLesson(lessonIndex) {

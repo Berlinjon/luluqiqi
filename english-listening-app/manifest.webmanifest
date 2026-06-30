@@ -1,7 +1,7 @@
 {
-  "name": "听句子选图片",
-  "short_name": "英语听力",
-  "description": "面向儿童的极简英语听力启蒙网页应用。",
+  "name": "英语启蒙听力复习",
+  "short_name": "听力复习",
+  "description": "面向儿童的英语启蒙听力复习网页应用。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
