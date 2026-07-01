@@ -401,6 +401,16 @@
   .wave i:nth-child(6){height:14px;animation-delay:.44s}
   .wave.idle i { animation-play-state: paused; opacity: .62; }
   @keyframes pulse { 0%,100%{transform:scaleY(.72)} 50%{transform:scaleY(1.15)} }
+  .audio-status {
+    min-height: 20px;
+    color: #687786;
+    font-size: .82rem;
+    font-weight: 800;
+    text-align: center;
+  }
+  .audio-status.warning {
+    color: #b35c00;
+  }
 
   .choices {
     display: grid;
@@ -832,6 +842,7 @@
         <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 9.5c0-2.2 2.4-3.6 4.3-2.4l21 13.2c1.7 1.1 1.7 3.5 0 4.6l-21 13.2c-1.9 1.2-4.3-.2-4.3-2.4V9.5z"/></svg>
       </button>
       <div class="wave idle" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="audio-status" id="audioStatus" aria-live="polite"></div>
       <div class="prompt-panel" id="promptPanel">
         <div id="englishPrompt"></div>
         <div class="zh" id="chinesePrompt"></div>
@@ -884,6 +895,7 @@
   let currentAudio = null;
   let autoPlayTimer = null;
   let advanceTimer = null;
+  const audioPreloadCache = new Map();
 
   const state = {
     kid: 'lulu',
@@ -955,10 +967,17 @@
     $('wave').classList.add('idle');
   }
 
+  function setAudioStatus(message = '', warning = false) {
+    const status = $('audioStatus');
+    status.textContent = message;
+    status.classList.toggle('warning', warning);
+  }
+
   function stopPracticeFlow() {
     clearAutoPlayTimer();
     clearAdvanceTimer();
     stopCurrentAudio();
+    setAudioStatus();
   }
 
   function setAutoPlayWaiting(waiting) {
@@ -1022,6 +1041,8 @@
     choicesContainer.innerHTML = renderChoices.map(key => renderChoice(key, key === item.correct)).join('');
     renderPrompt();
     updateAutoPlayControl();
+    preloadCurrentAndNextAudio();
+    setAudioStatus();
     state.locked = false;
     show('learnScreen', '英语启蒙听力复习');
   }
@@ -1151,6 +1172,7 @@
     clearAutoPlayTimer();
     const lesson = LESSONS[state.lessonIndex];
     const sentence = lesson.items[state.itemIndex].sentence;
+    setAudioStatus();
     $('wave').classList.remove('idle');
     stopCurrentAudio();
     $('wave').classList.remove('idle');
@@ -1162,16 +1184,46 @@
     return `./audio/sentences/${slug}.wav`;
   }
 
+  function preloadSentenceAudio(sentence) {
+    if (!sentence) return;
+    const src = sentenceAudioSrc(sentence);
+    if (audioPreloadCache.has(src)) return;
+    const audio = new Audio(src);
+    audio.preload = 'auto';
+    audio.load();
+    audioPreloadCache.set(src, audio);
+    if (audioPreloadCache.size > 6) {
+      const oldest = audioPreloadCache.keys().next().value;
+      audioPreloadCache.delete(oldest);
+    }
+  }
+
+  function preloadCurrentAndNextAudio() {
+    const lesson = LESSONS[state.lessonIndex];
+    if (!lesson) return;
+    preloadSentenceAudio(lesson.items[state.itemIndex]?.sentence);
+    preloadSentenceAudio(lesson.items[state.itemIndex + 1]?.sentence);
+  }
+
   function playLocalAudio(sentence) {
-    currentAudio = new Audio(sentenceAudioSrc(sentence));
+    const src = sentenceAudioSrc(sentence);
+    currentAudio = audioPreloadCache.get(src) || new Audio(src);
+    audioPreloadCache.delete(src);
     currentAudio.playbackRate = Math.max(0.75, Math.min(1.2, state.speed / 0.82));
-    currentAudio.onended = () => $('wave').classList.add('idle');
+    currentAudio.onplaying = () => setAudioStatus();
+    currentAudio.onended = () => {
+      $('wave').classList.add('idle');
+      setAudioStatus();
+      preloadCurrentAndNextAudio();
+    };
     currentAudio.onerror = () => {
       currentAudio = null;
+      setAudioStatus('音频加载失败，正在改用系统语音。', true);
       playWithBrowserVoice(sentence);
     };
     currentAudio.play().catch(() => {
       currentAudio = null;
+      setAudioStatus('自动播放受限，请点播放键重听。', true);
       playWithBrowserVoice(sentence);
     });
   }
