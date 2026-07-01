@@ -411,6 +411,35 @@
   .audio-status.warning {
     color: #b35c00;
   }
+  .answer-feedback {
+    min-height: 46px;
+    width: min(320px, 100%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    font-size: .92rem;
+    line-height: 1.35;
+    font-weight: 1000;
+    text-align: center;
+    box-shadow: 0 10px 22px rgba(39,86,123,.08);
+  }
+  .answer-feedback.visible {
+    display: flex;
+  }
+  .answer-feedback.correct {
+    color: #176347;
+    background: #e5f8ef;
+    border-color: #a9dfc5;
+  }
+  .answer-feedback.wrong {
+    color: #9b3e31;
+    background: #fff0ed;
+    border-color: #f3b1a7;
+  }
 
   .choices {
     display: grid;
@@ -785,9 +814,54 @@
       box-shadow: 0 30px 80px rgba(20, 63, 98, .16);
     }
   }
+  @media (max-width: 759px) {
+    .home.active {
+      min-height: auto;
+      align-content: start;
+      gap: 12px;
+    }
+    .kid-grid {
+      gap: 8px;
+    }
+    .kid-card {
+      min-height: 78px;
+      padding: 10px 8px;
+      align-content: center;
+      justify-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .kid-card.active::after {
+      top: 6px;
+      right: 6px;
+      width: 20px;
+      height: 20px;
+      font-size: .75rem;
+    }
+    .kid-face {
+      width: 38px;
+      height: 38px;
+      font-size: 1.35rem;
+    }
+    .kid-card strong {
+      font-size: .95rem;
+    }
+    .kid-card .mini {
+      font-size: .68rem;
+      line-height: 1.15;
+    }
+    .route-summary {
+      padding: 12px;
+      gap: 8px;
+    }
+    .lesson-card {
+      min-height: 92px;
+      padding: 14px;
+    }
+  }
   @media (max-width: 390px) {
     .app { padding-left: 10px; padding-right: 10px; }
-    .kid-grid { grid-template-columns: 1fr; }
+    .kid-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .parent-summary, .metric-grid { grid-template-columns: 1fr; }
     .tool-btn, .tool-pill, .tool-select { font-size: .76rem; padding-left: 9px; padding-right: 9px; }
     .tool-pill.progress-pill { margin-left: 0; }
@@ -843,6 +917,7 @@
       </button>
       <div class="wave idle" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="audio-status" id="audioStatus" aria-live="polite"></div>
+      <div class="answer-feedback" id="answerFeedback" aria-live="polite"></div>
       <div class="prompt-panel" id="promptPanel">
         <div id="englishPrompt"></div>
         <div class="zh" id="chinesePrompt"></div>
@@ -889,7 +964,7 @@
   } = courseData;
   const CONFIG = {
     AUTO_PLAY_DELAY: 900,
-    NEXT_QUESTION_DELAY: 850,
+    NEXT_QUESTION_DELAY: 1500,
     NEXT_AUDIO_DELAY: 650
   };
   let currentAudio = null;
@@ -973,6 +1048,14 @@
     status.classList.toggle('warning', warning);
   }
 
+  function setAnswerFeedback(type = '', message = '') {
+    const feedback = $('answerFeedback');
+    feedback.textContent = message;
+    feedback.classList.toggle('visible', Boolean(message));
+    feedback.classList.toggle('correct', type === 'correct');
+    feedback.classList.toggle('wrong', type === 'wrong');
+  }
+
   function stopPracticeFlow() {
     clearAutoPlayTimer();
     clearAdvanceTimer();
@@ -1043,6 +1126,7 @@
     updateAutoPlayControl();
     preloadCurrentAndNextAudio();
     setAudioStatus();
+    setAnswerFeedback();
     state.locked = false;
     show('learnScreen', '英语启蒙听力复习');
   }
@@ -1274,12 +1358,14 @@
       const item = LESSONS[state.lessonIndex].items[state.itemIndex];
       state.sessionErrors.add(item.id);
       recordMistake();
+      setAnswerFeedback('wrong', '再听一次，找一找另一个图片。');
       playSentence();
       return;
     }
     state.locked = true;
     setChoicesLocked(true);
     stopPracticeFlow();
+    setAnswerFeedback('correct', '答对啦！准备下一题。');
     addStar(state.kid);
     $('starPill').textContent = `★ ${starCount(state.kid)}`;
     advanceTimer = setTimeout(() => {

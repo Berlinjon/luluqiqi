@@ -1,4 +1,4 @@
-const CACHE_NAME = 'garden-root-shell-v6';
+const CACHE_NAME = 'garden-root-shell-v7';
 const OFFLINE_ASSETS = [
   './index.html',
   './apps.html',
@@ -9,9 +9,6 @@ const OFFLINE_ASSETS = [
   './english-listening-app/src/course-data.js',
   './english-listening-app/manifest.webmanifest',
   './english-listening-app/sw.js',
-  './yuwen-app/index.html',
-  './yuwen-app/manifest.webmanifest',
-  './yuwen-app/sw.js',
   './english-listening-app/assets/concepts/primary-screen-concept.png',
   './manifest.webmanifest',
   './icons/icon-192-v2.png',

@@ -394,8 +394,8 @@
         "choices": [
           "in_box",
           "next_chair",
-          "cat_sleep",
-          "bird_fly"
+          "on_bed",
+          "under_table"
         ]
       },
       {
@@ -406,32 +406,32 @@
         "choices": [
           "next_chair",
           "blue_bag",
-          "open_door",
-          "close_window"
+          "in_box",
+          "under_table"
         ]
       },
       {
         "id": "animals_l1_09",
         "sentence": "The bird is near the cloud.",
         "zh": "鸟在云朵附近。",
-        "correct": "bird_fly",
+        "correct": "bird_near_cloud_new",
         "choices": [
+          "bird_near_cloud_new",
+          "bird_in_sky",
           "bird_fly",
-          "yellow_sun",
-          "green_tree",
-          "rain_play"
+          "windy_kite"
         ]
       },
       {
         "id": "animals_l1_10",
         "sentence": "The fish is in the water.",
         "zh": "鱼在水里。",
-        "correct": "fish_swim",
+        "correct": "fish_swims_water",
         "choices": [
-          "fish_swim",
-          "rain_play",
-          "snow_touch",
-          "apple_red"
+          "fish_swims_water",
+          "fish_blue",
+          "bird_near_cloud_new",
+          "rain_play"
         ]
       },
       {
@@ -441,9 +441,9 @@
         "correct": "cat_sleep",
         "choices": [
           "cat_sleep",
-          "dog_run",
-          "windy_kite",
-          "cake_eat"
+          "on_bed",
+          "cat_sits_on_bed",
+          "dog_run"
         ]
       },
       {
@@ -465,21 +465,21 @@
         "correct": "bird_fly",
         "choices": [
           "bird_fly",
-          "red_ball",
-          "banana_yellow",
-          "cook_food"
+          "bird_in_sky",
+          "fish_swim",
+          "cat_sleep"
         ]
       },
       {
         "id": "animals_l1_14",
         "sentence": "The fish is blue.",
         "zh": "鱼是蓝色的。",
-        "correct": "fish_swim",
+        "correct": "fish_blue",
         "choices": [
+          "fish_blue",
           "fish_swim",
           "blue_bag",
-          "yellow_sun",
-          "green_tree"
+          "bird_fly"
         ]
       },
       {
@@ -591,24 +591,24 @@
         "id": "food_l1_08",
         "sentence": "The milk is white.",
         "zh": "牛奶是白色的。",
-        "correct": "milk_drink",
+        "correct": "milk_white_cup",
         "choices": [
+          "milk_white_cup",
           "milk_drink",
-          "snow_touch",
-          "yellow_sun",
-          "red_ball"
+          "snow_white",
+          "yellow_sun"
         ]
       },
       {
         "id": "food_l1_09",
         "sentence": "The banana is on the table.",
         "zh": "香蕉在桌子上。",
-        "correct": "banana_yellow",
+        "correct": "banana_on_table_new",
         "choices": [
+          "banana_on_table_new",
           "banana_yellow",
-          "under_table",
-          "next_chair",
-          "on_bed"
+          "cake_on_plate_new",
+          "apple_in_basket_new"
         ]
       },
       {
@@ -618,9 +618,9 @@
         "correct": "cook_food",
         "choices": [
           "cook_food",
-          "snow_touch",
-          "fish_swim",
-          "star_count"
+          "cake_eat",
+          "milk_drink",
+          "sun_hot"
         ]
       },
       {
@@ -642,9 +642,9 @@
         "correct": "cake_eat",
         "choices": [
           "cake_eat",
-          "boy_run",
-          "dog_run",
-          "bird_fly"
+          "cook_food",
+          "milk_drink",
+          "apple_red"
         ]
       },
       {
@@ -843,9 +843,9 @@
         "correct": "cat_sleep",
         "choices": [
           "cat_sleep",
-          "dog_run",
-          "windy_kite",
-          "cake_eat"
+          "on_bed",
+          "cat_sits_on_bed",
+          "dog_run"
         ]
       },
       {
@@ -867,9 +867,9 @@
         "correct": "cake_eat",
         "choices": [
           "cake_eat",
-          "boy_run",
-          "dog_run",
-          "bird_fly"
+          "cook_food",
+          "milk_drink",
+          "apple_red"
         ]
       }
     ],
@@ -937,8 +937,8 @@
         "choices": [
           "open_door",
           "close_window",
-          "next_chair",
-          "in_box"
+          "door_beside_window",
+          "bag_near_chair"
         ]
       },
       {
@@ -949,8 +949,8 @@
         "choices": [
           "close_window",
           "open_door",
-          "star_count",
-          "on_bed"
+          "door_beside_window",
+          "cat_blue_bed"
         ]
       },
       {
@@ -960,9 +960,9 @@
         "correct": "wear_hat",
         "choices": [
           "wear_hat",
-          "blue_bag",
-          "red_ball",
-          "yellow_sun"
+          "brush_teeth",
+          "wash_hands",
+          "boy_run"
         ]
       },
       {
@@ -1314,9 +1314,9 @@
         "correct": "apple_in_basket_new",
         "choices": [
           "apple_in_basket_new",
-          "rabbit_sits_in_box",
-          "blue_bag_big",
-          "tree_outside_green"
+          "banana_on_table_new",
+          "cake_on_plate_new",
+          "rabbit_sits_in_box"
         ]
       },
       {
@@ -1362,9 +1362,9 @@
         "correct": "fish_swims_water",
         "choices": [
           "fish_swims_water",
-          "child_stands_rain",
-          "child_stands_snow",
-          "apple_in_basket_new"
+          "fish_blue",
+          "bird_near_cloud_new",
+          "child_stands_rain"
         ]
       },
       {

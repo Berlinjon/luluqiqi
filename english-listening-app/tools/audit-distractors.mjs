@@ -48,6 +48,7 @@ const TOKEN_SYNONYMS = new Map([
   ["animal", ["cat", "dog", "bird", "fish", "rabbit"]],
   ["animals", ["cat", "dog", "bird", "fish", "rabbit"]],
   ["bag", ["bag", "schoolbag"]],
+  ["basket", ["basket", "container"]],
   ["bed", ["bed"]],
   ["beside", ["beside", "next", "near"]],
   ["below", ["below", "under"]],
@@ -109,6 +110,7 @@ const TOKEN_SYNONYMS = new Map([
   ["sun", ["sun", "weather"]],
   ["sweet", ["sweet"]],
   ["swimming", ["swim", "water"]],
+  ["swims", ["swim", "water"]],
   ["table", ["table"]],
   ["tall", ["tall"]],
   ["teeth", ["teeth", "brush", "daily"]],
@@ -128,6 +130,25 @@ const TOKEN_SYNONYMS = new Map([
 ]);
 
 const KEY_TAGS = new Map([
+  ["apple_in_basket_new", ["apple", "fruit", "food", "basket", "container", "position"]],
+  ["banana_on_table_new", ["banana", "fruit", "food", "table", "position"]],
+  ["cake_on_plate_new", ["cake", "food", "plate", "position"]],
+  ["bird_near_cloud_new", ["bird", "animal", "near", "cloud", "sky", "weather"]],
+  ["fish_swims_water", ["fish", "animal", "swim", "water"]],
+  ["bag_near_chair", ["bag", "chair", "near", "position"]],
+  ["door_beside_window", ["door", "window", "beside", "position", "daily"]],
+  ["cat_sits_on_bed", ["cat", "animal", "sit", "bed", "position"]],
+  ["cat_blue_bed", ["cat", "animal", "blue", "bed", "position"]],
+  ["dog_below_table", ["dog", "animal", "below", "table", "position"]],
+  ["rabbit_sits_in_box", ["rabbit", "animal", "sit", "box", "position"]],
+  ["fish_blue", ["fish", "animal", "blue", "water"]],
+  ["fish_in_water_weather", ["fish", "animal", "water", "weather"]],
+  ["bird_in_sky", ["bird", "animal", "sky", "weather"]],
+  ["cloud_near_bird", ["cloud", "near", "bird", "sky", "weather"]],
+  ["milk_white_cup", ["milk", "drink", "food", "white", "cup"]],
+  ["snow_white", ["snow", "weather", "white"]],
+  ["sun_hot", ["sun", "weather", "hot"]],
+  ["bag_next_ball", ["bag", "ball", "next", "position"]],
   ["boy_run", ["boy", "child", "person", "run", "action", "daily"]],
   ["girl_read", ["girl", "child", "person", "read", "book", "daily"]],
   ["brush_teeth", ["brush", "teeth", "daily"]],
@@ -190,10 +211,10 @@ function domainsForTags(tags) {
   const domains = new Set();
   const values = new Set(tags);
   if (hasAny(values, ["cat", "dog", "bird", "fish", "rabbit", "animal"])) domains.add("domain:animal");
-  if (hasAny(values, ["apple", "banana", "milk", "cake", "food", "fruit", "sweet", "plate"])) domains.add("domain:food");
+  if (hasAny(values, ["apple", "banana", "milk", "cake", "food", "fruit", "sweet", "plate", "cup"])) domains.add("domain:food");
   if (hasAny(values, ["boy", "girl", "child", "person", "brush", "wash", "run", "read", "cook", "door", "window", "hat", "daily"])) domains.add("domain:daily");
   if (hasAny(values, ["red", "blue", "green", "yellow", "white", "small", "big", "tall", "long", "round"])) domains.add("domain:attribute");
-  if (hasAny(values, ["on", "under", "below", "in", "next", "near", "beside", "outside", "table", "chair", "bed", "box"])) domains.add("domain:position");
+  if (hasAny(values, ["on", "under", "below", "in", "next", "near", "beside", "outside", "table", "chair", "bed", "box", "basket", "container", "position"])) domains.add("domain:position");
   if (hasAny(values, ["rain", "snow", "sun", "wind", "sky", "star", "cloud", "weather", "tree", "nature", "umbrella", "kite"])) domains.add("domain:weather");
   return domains;
 }
